@@ -1,0 +1,7 @@
+{
+  "name": "android-kit",
+  "description": "Android playbooks, standards index, reviewer/researcher agents and guard hooks for Claude Code",
+  "author": { "name": "Mark Hine", "url": "https://github.com/Mark-Hine" },
+  "repository": "https://github.com/Mark-Hine/ai-toolkit",
+  "license": "MIT"
+}

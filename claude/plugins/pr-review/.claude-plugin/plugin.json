@@ -1,0 +1,7 @@
+{
+  "name": "pr-review",
+  "description": "Formal written PR review with a standards-cited findings register, for Android, iOS and generic repos",
+  "author": { "name": "Mark Hine", "url": "https://github.com/Mark-Hine" },
+  "repository": "https://github.com/Mark-Hine/ai-toolkit",
+  "license": "MIT"
+}

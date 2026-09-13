@@ -1,0 +1,6 @@
+## This machine
+<!-- Copy to ~/.claude/machine.md and edit. Never commit the copy; it holds machine and workplace facts. -->
+- macOS: no `timeout` binary, never wrap commands in it. Android CLI at `~/.local/bin/android` (`android-cli` skill); prefer it over raw `adb`/`emulator`.
+  AVDs: `<phone-avd>` (default), `<tablet-avd>`, `<16kb-avd>`, `<min-sdk-avd>`.
+- Guardrail hooks from the `android-kit` plugin block protected-branch pushes and secret-file edits; a block is final, do not work around it.
+- Ticket prefix for commit scopes: `PROJ`. Default branch: `develop`.
