@@ -4,7 +4,7 @@ My portable setup for AI coding agents. One folder per agent.
 
 | Folder | Agent | Status |
 | --- | --- | --- |
-| [`claude/`](claude/README.md) | Claude Code | Android playbooks, standards, reviewer/researcher agents, guard hooks, writing-style rules, global `CLAUDE.md`, one-command installer |
+| [`claude/`](claude/README.md) | Claude Code | Android playbooks, standards, reviewer/researcher/verifier agents, guard hooks, writing-style rules, global `CLAUDE.md`, one-command installer |
 | [`codex/`](codex/README.md) | OpenAI Codex | Placeholder |
 
 `.claude-plugin/marketplace.json` at the repo root is required by Claude Code; it points at the plugins under `claude/plugins/`.

@@ -18,7 +18,8 @@ Repo facts (modules, build/test commands, app id) come from the project's `CLAUD
    null guard), say so and propose the real fix. Ask `android-researcher` when a platform behaviour change is suspected.
 5. **Fix** with the minimal diff. Note refactor candidates as follow-ups instead of doing them.
 6. **Verify.** Failing test now green plus the class's other tests; the project's compile check; for UI bugs re-run on the
-   emulator with a screenshot and run the screen's journey from `journeys/` if one exists. Quote results.
+   emulator with a screenshot. Hand the failing-test rerun and the screen's journey (if one exists) to the
+   `android-verifier` agent and quote its results.
 7. **Review.** `android-reviewer` with the symptom and root cause as the task statement.
 8. **Commit**: `fix(<ticket>): <subject>`; body: root cause in one line, guarding test in one line. Do not push unless asked.
 9. **Report**: cause, fix, evidence (test before/after, screenshots), regression risk, pre-existing issues noticed.

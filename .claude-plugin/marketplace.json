@@ -5,7 +5,7 @@
     {
       "name": "android-kit",
       "source": "./claude/plugins/android-kit",
-      "description": "Android playbooks (feature, bugfix, dependency uplift, run on emulator), a standards index, read-only reviewer and researcher agents, and repo-agnostic guard hooks.",
+      "description": "Android playbooks (feature, bugfix, dependency uplift, run on emulator), a standards index, reviewer, researcher and verifier agents, and repo-agnostic guard hooks.",
       "keywords": ["android", "kotlin", "compose", "gradle"]
     },
     {

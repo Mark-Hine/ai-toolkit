@@ -22,8 +22,9 @@ Repo facts (modules, build/test commands, design-system names, app id) come from
 6. **Tests.** ViewModel and use-case tests (JUnit5/Kotest/MockK, `runTest`). Run them with `--tests` and quote the summary.
 7. **Device verification.** `/android-kit:run-app` on the default phone AVD, navigate to the feature, `android screen`; repeat
    on the tablet AVD for any new or changed screen. Check insets (`edge-to-edge`) and large-screen layout (`adaptive`).
-   Run the journey in `journeys/` for the touched screen (android-cli `references/journeys.md`) and keep the JSON result;
-   a new screen gets a new journey. Keep screenshot paths for the report.
+   Then hand off to the `android-verifier` agent with the test command, the journey file(s) for the touched screen, the
+   device serial and application id. It returns the JSON journey result and screenshot paths; a FAILED action is a
+   finding, not something to fix inside this step. A new screen gets a new journey.
 8. **Review.** `android-reviewer` against the acceptance criteria. Fix Blockers/Majors; list declined Nits.
 9. **Commit**: `feat(<ticket>): <subject>` (or `refactor(<ticket>): ...` for modify-only). Body: at most 3 short lines.
    Do not push unless asked.

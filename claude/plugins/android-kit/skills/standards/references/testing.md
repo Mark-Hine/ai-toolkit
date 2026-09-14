@@ -50,5 +50,5 @@ Template:
 </journey>
 ```
 
-Running one: `/android-kit:run-app <avd> <flavour>`, then evaluate the journey per the android-cli reference and paste the JSON
-summary into the task report.
+Running one: `/android-kit:run-app <avd> <flavour>`, then delegate to the `android-verifier` agent, which evaluates the
+journey per the android-cli reference and returns the JSON summary and screenshot paths for the task report.

@@ -7,7 +7,7 @@ Two layers. Plugins carry the shareable parts. The `home/` dotfiles layer carrie
 | Path | What | Loads |
 | --- | --- | --- |
 | `plugins/android-kit/skills/` | `/android-kit:feature`, `bugfix`, `uplift-deps`, `run-app`, `standards` (reference index, not user-invoked) | On invocation or when relevant |
-| `plugins/android-kit/agents/` | `android-reviewer` (opus, read-only, grades Blocker/Major/Nit), `android-researcher` (sonnet, read-only, official docs only) | When delegated |
+| `plugins/android-kit/agents/` | `android-reviewer` (opus, read-only, grades Blocker/Major/Nit), `android-researcher` (sonnet, read-only, official docs only), `android-verifier` (sonnet, runs tests and emulator journeys, reports evidence) | When delegated |
 | `plugins/android-kit/hooks/` | Guard hooks: block pushes to protected branches, force pushes, destructive git, `timeout`-wrapped commands, edits to secrets and signing files | Every matching tool call |
 | `plugins/pr-review/` | Formal written PR review with a standards-cited findings register; Android, iOS and generic grading | On "review this PR" or `/pr-review` |
 | `home/CLAUDE.md` | Global preferences: commits, work style, subagent models, Android routing. Imports `~/.claude/machine.md` | Every session |
