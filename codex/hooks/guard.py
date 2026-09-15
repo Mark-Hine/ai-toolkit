@@ -7,6 +7,88 @@ import shlex
 import sys
 
 
+def shell_source(command):
+    """Remove literal heredoc bodies before checking executable shell text."""
+    lines = command.splitlines(keepends=True)
+    result = []
+    pending = []
+    header = ''
+    for line in lines:
+        if pending:
+            delimiter, strip_tabs, literal = pending[0]
+            candidate = line.lstrip('\t') if strip_tabs else line
+            if candidate.rstrip('\r\n') == delimiter:
+                pending.pop(0)
+                result.append('\n')
+            else:
+                result.append('\n' if literal else line)
+            continue
+        result.append(line)
+        header += line
+        try:
+            lexer = shlex.shlex(header, posix=False, punctuation_chars=';&|()<>')
+            lexer.whitespace_split = True
+            tokens = list(lexer)
+        except ValueError:
+            continue
+        header = ''
+        for i, token in enumerate(tokens[:-1]):
+            if token != '<<':
+                continue
+            word = tokens[i + 1]
+            strip_tabs = word.startswith('-')
+            if strip_tabs:
+                word = word[1:]
+                if not word and i + 2 < len(tokens):
+                    word = tokens[i + 2]
+            try:
+                delimiter = shlex.split(word)
+            except ValueError:
+                continue
+            if len(delimiter) == 1:
+                pending.append((delimiter[0], strip_tabs, any(c in word for c in "'\"\\")))
+    return command if pending else ''.join(result)
+
+
+def timeout_command(tokens):
+    """Recognize the wrapper in command positions, excluding ordinary arguments."""
+    command_start = True
+    redirect_target = False
+    wrapper_option = False
+    for token in tokens:
+        if re.fullmatch(r'[;&|()\n]+', token):
+            command_start = True
+            redirect_target = False
+            wrapper_option = False
+            continue
+        if re.fullmatch(r'[<>]+', token):
+            redirect_target = True
+            continue
+        if redirect_target:
+            redirect_target = False
+            continue
+        if not command_start:
+            continue
+        if wrapper_option:
+            wrapper_option = False
+            continue
+        if re.match(r'[A-Za-z_][A-Za-z_0-9]*=', token):
+            continue
+        if token in {'!', 'if', 'then', 'elif', 'else', 'while', 'until', 'do', '{'}:
+            continue
+        executable = token.rsplit('/', 1)[-1]
+        if executable == 'timeout':
+            return True
+        if executable in {'sudo', 'env', 'command', 'exec', 'nohup'}:
+            continue
+        if token.startswith('-'):
+            wrapper_option = token in {'-u', '-g', '-h', '-p', '-C', '-T', '--user',
+                                       '--group', '--host', '--prompt', '--chdir', '--unset'}
+            continue
+        command_start = False
+    return False
+
+
 def protected(path):
     p = PurePosixPath(path)
     return (p.name in {'google-services.json', 'GoogleService-Info.plist', 'secrets.properties',
@@ -18,6 +100,7 @@ def protected(path):
 
 
 def shell_reason(command):
+    command = shell_source(command)
     # Tokenize literal commands, including quoted refs and git -C/-c options.
     try:
         lexer = shlex.shlex(command, posix=True, punctuation_chars=';&|()<>\n')
@@ -26,7 +109,7 @@ def shell_reason(command):
         tokens = list(lexer)
     except ValueError:
         return None  # The shell itself handles invalid syntax.
-    if re.search(r'(^|[\s;&|(/])timeout\s', command):
+    if timeout_command(tokens):
         return 'Use tool execution and polling controls instead of timeout.'
     for i, token in enumerate(tokens):
         if token.rsplit('/', 1)[-1] != 'git':
@@ -62,12 +145,23 @@ def shell_reason(command):
             return 'Discarding the working tree is blocked.'
         if op == 'restore' and ('.' in rest or ':/' in rest):
             return 'Discarding the working tree is blocked.'
-    # Also inspect literal commands nested inside shell -c wrappers or compound lines.
-    for token in tokens:
-        if 'git ' in token or re.search(r'(^|\n)timeout\s', token):
-            reason = shell_reason(token)
+    # Only shell command arguments contain nested shell source.
+    for i, token in enumerate(tokens):
+        for substitution in re.finditer(r'\$\(([^()]*)\)|`([^`]*)`', token):
+            reason = shell_reason(substitution.group(1) or substitution.group(2) or '')
             if reason:
                 return reason
+        if token.rsplit('/', 1)[-1] not in {'sh', 'bash', 'zsh', 'dash', 'ksh'}:
+            continue
+        for j in range(i + 1, len(tokens) - 1):
+            option = tokens[j]
+            if not option.startswith('-'):
+                break
+            if 'c' in option[1:] and not option.startswith('--'):
+                reason = shell_reason(tokens[j + 1])
+                if reason:
+                    return reason
+                break
     return None
 
 
