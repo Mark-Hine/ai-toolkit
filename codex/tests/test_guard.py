@@ -52,9 +52,58 @@ class GuardTests(unittest.TestCase):
 
     def test_timeout_wrappers(self):
         for command in ('timeout 30 ./gradlew test', 'sudo timeout 30 ./gradlew test',
-                        "sh -c 'timeout 30 ./gradlew test'"):
+                        "sh -c 'timeout 30 ./gradlew test'",
+                        'timeout', '/usr/bin/timeout 30 task',
+                        'env FLAG=1 timeout 30 task', 'sudo -u example timeout 30 task',
+                        'command timeout 30 task', 'exec timeout 30 task',
+                        'true && timeout 30 task', 'true\ntimeout 30 task',
+                        '(timeout 30 task)', 'if true; then timeout 30 task; fi',
+                        'echo $(timeout 30 task)', 'echo "$(timeout 30 task)"',
+                        'echo "`timeout 30 task`"', '/bin/zsh -lc "timeout 30 task"'):
             with self.subTest(command=command):
                 self.assertIsNotNone(self.shell(command))
+
+    def test_timeout_in_arguments_and_comments_is_data(self):
+        for command in ('echo "A bridge heartbeat timeout expires the lease"',
+                        'printf "%s" "timeout 30 task"', 'rg timeout docs',
+                        'cat timeout', '# timeout 30 task\necho ready',
+                        "echo 'git reset --hard'", "python3 -c 'print(\"timeout example\")'"):
+            with self.subTest(command=command):
+                self.assertIsNone(self.shell(command))
+
+    def test_literal_heredoc_document_content(self):
+        body = "A bridge heartbeat timeout expires the lease.\ntimeout 30 task\ngit reset --hard\nAn unmatched ' quote\n"
+        for header, end in (("cat > spec.md <<'SPEC'\n", 'SPEC'),
+                            ('cat <<"SPEC" > spec.md\n', 'SPEC'),
+                            ('cat <<\\SPEC > spec.md\n', 'SPEC'),
+                            ("cat <<-'SPEC' > spec.md\n", '\tSPEC')):
+            with self.subTest(header=header):
+                self.assertIsNone(self.shell(header + body + end + '\n'))
+
+    def test_heredoc_does_not_hide_surrounding_commands(self):
+        document = "cat <<'SPEC' > spec.md\ntimeout is documented here\nSPEC\n"
+        for command in ('timeout 30 task', 'git reset --hard', 'git push origin main'):
+            for source in (command + '\n' + document, document + command,
+                           "cat <<'SPEC'; " + command + '\ntext\nSPEC\n'):
+                with self.subTest(source=source):
+                    self.assertIsNotNone(self.shell(source))
+
+    def test_multiple_heredocs_and_nested_shell(self):
+        self.assertIsNone(self.shell("cat <<'ONE' <<'TWO'\ntimeout 1 task\nONE\ngit reset --hard\nTWO\n"))
+        self.assertIsNotNone(self.shell("cat <<'ONE' <<'TWO'\ntext\nONE\ntext\nTWO\ntimeout 1 task"))
+        self.assertIsNone(self.shell('sh -c "cat <<\'EOF\'\ntimeout is data\nEOF\n"'))
+        self.assertIsNotNone(self.shell('sh -c "cat <<\'EOF\'\ntext\nEOF\ntimeout 1 task"'))
+
+    def test_unquoted_heredoc_expansions_remain_checked(self):
+        self.assertIsNotNone(self.shell('cat <<EOF\n$(timeout 30 task)\nEOF\n'))
+        self.assertIsNotNone(self.shell('cat <<EOF\n$(git reset --hard)\nEOF\n'))
+
+    def test_multiline_arguments_do_not_create_heredocs(self):
+        self.assertIsNotNone(self.shell('echo "example\ncat <<\'EOF\'\n"\ntimeout 1 task\n# EOF'))
+        self.assertIsNotNone(self.shell('echo "$(git reset --hard)"'))
+
+    def test_unterminated_heredoc_is_not_discarded(self):
+        self.assertIn('timeout 1 task', guard.shell_source("cat <<'EOF'\ntext\ntimeout 1 task"))
 
     def test_specialists_can_read_required_files(self):
         for role in ('android-researcher', 'android-verifier'):

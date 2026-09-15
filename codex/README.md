@@ -59,6 +59,8 @@ Existing main-session model settings win. Fresh installations default to `gpt-6-
 
 The command hook blocks protected-branch pushes, force pushes, unchecked implicit pushes, destructive Git operations and `timeout` wrappers. Use an explicit remote and feature refspec when pushing. The patch hook checks added, updated, deleted and moved paths for secrets, signing files, Firebase/network configuration and generated binaries. Specialist hooks also block direct source edits and limit research or verification commands.
 
+The command check excludes literal quoted heredoc bodies and checks `timeout` in command positions. Document text and ordinary arguments can mention the wrapper. Commands before and after a heredoc, literal shell `-c` arguments, and simple command substitutions remain checked. Unquoted heredoc bodies remain subject to conservative checks because the shell can expand commands in them.
+
 These hooks prevent common mistakes. They are not a shell sandbox or a complete parser for scripts, Git aliases, computed commands, alternate file-writing tools or shell-based file writes. Keep the Codex sandbox and approval policy enabled. Do not work around a hook block. Review changed hook scripts after updating the toolkit. Managed client policy can take precedence over user settings.
 
 ## Validation
