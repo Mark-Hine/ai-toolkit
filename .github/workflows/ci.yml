@@ -24,3 +24,16 @@ jobs:
           claude plugin validate claude/plugins/pr-review
       - name: Hook scripts parse
         run: bash -n claude/plugins/android-kit/hooks/guard-bash.sh && bash -n claude/plugins/android-kit/hooks/guard-edit.sh
+  validate-codex:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate Codex assets
+        run: python3 codex/scripts/validate.py
+      - name: Test guards and installer
+        run: python3 -m unittest discover -s codex/tests -v
+      - name: Installer shell syntax
+        run: bash -n codex/install.sh

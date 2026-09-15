@@ -1,0 +1,14 @@
+# Portable equivalents of the source setup's routine command permissions.
+# Rules govern escalation, not all execution. Hooks inspect commands and edits.
+prefix_rule(pattern = ["./gradlew"], decision = "allow")
+prefix_rule(pattern = ["git", ["status", "diff", "log", "show"]], decision = "allow")
+prefix_rule(pattern = ["git", "branch", "--list"], decision = "allow")
+prefix_rule(pattern = ["android", "docs"], decision = "allow")
+prefix_rule(pattern = ["android", "info"], decision = "allow")
+prefix_rule(pattern = ["android", "emulator", "list"], decision = "allow")
+prefix_rule(pattern = ["android", "sdk", "list"], decision = "allow")
+prefix_rule(pattern = ["android", "skills", "list"], decision = "allow")
+prefix_rule(pattern = ["android", "screen"], decision = "allow")
+prefix_rule(pattern = ["android", "layout"], decision = "allow")
+prefix_rule(pattern = ["adb", "devices"], decision = "allow")
+prefix_rule(pattern = ["adb", "logcat"], decision = "allow")
