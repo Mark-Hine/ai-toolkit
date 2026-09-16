@@ -23,7 +23,7 @@ jobs:
           claude plugin validate claude/plugins/android-kit
           claude plugin validate claude/plugins/pr-review
       - name: Hook scripts parse
-        run: bash -n claude/plugins/android-kit/hooks/guard-bash.sh && bash -n claude/plugins/android-kit/hooks/guard-edit.sh
+        run: bash claude/plugins/android-kit/hooks/test-guards.sh
   validate-codex:
     runs-on: ubuntu-latest
     steps:

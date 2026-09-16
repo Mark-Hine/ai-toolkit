@@ -16,5 +16,8 @@ case "$path" in
   *.jks|*.keystore|*.p12|*.pem|*.key|*.mobileprovision|*.cer) deny "signing material" ;;
   */.env|*/.env.*)                   deny "environment secrets file" ;;
   */gradle/wrapper/gradle-wrapper.jar) deny "wrapper jar is updated via ./gradlew wrapper, not edited" ;;
+  *.entitlements|*/ExportOptions.plist) deny "entitlements / export signing config changes need explicit user approval; ask first" ;;
+  *[Ss]ecrets.swift|*[Ss]ecrets*.xcconfig|*[Ss]ecrets.plist) deny "iOS secrets file" ;;
+  Podfile.lock|*/Podfile.lock|Package.resolved|*/Package.resolved) deny "lock file is regenerated (pod install / xcodebuild -resolvePackageDependencies), not edited" ;;
 esac
 exit 0

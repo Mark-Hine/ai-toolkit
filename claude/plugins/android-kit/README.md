@@ -12,6 +12,6 @@ Claude Code plugin for Android work. Install with `/plugin marketplace add Mark-
 | `android-reviewer` agent | Read-only diff review, runs the project's compile check, grades Blocker/Major/Nit |
 | `android-researcher` agent | Read-only research via `android docs` and official sources; shell limited by `agents/hooks/android-researcher-bash.sh` |
 | `android-verifier` agent | Runs unit tests and `journeys/*.xml` on the emulator, returns JSON results and screenshots; shell limited to gradle test tasks, `android`, `adb` by `agents/hooks/android-verifier-bash.sh` |
-| `hooks/` | Guard hooks (see `hooks/guard-bash.sh`, `hooks/guard-edit.sh`); require `jq` |
+| `hooks/` | Guard hooks (`guard-bash.sh`, `guard-edit.sh`); require `jq`. Push rules are checked per shell segment, so flags in other commands cannot trip them. `hooks/test-guards.sh` is the regression suite and runs in CI |
 
 Playbooks read repo facts (modules, build commands, design system, app id) from the project's `CLAUDE.md`. Machine facts (AVD names, CLI paths) come from `~/.claude/machine.md`. The `android-cli` skill from Google's Android CLI is expected for emulator and docs steps.
