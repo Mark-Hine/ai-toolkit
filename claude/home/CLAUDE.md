@@ -3,12 +3,15 @@
 @~/.claude/machine.md
 
 ## Git
-- Commits: Conventional Commits, ticket as scope, e.g. `chore(PROJ-123): target Android 17 (API 37)`; lowercase
-  imperative subject ≤72 chars; body ≤3 short lines (what and why), no file lists.
-- Commit or push only when asked. Never push to `develop`, `main` or `release/*`. One commit per logical change.
-  No AI attribution anywhere, so no `Co-Authored-By` trailer and no "Generated with Claude Code" footer.
+- Follow the repository's documented Git contribution, branch naming and commit message conventions. When these are absent, use the defaults below.
+- Use Conventional Commits with the ticket as scope when available, such as `fix(PROJ-123): handle expired sessions`. Use a lowercase imperative subject of at most 72 characters. Add a short body only when needed to explain what changed and why.
+- Keep each commit to one logical change. Stage only the intended files or hunks, inspect the staged diff and exclude unrelated changes, secrets and unintended generated files. Run checks appropriate to the change before committing and report any failed or unavailable checks.
+- Before committing, check the current branch. If it is `develop`, `main`, `master`, `release/*` or another branch protected by the project, create and switch to a suitably named feature or task branch before committing.
+- Commit and push only when asked. Never push directly to a protected branch. Do not amend commits, rewrite history or force-push without explicit authorization.
+- Do not add AI attribution, a generated-by footer or a Co-Authored-By trailer.
 
 ## How I want work done
+- When changing the ai-toolkit setup, mirror shared changes between `codex/` and `claude/` in the same task, adapting paths and mechanisms for each agent. Preserve intentional agent-specific differences, including the separate writing styles. State any change that is not mirrored and why.
 - Plan mode before touching more than one file or any dependency version. Small clear fixes: just do them. Minimal
   diff, no unrelated refactors, renames or reformatting.
 - Writing follows `~/.claude/rules/writing-style.md` in every reply, PR text and commit body.

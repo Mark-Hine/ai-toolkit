@@ -13,6 +13,7 @@ Read `~/.codex/machine.md` for local tool and device facts. If CODEX_HOME is set
 
 ## Work
 
+- When changing the ai-toolkit setup, mirror shared changes between `codex/` and `claude/` in the same task, adapting paths and mechanisms for each agent. Preserve intentional agent-specific differences, including the separate writing styles. State any change that is not mirrored and why.
 - Before changing multiple files or dependency versions, state a concise implementation plan. Proceed with work already authorized by the user. Use `/plan` when the user wants a planning-only session. Small clear fixes need no separate plan.
 - Keep diffs focused. Avoid unrelated refactors, renames and reformatting.
 - Decide routine matters and state useful assumptions. Ask about unresolved scope, destructive work, secrets, signing or network-security changes when existing authorization does not cover the action.
