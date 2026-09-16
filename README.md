@@ -33,6 +33,10 @@ Plugins only, without the dotfiles layer:
 /plugin install pr-review@ai-toolkit
 ```
 
+## Contributing
+
+Branch, PR, green CI. The rules for changes to this repo are in `AGENTS.md` (Codex) and `CLAUDE.md` (Claude Code, which imports it).
+
 ## Privacy
 
 Machine-specific facts (AVD names, CLI paths, ticket prefix, default branch) live in `~/.claude/machine.md`. The installer creates it from `claude/home/machine.md.example` and never commits it. Codex machine facts live in `~/.codex/machine.md`. Repo-specific facts belong in that repo's own `AGENTS.md` or `CLAUDE.md`, and the playbooks read them from there rather than hardcoding them. CI runs gitleaks on every push to catch credentials.
