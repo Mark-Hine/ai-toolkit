@@ -1,18 +1,42 @@
 {
   "name": "ai-toolkit",
-  "owner": { "name": "Mark Hine", "url": "https://github.com/Mark-Hine" },
+  "owner": {
+    "name": "Mark Hine",
+    "url": "https://github.com/Mark-Hine"
+  },
   "plugins": [
     {
       "name": "android-kit",
       "source": "./claude/plugins/android-kit",
       "description": "Android playbooks (feature, bugfix, dependency uplift, run on emulator), a standards index, reviewer, researcher and verifier agents, and repo-agnostic guard hooks.",
-      "keywords": ["android", "kotlin", "compose", "gradle"]
+      "keywords": [
+        "android",
+        "kotlin",
+        "compose",
+        "gradle"
+      ]
+    },
+    {
+      "name": "ios-kit",
+      "source": "./claude/plugins/ios-kit",
+      "description": "iOS playbooks (feature, bugfix, dependency uplift, run on simulator), an Apple standards index, and reviewer, researcher and verifier agents.",
+      "keywords": [
+        "ios",
+        "swift",
+        "swiftui",
+        "xcode"
+      ]
     },
     {
       "name": "pr-review",
       "source": "./claude/plugins/pr-review",
       "description": "Formal written PR review: standards-cited findings register, verdict, promotion-manifest checks, optional CI posting. Android, iOS and generic repos.",
-      "keywords": ["review", "pull-request", "android", "ios"]
+      "keywords": [
+        "review",
+        "pull-request",
+        "android",
+        "ios"
+      ]
     }
   ]
 }

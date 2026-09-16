@@ -16,6 +16,7 @@ link() { # link <src> <dst>
 link "$HERE/home/CLAUDE.md" "$CFG/CLAUDE.md"
 link "$HERE/home/rules/writing-style.md" "$CFG/rules/writing-style.md"
 link "$HERE/home/rules/android" "$CFG/rules/android"
+link "$HERE/home/rules/ios" "$CFG/rules/ios"
 [ -f "$CFG/machine.md" ] || { cp "$HERE/home/machine.md.example" "$CFG/machine.md"; echo "created $CFG/machine.md (edit it)"; }
 
 # Merge settings: existing keys win for scalars; permissions.allow is unioned; hooks and skillOverrides merged.
@@ -31,12 +32,12 @@ jq -s '
 echo "merged settings into $S"
 
 claude plugin marketplace add "$MARKET" 2>/dev/null || claude plugin marketplace update 2>/dev/null || true
-for p in android-kit pr-review; do claude plugin install "$p@ai-toolkit" --scope user 2>/dev/null || echo "install $p manually: /plugin install $p@ai-toolkit"; done
+for p in android-kit ios-kit pr-review; do claude plugin install "$p@ai-toolkit" --scope user 2>/dev/null || echo "install $p manually: /plugin install $p@ai-toolkit"; done
 
 cat <<MSG
 
 Done. Start a new Claude Code session and check:
   /context   -> CLAUDE.md, rules/writing-style.md, rules/android/* under Memory files; android-reviewer, android-researcher under agents
-  /skills    -> android-kit:feature, android-kit:bugfix, android-kit:uplift-deps, android-kit:run-app, pr-review
+  /skills    -> android-kit:*, ios-kit:*, pr-review:pr-review
 Edit $CFG/machine.md with your AVD names and ticket prefix.
 MSG

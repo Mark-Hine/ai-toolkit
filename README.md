@@ -4,7 +4,7 @@ My portable setup for AI coding agents. One folder per agent.
 
 | Folder | Agent | Status |
 | --- | --- | --- |
-| [`claude/`](claude/README.md) | Claude Code | Android playbooks, standards, reviewer/researcher/verifier agents, guard hooks, writing-style rules, global `CLAUDE.md`, one-command installer |
+| [`claude/`](claude/README.md) | Claude Code | Android and iOS playbooks, standards indexes, reviewer/researcher/verifier agents, guard hooks, writing-style rules, global `CLAUDE.md`, one-command installer |
 | [`codex/`](codex/README.md) | OpenAI Codex | Six skills, specialist agents, global settings, Android and writing guidance, guard hooks, repeatable installer |
 
 `.claude-plugin/marketplace.json` at the repo root is required by Claude Code; it points at the plugins under `claude/plugins/`.
@@ -29,6 +29,7 @@ Plugins only, without the dotfiles layer:
 ```
 /plugin marketplace add Mark-Hine/ai-toolkit
 /plugin install android-kit@ai-toolkit
+/plugin install ios-kit@ai-toolkit
 /plugin install pr-review@ai-toolkit
 ```
 
