@@ -6,6 +6,7 @@ Read `~/.codex/machine.md` for local tool and device facts. If CODEX_HOME is set
 
 - Use Conventional Commits with the ticket as scope when available, such as `fix(PROJ-123): handle expired sessions`. Use a lowercase imperative subject of at most 72 characters and at most three short body lines explaining what and why.
 - Commit and push only when asked. Never push to `develop`, `main`, `master` or `release/*`. Keep each commit to one logical change.
+- Before committing, check the current branch. If it is `develop`, `main`, `master`, `release/*` or another branch protected by the project, create and switch to a suitably named feature or task branch before committing.
 - Do not add AI attribution, a generated-by footer or a Co-Authored-By trailer.
 
 ## Work
