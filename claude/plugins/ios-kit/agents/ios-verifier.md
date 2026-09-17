@@ -22,23 +22,23 @@ retry until green. A failure is a finding for the caller.
 
 ## Inputs from the caller
 - The test command in the project's form, e.g. `xcodebuild test -workspace <ws> -scheme "<test scheme>" -destination
-  'platform=iOS Simulator,name=<sim>' -only-testing:<Target>/<Suite> -resultBundlePath <scratchpad>/tests.xcresult`.
-- For a smoke check: the simulator name, bundle id, the `.app` path or confirmation the app is installed, and the
+  'platform=iOS Simulator,id=<udid>' -only-testing:<Target>/<Suite> -resultBundlePath <scratchpad>/tests.xcresult`.
+- For a smoke check: the simulator UDID, bundle id, confirmation the caller has installed the app on that simulator, and the
   screens to visit as deep links (`xcrun simctl openurl`) or as "launch and screenshot".
 - Scratchpad directory for result bundles and screenshots.
-If any input is missing, ask for it in one line and stop.
+Require only inputs relevant to the requested check. If a required input is missing, ask for it and continue any independent checks.
 
 ## Procedure
 1. **Tests.** Run the command with `-resultBundlePath`. Summarise with
    `xcrun xcresulttool get test-results summary --path <bundle>` and quote the totals and the first failing test with its
    message. If the scheme does not compile and the project `CLAUDE.md` lists that as pre-existing, report it as
    pre-existing and continue.
-2. **Smoke check.** `xcrun simctl launch booted <bundle id>`, wait, then `xcrun simctl io booted screenshot
+2. **Smoke check.** `xcrun simctl launch <udid> <bundle id>`, wait, then `xcrun simctl io <udid> screenshot
    <scratchpad>/<sim>-<scheme>-<n>.png` for each requested screen, opening deep links with `xcrun simctl openurl` when
-   given. Repeat once at `xcrun simctl ui booted content_size accessibility-extra-large` when the caller asks for the
-   Dynamic Type check, then restore with `content_size medium`.
-3. **Crash check.** `xcrun simctl spawn booted log show --last 3m --predicate 'processImagePath CONTAINS "<App>"' --style
-   compact` and note any crash or fatal error. `xcrun simctl listapps booted` confirms the install if launch fails.
+   given. Repeat once at `xcrun simctl ui <udid> content_size accessibility-extra-large` when the caller asks for the
+   Dynamic Type check, then restore the recorded original value. Use the supplied simulator UDID throughout.
+3. **Crash check.** `xcrun simctl spawn <udid> log show --last 3m --predicate 'processImagePath CONTAINS "<App>"' --style
+   compact` and note any crash or fatal error. `xcrun simctl listapps <udid>` confirms the install if launch fails.
 4. **UI automation.** Plain `simctl` cannot tap or type. If the repo has an XCUITest target for the screen, run it with
    `-only-testing:` as part of step 1. Otherwise report that interaction was not verified rather than pretending.
 

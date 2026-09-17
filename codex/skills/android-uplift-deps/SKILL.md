@@ -3,7 +3,7 @@ name: android-uplift-deps
 description: "Toolchain/dependency uplift playbook for Android apps: one axis per commit, release-note research, dependency diffs, review."
 ---
 
-Read the project AGENTS.md and applicable global guidance first. If AGENTS.md is absent, read CLAUDE.md as migration fallback. Discover optional skills before invoking them. If `using-chrisbanes-skills`, `android-cli`, or an official Android skill is unavailable, use the bundled android-standards references and current official documentation. Do not invent commands or claim that an absent skill ran. Use installed Android SDK tools when the optional Android CLI is missing. Commit and push only when the user has requested that action.
+Read the project AGENTS.md and applicable global guidance first. Fall back to CLAUDE.md if AGENTS.md is absent. Follow the global rules for optional tools, specialist agents and Git actions.
 
 
 # Dependency uplift: the user request
@@ -25,6 +25,5 @@ Repo facts (modules, compile/assemble commands, catalog vs Groovy scripts, delib
 6. **Runtime check** when native or vendored code is involved: `$android-run-app` on the 16 KB AVD, then the
    `android-verifier` agent runs the baseline tests and a smoke journey and returns the evidence.
 7. **Review.** `android-reviewer`. Fix Blockers/Majors.
-8. **Commit, only if asked** per axis: `chore(<ticket>): bump <thing> <old> -> <new>`; body: up to 3 lines naming release-note items that
-   affect this app. Do not push unless asked.
+8. **Commit, only if asked.** Follow the shared Git conventions. Do not push unless asked.
 9. **Report** table: item, old, new, build result, test result, notable transitive changes, follow-ups.

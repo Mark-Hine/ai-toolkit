@@ -14,7 +14,7 @@ hooks:
     - matcher: Bash
       hooks:
         - type: command
-          command: "$HOME/Documents/projects/house-ai-skills/claude-agents/hooks/ios-researcher-bash.sh"
+          command: '"${CLAUDE_PLUGIN_ROOT}"/agents/hooks/ios-researcher-bash.sh'
 ---
 
 # iOS researcher

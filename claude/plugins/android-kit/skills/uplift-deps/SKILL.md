@@ -1,6 +1,6 @@
 ---
 name: uplift-deps
-description: Toolchain/dependency uplift playbook for Android apps: one axis per commit, release-note research, dependency diffs, review.
+description: "Toolchain/dependency uplift playbook for Android apps: one axis per commit, release-note research, dependency diffs, review."
 disable-model-invocation: true
 argument-hint: "[ticket] [what to uplift, e.g. 'Compose BOM' or 'all AndroidX']"
 ---
@@ -24,6 +24,5 @@ Repo facts (modules, compile/assemble commands, catalog vs Groovy scripts, delib
 6. **Runtime check** when native or vendored code is involved: `/android-kit:run-app` on the 16 KB AVD, then the
    `android-verifier` agent runs the baseline tests and a smoke journey and returns the evidence.
 7. **Review.** `android-reviewer`. Fix Blockers/Majors.
-8. **Commit** per axis: `chore(<ticket>): bump <thing> <old> -> <new>`; body: up to 3 lines naming release-note items that
-   affect this app. Do not push unless asked.
+8. **Commit, only if asked.** Follow the shared Git conventions. Do not push unless asked.
 9. **Report** table: item, old, new, build result, test result, notable transitive changes, follow-ups.

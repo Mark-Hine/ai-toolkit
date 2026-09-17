@@ -3,7 +3,7 @@ name: android-feature
 description: "Feature or feature-change playbook for Android apps: intake, pattern discovery, plan, implement, tests, emulator check, review, commit."
 ---
 
-Read the project AGENTS.md and applicable global guidance first. If AGENTS.md is absent, read CLAUDE.md as migration fallback. Discover optional skills before invoking them. If `using-chrisbanes-skills`, `android-cli`, or an official Android skill is unavailable, use the bundled android-standards references and current official documentation. Do not invent commands or claim that an absent skill ran. Use installed Android SDK tools when the optional Android CLI is missing. Commit and push only when the user has requested that action.
+Read the project AGENTS.md and applicable global guidance first. Fall back to CLAUDE.md if AGENTS.md is absent. Follow the global rules for optional tools, specialist agents and Git actions.
 
 
 # Feature work: the user request
@@ -28,6 +28,5 @@ Repo facts (modules, build/test commands, design-system names, app id) come from
    device serial and application id. It returns the JSON journey result and screenshot paths; a FAILED action is a
    finding, not something to fix inside this step. A new screen gets a new journey.
 8. **Review.** `android-reviewer` against the acceptance criteria. Fix Blockers/Majors; list declined Nits.
-9. **Commit, only if asked**: `feat(<ticket>): <subject>` (or `refactor(<ticket>): ...` for modify-only). Body: at most 3 short lines.
-   Do not push unless asked.
+9. **Commit, only if asked.** Follow the shared Git conventions. Do not push unless asked.
 10. **Report**: files changed, commands run with results, screenshot paths, what is left for QA.
