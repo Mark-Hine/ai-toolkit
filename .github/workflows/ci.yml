@@ -16,13 +16,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
       - name: Install Claude Code
         run: npm install -g @anthropic-ai/claude-code
       - name: Validate plugins
         run: |
           claude plugin validate claude/plugins/android-kit
           claude plugin validate claude/plugins/pr-review
-      - name: Hook scripts parse
+          claude plugin validate claude/plugins/ios-kit
+      - name: Hook regression checks
         run: bash claude/plugins/android-kit/hooks/test-guards.sh
   validate-codex:
     runs-on: ubuntu-latest

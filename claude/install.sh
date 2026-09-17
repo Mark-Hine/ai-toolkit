@@ -14,6 +14,7 @@ link() { # link <src> <dst>
   ln -sfn "$1" "$2"; echo "linked $2"
 }
 link "$HERE/home/CLAUDE.md" "$CFG/CLAUDE.md"
+link "$REPO_ROOT/shared/guidance/common.md" "$CFG/rules/common.md"
 link "$HERE/home/rules/writing-style.md" "$CFG/rules/writing-style.md"
 link "$HERE/home/rules/android" "$CFG/rules/android"
 link "$HERE/home/rules/ios" "$CFG/rules/ios"
@@ -24,10 +25,17 @@ S="$CFG/settings.json"; [ -f "$S" ] || echo '{}' > "$S"
 cp "$S" "$S.bak.$(date +%s)"
 jq -s '
   .[0] as $cur | .[1] as $new |
+  [$new.hooks[]? | .[]? | .hooks[]? | .command] as $managed_commands |
   $new * $cur
   | .permissions.allow = ((($cur.permissions.allow // []) + ($new.permissions.allow // [])) | unique)
   | .skillOverrides = (($new.skillOverrides // {}) + ($cur.skillOverrides // {}))
-  | .hooks = (($cur.hooks // {}) + ($new.hooks // {}))
+  | .hooks = (reduce (((($cur.hooks // {}) | keys) + (($new.hooks // {}) | keys)) | unique)[] as $event ({};
+      .[$event] = ([
+        (($cur.hooks[$event] // [])[]
+          | .hooks = [.hooks[] | select(.command as $command | ($managed_commands | index($command)) == null)]
+          | select(.hooks | length > 0)),
+        ($new.hooks[$event] // [])[]
+      ] | unique)))
 ' "$S" "$HERE/home/settings.snippet.json" > "$S.tmp" && mv "$S.tmp" "$S"
 echo "merged settings into $S"
 

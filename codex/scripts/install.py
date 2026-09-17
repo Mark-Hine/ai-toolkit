@@ -70,7 +70,7 @@ def hook_group(command, label, matcher=None):
     return group
 
 
-def merged_hooks(existing, command, style_command):
+def merged_hooks(existing, command, lint_command):
     result = json.loads(json.dumps(existing))
     hooks = result.setdefault('hooks', {})
     for event in list(hooks):
@@ -82,7 +82,9 @@ def merged_hooks(existing, command, style_command):
         hooks[event] = groups
     hooks.setdefault('PreToolUse', []).append(hook_group(command, 'Check commands and protected files',
                                                         'Bash|apply_patch|Edit|Write|NotebookEdit|exec_command|shell_command|shell'))
-    hooks.setdefault('UserPromptSubmit', []).append(hook_group(style_command, 'Refresh writing preferences'))
+    lint_group = hook_group(lint_command, 'Check Swift formatting and lint', 'apply_patch|Edit|Write')
+    lint_group['hooks'][0]['timeout'] = 60
+    hooks.setdefault('PostToolUse', []).append(lint_group)
     return result
 
 
@@ -150,8 +152,8 @@ class Installer:
         hook_file = cfg / 'hooks.json'
         old_hooks = json.loads(hook_file.read_text()) if hook_file.exists() else {}
         command = shlex.join([sys.executable, str(ROOT / 'hooks/guard.py')])
-        style_command = shlex.join([sys.executable, str(ROOT / 'hooks/style.py'), str(cfg / 'guidance/writing-style.md')])
-        hooks = merged_hooks(old_hooks, command, style_command)
+        lint_command = shlex.join([sys.executable, str(ROOT / 'hooks/swift_lint.py')])
+        hooks = merged_hooks(old_hooks, command, lint_command)
         # Parse all input before changing any destination.
         agents = []
         for source in sorted((ROOT / 'agents').glob('*.toml')):
@@ -169,7 +171,9 @@ class Installer:
         if not (cfg / 'machine.md').exists():
             self.write(cfg / 'machine.md', (ROOT / 'home/machine.md.example').read_text())
         self.link(ROOT / 'home/guidance/writing-style.md', cfg / 'guidance/writing-style.md')
+        self.link(ROOT.parent / 'shared/guidance/common.md', cfg / 'guidance/common.md')
         self.link(ROOT / 'home/guidance/android', cfg / 'guidance/android')
+        self.link(ROOT / 'home/guidance/ios', cfg / 'guidance/ios')
         self.link(ROOT / 'home/toolkit.rules', cfg / 'rules/ai-toolkit.rules')
         for source in sorted((ROOT / 'skills').iterdir()):
             if (source / 'SKILL.md').is_file():
@@ -183,7 +187,7 @@ class Installer:
         if (cfg / 'AGENTS.override.md').exists():
             print('AGENTS.override.md exists and takes precedence over AGENTS.md. Review it to activate toolkit guidance.')
         print('Start a new Codex session. Open /hooks to review and trust the installed hooks, including specialist hooks.')
-        print('Use /skills to confirm android-feature, android-bugfix, android-uplift-deps, android-run-app, android-standards and pr-review.')
+        print('Use /skills to confirm android-*, ios-* and pr-review.')
 
 
 def main():

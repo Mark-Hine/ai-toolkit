@@ -25,4 +25,4 @@ for path in (root / 'skills').rglob('*.md'):
 for path in (root / 'agents').glob('*.toml'):
     config = tomllib.loads(path.read_text())
     assert all(config.get(key) for key in ('name', 'description', 'developer_instructions', 'model', 'model_reasoning_effort'))
-print('Validated six skills, agent/config TOML, local skill links and Python syntax.')
+print(f'Validated {len(list((root / "skills").glob("*/SKILL.md")))} skills, agent/config TOML, local skill links and Python syntax.')

@@ -1,6 +1,6 @@
 ---
 name: bugfix
-description: Bug-fix playbook for Android apps: reproduce (test or emulator), root cause, minimal fix, regression test, review, commit.
+description: "Bug-fix playbook for Android apps: reproduce (test or emulator), root cause, minimal fix, regression test, review, commit."
 argument-hint: "[ticket] [symptom]"
 ---
 
@@ -21,5 +21,5 @@ Repo facts (modules, build/test commands, app id) come from the project's `CLAUD
    emulator with a screenshot. Hand the failing-test rerun and the screen's journey (if one exists) to the
    `android-verifier` agent and quote its results.
 7. **Review.** `android-reviewer` with the symptom and root cause as the task statement.
-8. **Commit**: `fix(<ticket>): <subject>`; body: root cause in one line, guarding test in one line. Do not push unless asked.
+8. **Commit, only if asked.** Follow the shared Git conventions. Do not push unless asked.
 9. **Report**: cause, fix, evidence (test before/after, screenshots), regression risk, pre-existing issues noticed.

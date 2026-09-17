@@ -92,9 +92,11 @@ def timeout_command(tokens):
 def protected(path):
     p = PurePosixPath(path)
     return (p.name in {'google-services.json', 'GoogleService-Info.plist', 'secrets.properties',
-                       'local.properties', 'network_security_config.xml', '.env'}
+                       'local.properties', 'network_security_config.xml', '.env',
+                       'ExportOptions.plist', 'Podfile.lock', 'Package.resolved'}
             or p.name.startswith('.env.')
-            or p.suffix in {'.jks', '.keystore', '.p12', '.pem', '.key', '.mobileprovision', '.cer'}
+            or p.suffix in {'.jks', '.keystore', '.p12', '.pem', '.key', '.mobileprovision', '.cer', '.entitlements'}
+            or re.search(r'[Ss]ecrets(?:\.swift|\.plist|[^/]*\.xcconfig)$', p.name) is not None
             or (p.suffix in {'.aar', '.jar'} and '/app/libs/' in '/' + str(p))
             or str(p).endswith('gradle/wrapper/gradle-wrapper.jar'))
 
@@ -127,7 +129,7 @@ def shell_reason(command):
             continue
         op, rest = args[0], args[1:]
         if op == 'push':
-            if any(x.startswith(('--force', '--mirror')) or x == '-f' or x.startswith('+') for x in rest):
+            if any(x.startswith(('--force', '--mirror', '+')) or re.fullmatch(r'-[A-Za-z]*f[A-Za-z]*', x) for x in rest):
                 return 'Force pushes and mirror pushes are blocked.'
             if any(re.search(r'(^|:)(refs/heads/)?(main|master|develop|release/[^\s]*)$', x) for x in rest):
                 return 'Push a feature branch and open a PR. Protected branch pushes are blocked.'
@@ -210,8 +212,89 @@ def gradle_reason(args):
     return None if task_count else reason
 
 
+def xcodebuild_allowed(args, research=False):
+    """Allow documented query/test options, excluding unrelated build actions."""
+    value_flags = {'-workspace', '-project', '-scheme', '-configuration', '-sdk', '-destination'}
+    toggles = {'-quiet', '-json'}
+    operations = {'-version', '-showsdks', '-list', '-showBuildSettings', '-showdestinations'} if research else {
+        'test', 'test-without-building'}
+    if not research:
+        value_flags |= {'-derivedDataPath', '-resultBundlePath', '-testPlan', '-parallel-testing-enabled',
+                        '-maximum-concurrent-test-simulator-destinations'}
+    found = []
+    i = 0
+    while i < len(args):
+        arg = args[i]
+        if arg in operations:
+            found.append(arg)
+        elif arg in value_flags:
+            i += 1
+            if i == len(args) or args[i].startswith('-'):
+                return False
+            if arg == '-resultBundlePath' and not args[i].endswith('.xcresult'):
+                return False
+        elif arg in toggles:
+            pass
+        elif not research and (re.fullmatch(r'-(?:only|skip)-testing:.+', arg)
+                               or arg == 'CODE_SIGNING_ALLOWED=NO'):
+            pass
+        else:
+            return False
+        i += 1
+    return len(found) == 1
+
+
+def ios_command_allowed(tokens, research=False):
+    if not tokens:
+        return False
+    executable, args = tokens[0].rsplit('/', 1)[-1], tokens[1:]
+    if executable == 'xcodebuild':
+        return xcodebuild_allowed(args, research)
+    if research:
+        if executable == 'swift':
+            return args == ['--version'] or args in [
+                ['package', query] for query in ('describe', 'show-dependencies', 'dump-package')]
+        if executable == 'pod':
+            return args in [['--version'], ['outdated']]
+    if executable == 'sleep' and not research:
+        return len(args) == 1 and re.fullmatch(r'\d+(?:\.\d+)?', args[0]) is not None
+    if executable != 'xcrun' or not args:
+        return False
+    if research and args in [[flag] for flag in ('--show-sdk-version', '--show-sdk-path', '--show-sdk-platform-version')]:
+        return True
+    if args[0] == 'xcodebuild':
+        return xcodebuild_allowed(args[1:], research)
+    if not research and args[:3] == ['xcresulttool', 'get', 'test-results']:
+        return (len(args) == 6 and args[3] in {'summary', 'tests', 'activities', 'metrics'}
+                and args[4] == '--path' and args[5].endswith('.xcresult'))
+    if args[0] != 'simctl' or len(args) < 2:
+        return False
+    operation, rest = args[1], args[2:]
+    if operation == 'list':
+        return all(arg in {'devices', 'runtimes', 'devicetypes', 'pairs', 'available', '-j', '--json'} for arg in rest)
+    if research:
+        return False
+    if operation in {'launch', 'openurl'}:
+        return len(rest) == 2
+    if operation == 'listapps':
+        return len(rest) == 1
+    if operation == 'bootstatus':
+        return len(rest) == 1 or (len(rest) == 2 and rest[1] == '-b')
+    if operation == 'get_app_container':
+        return len(rest) in {2, 3}
+    if operation == 'io':
+        return len(rest) == 3 and rest[1] == 'screenshot' and rest[2].endswith('.png')
+    if operation == 'ui':
+        return len(rest) in {2, 3} and rest[1] in {'appearance', 'content_size'}
+    if operation == 'spawn' and rest[1:3] == ['log', 'show']:
+        flags = rest[3:]
+        return (len(rest) >= 3 and len(flags) % 2 == 0
+                and all(flag in {'--last', '--predicate', '--style'} for flag in flags[::2]))
+    return False
+
+
 def role_reason(role, command):
-    if role not in {'android-researcher', 'android-verifier'}:
+    if role not in {'android-researcher', 'android-verifier', 'ios-researcher', 'ios-verifier'}:
         return None
     if re.search(r'[;&|<>`\n]|\$\(', command):
         return 'Specialist agents use single commands without shell chaining, redirection or substitution.'
@@ -221,6 +304,9 @@ def role_reason(role, command):
         return 'Specialist command could not be parsed.'
     if read_command(tokens):
         return None
+    if role.startswith('ios-'):
+        return None if ios_command_allowed(tokens, role == 'ios-researcher') else (
+            'This iOS specialist only runs its documented read-only queries or test/simulator evidence commands.')
     if role == 'android-verifier' and tokens and tokens[0] == './gradlew':
         return gradle_reason(tokens[1:])
     if role == 'android-researcher':

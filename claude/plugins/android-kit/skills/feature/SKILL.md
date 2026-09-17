@@ -1,6 +1,6 @@
 ---
 name: feature
-description: Feature or feature-change playbook for Android apps: intake, pattern discovery, plan, implement, tests, emulator check, review, commit.
+description: "Feature or feature-change playbook for Android apps: intake, pattern discovery, plan, implement, tests, emulator check, review, commit."
 argument-hint: "[ticket] [one-line summary]  (say 'modify' if changing an existing feature)"
 ---
 
@@ -26,6 +26,5 @@ Repo facts (modules, build/test commands, design-system names, app id) come from
    device serial and application id. It returns the JSON journey result and screenshot paths; a FAILED action is a
    finding, not something to fix inside this step. A new screen gets a new journey.
 8. **Review.** `android-reviewer` against the acceptance criteria. Fix Blockers/Majors; list declined Nits.
-9. **Commit**: `feat(<ticket>): <subject>` (or `refactor(<ticket>): ...` for modify-only). Body: at most 3 short lines.
-   Do not push unless asked.
+9. **Commit, only if asked.** Follow the shared Git conventions. Do not push unless asked.
 10. **Report**: files changed, commands run with results, screenshot paths, what is left for QA.

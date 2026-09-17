@@ -1,14 +1,14 @@
 ---
-name: uplift-deps
+name: ios-uplift-deps
 description: "Toolchain/dependency uplift playbook for iOS apps: one axis per commit, release-note research, Package.resolved/Podfile.lock diffs, review."
-disable-model-invocation: true
-argument-hint: "[ticket] [what to uplift, e.g. 'Firebase' or 'deployment target 17']"
 ---
 
-# Dependency uplift: $ARGUMENTS
+Read the project AGENTS.md and applicable global guidance first. Fall back to CLAUDE.md if AGENTS.md is absent. Follow the global rules for optional tools, specialist agents and Git actions.
+
+# Dependency uplift: the user request
 
 Repo facts (workspace, schemes, build/test commands, SwiftPM vs CocoaPods, deliberate pins) come from the project's
-`CLAUDE.md`. Work in plan mode until step 4 is approved.
+`AGENTS.md`. State the plan before editing versions and proceed within the user-authorized scope.
 
 1. **Baseline.** Clean `git status` on `feature/<ticket>-<slug>`. Run the project's build and test commands and copy the
    lock files to the scratchpad: `Package.resolved` (workspace: `<ws>.xcworkspace/xcshareddata/swiftpm/Package.resolved`;
@@ -19,14 +19,14 @@ Repo facts (workspace, schemes, build/test commands, SwiftPM vs CocoaPods, delib
 3. **Research.** Ask `ios-researcher` for the latest stable of each item, its release notes, minimum Xcode/deployment target,
    privacy-manifest status, and the current App Store minimum Xcode/SDK requirement and date.
 4. **Plan.** One commit per axis, ordered Xcode/SDK → deployment target → Swift toolchain/language mode → SwiftPM packages →
-   CocoaPods → third-party binaries. Name the schemes you will build and the tests you will run. Get approval.
+   CocoaPods → third-party binaries. Name the schemes you will build and the tests you will run. Proceed within the authorized scope; ask only about unresolved scope or consequential choices.
 5. **Apply each axis.** Edit versions only where the project declares them. SwiftPM: change the rule, then
    `xcodebuild -resolvePackageDependencies -workspace <ws> -scheme "<scheme>"`; CocoaPods: `pod update <Pod>` (never a
-   bare `pod update`). Rebuild every scheme in `CLAUDE.md`, plus one Release build
+   bare `pod update`). Rebuild every scheme in `AGENTS.md`, plus one Release build
    (`xcodebuild build -configuration Release -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO`) for toolchain
    or deployment-target axes. Run the tests that passed at baseline. Diff the lock files against the baseline copies and
    list transitive changes. New or bumped SDKs on Apple's required-reason list must ship `PrivacyInfo.xcprivacy`.
-6. **Runtime check** when an SDK with native code or a swizzling/analytics SDK changed: `/ios-kit:run-app`, launch plus one
+6. **Runtime check** when an SDK with native code or a swizzling/analytics SDK changed: `$ios-run-app`, launch plus one
    authenticated screen. The `ios-verifier` agent runs the baseline tests and the smoke check and returns the evidence.
 7. **Review.** `ios-reviewer`. Fix Blockers/Majors.
 8. **Commit, only if asked.** Follow the shared Git conventions. Do not push unless asked.

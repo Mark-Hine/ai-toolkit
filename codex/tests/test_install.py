@@ -23,7 +23,12 @@ class InstallTests(unittest.TestCase):
             (home / 'config.toml').write_text(existing)
             (home / 'AGENTS.md').write_text('Keep my personal instructions.\n')
             (home / 'machine.md').write_text('Private device facts.\n')
-            hook = {'hooks': {'PreToolUse': [{'hooks': [{'type': 'command', 'command': 'custom-check'}]}]}}
+            hook = {'hooks': {
+                'PreToolUse': [{'hooks': [{'type': 'command', 'command': 'custom-check'}]}],
+                'PostToolUse': [{'hooks': [{'type': 'command', 'command': 'custom-lint'}]}],
+                'UserPromptSubmit': [{'hooks': [
+                    {'type': 'command', 'command': 'old-style', 'statusMessage': 'ai-toolkit: Refresh writing preferences'},
+                    {'type': 'command', 'command': 'custom-prompt'}]}]}}
             (home / 'hooks.json').write_text(json.dumps(hook))
             with contextlib.redirect_stdout(io.StringIO()):
                 installer.Installer(home, skills).run()
@@ -36,7 +41,21 @@ class InstallTests(unittest.TestCase):
             self.assertIn('Keep my personal instructions.', (home / 'AGENTS.md').read_text())
             self.assertEqual((home / 'machine.md').read_text(), 'Private device facts.\n')
             self.assertEqual(json.loads((home / 'hooks.json').read_text())['hooks']['PreToolUse'][0], hook['hooks']['PreToolUse'][0])
-            self.assertEqual(len(list(skills.iterdir())), 6)
+            installed_hooks = json.loads((home / 'hooks.json').read_text())['hooks']
+            self.assertEqual(installed_hooks['PostToolUse'][0], hook['hooks']['PostToolUse'][0])
+            self.assertEqual(installed_hooks['UserPromptSubmit'], [
+                {'hooks': [{'type': 'command', 'command': 'custom-prompt'}]}])
+            self.assertEqual(len(installed_hooks['PostToolUse']), 2)
+            self.assertEqual(len(installed_hooks['PreToolUse']), 2)
+            self.assertEqual(len(list(skills.iterdir())), 11)
+            self.assertEqual((home / 'guidance/ios').resolve(), ROOT / 'home/guidance/ios')
+            self.assertEqual((home / 'guidance/common.md').read_text(),
+                             (ROOT.parent / 'shared/guidance/common.md').read_text())
+            for role in ('ios-researcher', 'ios-reviewer', 'ios-verifier'):
+                agent = tomllib.loads((home / 'agents' / (role + '.toml')).read_text())
+                self.assertIn(str(home), agent['developer_instructions'])
+                self.assertTrue(agent['hooks']['PreToolUse'][0]['hooks'][0]['command'].endswith(role))
+                self.assertEqual(agent['sandbox_mode'], 'workspace-write' if role == 'ios-verifier' else 'read-only')
             before = {p: p.read_bytes() for p in home.rglob('*') if p.is_file()}
             with contextlib.redirect_stdout(io.StringIO()):
                 installer.Installer(home, skills).run()

@@ -1,18 +1,19 @@
 ---
-name: bugfix
+name: ios-bugfix
 description: "Bug-fix playbook for iOS apps: reproduce (test or simulator), root cause, minimal fix, regression test, review, commit."
-argument-hint: "[ticket] [symptom]"
 ---
 
-# Bug fix: $ARGUMENTS
+Read the project AGENTS.md and applicable global guidance first. Fall back to CLAUDE.md if AGENTS.md is absent. Follow the global rules for optional tools, specialist agents and Git actions.
 
-Repo facts (workspace, schemes, build/test commands, test framework, bundle id) come from the project's `CLAUDE.md`.
+# Bug fix: the user request
+
+Repo facts (workspace, schemes, build/test commands, test framework, bundle id) come from the project's `AGENTS.md`.
 
 1. **Restate** the symptom, expected behaviour, and affected scheme, OS version or device if known. Branch `fix/<ticket>-<slug>`.
-2. **Locate.** Explore subagent: trace the path from symptom to code (view → view model → service/repository → API).
+2. **Locate.** explorer subagent: trace the path from symptom to code (view → view model → service/repository → API).
    Read the whole path, not the first suspicious line. `git log -S` for the change that introduced it.
 3. **Reproduce.** Prefer a failing unit test in the target that owns the defect. For UI or platform bugs reproduce on the
-   simulator with `/ios-kit:run-app` (an older runtime from `xcrun simctl list runtimes` for OS-specific issues); capture a
+   simulator with `$ios-run-app` (an older runtime from `xcrun simctl list runtimes` for OS-specific issues); capture a
    screenshot and the relevant `log show` excerpt. Quote the failing output.
 4. **Root cause.** One paragraph: what is wrong and why it produces the symptom. If a fix would only mask it (optional
    chaining that hides a nil, `DispatchQueue.main.async` to paper over isolation, a `try?`), say so and propose the real fix.

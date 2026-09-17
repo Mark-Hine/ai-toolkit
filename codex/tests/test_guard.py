@@ -50,6 +50,67 @@ class GuardTests(unittest.TestCase):
             with self.subTest(command=command):
                 self.assertIsNone(self.shell(command))
 
+    def test_push_flags_are_scoped_to_the_push_segment(self):
+        safe = ('git worktree remove --force scratch && git push origin feature/x',
+                'git push origin feature/x; tool --force',
+                'python3 -c "s=a+new+b"; git push origin feature/x',
+                'echo +main | cat; git push origin feature/x',
+                "echo 'run: git push origin main later'")
+        for command in safe:
+            with self.subTest(command=command):
+                self.assertIsNone(self.shell(command))
+        for command in ('git push -uf origin feature/x', 'git push -fu origin feature/x',
+                        'git push --force-if-includes origin feature/x',
+                        'git push --force-with-lease=main origin feature/x',
+                        'sudo git push origin develop', 'git -C repo push origin main',
+                        'git status; git push origin +feature/x'):
+            with self.subTest(command=command):
+                self.assertIsNotNone(self.shell(command))
+
+    def test_ios_research_queries(self):
+        for command in ('xcodebuild -version', 'xcodebuild -showsdks',
+                        'xcodebuild -workspace App.xcworkspace -scheme App -showBuildSettings',
+                        'xcodebuild -list -project App.xcodeproj -json',
+                        'xcrun xcodebuild -version', 'xcrun simctl list devices available',
+                        'xcrun --show-sdk-path', 'swift --version', 'swift package describe',
+                        'swift package show-dependencies', 'pod outdated'):
+            with self.subTest(command=command):
+                self.assertIsNone(self.shell(command, 'ios-researcher'))
+        for command in ('xcodebuild build', 'xcodebuild -version build',
+                        'xcodebuild -list -resolvePackageDependencies', 'swift package update',
+                        'pod install', 'xcrun simctl erase all', 'xcrun simctl boot device',
+                        'xcodebuild -list; touch App.swift'):
+            with self.subTest(command=command):
+                self.assertIsNotNone(self.shell(command, 'ios-researcher'))
+
+    def test_ios_verifier_evidence_commands(self):
+        for command in ('xcodebuild test -workspace App.xcworkspace -scheme "App Tests" '
+                        '-destination "platform=iOS Simulator,id=device" '
+                        '-only-testing:AppTests/Login -resultBundlePath /tmp/tests.xcresult',
+                        'xcodebuild test-without-building -scheme App',
+                        'xcrun xcresulttool get test-results summary --path /tmp/tests.xcresult',
+                        'xcrun simctl launch device com.example.app',
+                        'xcrun simctl openurl device example://home',
+                        'xcrun simctl io device screenshot /tmp/screen.png',
+                        'xcrun simctl ui device content_size',
+                        'xcrun simctl ui device content_size accessibility-extra-large',
+                        'xcrun simctl ui device appearance dark',
+                        'xcrun simctl spawn device log show --last 3m --predicate '
+                        '\'processImagePath CONTAINS "App"\' --style compact',
+                        'xcrun simctl listapps device', 'xcrun simctl bootstatus device -b'):
+            with self.subTest(command=command):
+                self.assertIsNone(self.shell(command, 'ios-verifier'))
+        for command in ('xcodebuild test clean', 'xcodebuild test archive',
+                        'xcodebuild test -resultBundlePath App.swift',
+                        'xcodebuild test -scheme', 'xcodebuild test OTHER_SWIFT_FLAGS=-unsafe',
+                        'xcrun simctl install device app.app', 'xcrun simctl erase all',
+                        'xcrun simctl spawn device sh -c "touch App.swift"',
+                        'xcrun simctl io device screenshot App.swift',
+                        'xcrun xcresulttool export object --output-path App.swift',
+                        'swift package update', 'git status'):
+            with self.subTest(command=command):
+                self.assertIsNotNone(self.shell(command, 'ios-verifier'))
+
     def test_timeout_wrappers(self):
         for command in ('timeout 30 ./gradlew test', 'sudo timeout 30 ./gradlew test',
                         "sh -c 'timeout 30 ./gradlew test'",
@@ -106,7 +167,7 @@ class GuardTests(unittest.TestCase):
         self.assertIn('timeout 1 task', guard.shell_source("cat <<'EOF'\ntext\ntimeout 1 task"))
 
     def test_specialists_can_read_required_files(self):
-        for role in ('android-researcher', 'android-verifier'):
+        for role in ('android-researcher', 'android-verifier', 'ios-researcher', 'ios-verifier'):
             for command in ('cat AGENTS.md', 'cat app/build.gradle.kts gradle/libs.versions.toml',
                             'cat ~/.agents/skills/android-standards/references/testing.md',
                             "cat 'journeys/login screen.xml'", 'ls -la journeys',
@@ -116,7 +177,7 @@ class GuardTests(unittest.TestCase):
                     self.assertIsNone(self.shell(command, role))
 
     def test_specialist_read_commands_cannot_execute_or_write(self):
-        for role in ('android-researcher', 'android-verifier'):
+        for role in ('android-researcher', 'android-verifier', 'ios-researcher', 'ios-verifier'):
             for command in ('rg --pre ./rewrite.sh query app',
                             'rg --pre=./rewrite.sh query app',
                             'rg --hostname-bin=./rewrite.sh query app',
@@ -171,6 +232,9 @@ class GuardTests(unittest.TestCase):
             for path in ('.env', '.env.local', 'local.properties', 'google-services.json',
                          'signing/private.pem', 'app/libs/vendor.aar',
                          'gradle/wrapper/gradle-wrapper.jar',
+                         'App/App.entitlements', 'ExportOptions.plist',
+                         'App/Secrets.swift', 'App/secrets.plist', 'Config/Secrets.Debug.xcconfig',
+                         'Podfile.lock', 'Workspace/xcshareddata/swiftpm/Package.resolved',
                          'app/src/main/res/xml/network_security_config.xml'):
                 patch = '*** Begin Patch\n*** ' + operation + ': ' + path + '\n*** End Patch'
                 for tool_input in (patch, {'patch': patch}):
@@ -181,7 +245,8 @@ class GuardTests(unittest.TestCase):
         event = {'tool_name': 'apply_patch', 'tool_input':
                  '*** Begin Patch\n*** Add File: app/src/main/Main.kt\n+package app\n*** End Patch'}
         self.assertIsNone(guard.check(event))
-        for role in ('android-researcher', 'android-reviewer', 'android-verifier'):
+        for role in ('android-researcher', 'android-reviewer', 'android-verifier',
+                     'ios-researcher', 'ios-reviewer', 'ios-verifier'):
             self.assertIsNotNone(guard.check(event, role))
 
     def test_hook_wire_response(self):

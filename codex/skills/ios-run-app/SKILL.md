@@ -1,19 +1,18 @@
 ---
-name: run-app
-description: Build, install, launch and screenshot an iOS debug scheme on a simulator via xcodebuild and xcrun simctl.
-disable-model-invocation: true
-argument-hint: "[simulator name] [scheme]"
-allowed-tools: Bash(xcodebuild *), Bash(xcrun *), Bash(open -a Simulator*), Bash(pod install*)
+name: ios-run-app
+description: "Build, install, launch and screenshot an iOS debug scheme on a simulator via xcodebuild and xcrun simctl."
 ---
 
-# Run the app: $ARGUMENTS
+Read the project AGENTS.md and applicable global guidance first. Fall back to CLAUDE.md if AGENTS.md is absent. Follow the global rules for optional tools, specialist agents and Git actions.
 
-Defaults: the simulator named in `~/.claude/CLAUDE.md` (fallback: the newest iPhone in `xcrun simctl list devices available`);
-the project's workspace, default debug scheme and bundle id from its `CLAUDE.md`. Never guess a scheme name; quote `xcodebuild -list`.
+# Run the app: the user request
+
+Defaults: the simulator named in `~/.codex/machine.md` or the project instructions, otherwise a compatible available iPhone from `xcrun simctl list devices available`;
+the project's workspace, default debug scheme and bundle id from its `AGENTS.md`. Never guess a scheme name; quote `xcodebuild -list`.
 
 1. `xcodebuild -version`; `xcodebuild -list -workspace <ws>` and confirm the scheme exists. CocoaPods repos: run `pod install`
    first when `Pods/` is missing or `Podfile.lock` changed; SwiftPM-only repos need nothing.
-2. `xcrun simctl list devices available`; record the selected simulator UDID and use it throughout; if the simulator is not `Booted`: `xcrun simctl boot <udid>`, then
+2. `xcrun simctl list devices available`; record the selected simulator UDID and use it for every subsequent command; if the simulator is not `Booted`: `xcrun simctl boot <udid>`, then
    `xcrun simctl bootstatus <udid> -b`. `open -a Simulator` when the caller wants to watch.
 3. Build: `xcodebuild build -workspace <ws> -scheme "<scheme>" -destination 'platform=iOS Simulator,id=<udid>'
    -derivedDataPath <scratchpad>/DerivedData -quiet`. On failure re-run without `-quiet` and quote the first `error:` lines.

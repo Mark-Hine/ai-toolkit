@@ -5,5 +5,6 @@ This file is private and is never committed. Populate facts from installed tools
 - Use the tool's execution and polling controls instead of a shell `timeout` wrapper on macOS.
 - Prefer Android CLI if installed. Otherwise discover the Android SDK tools and use their supported commands.
 - Discover available AVDs with the installed emulator's `-list-avds` command. Select phone, tablet, minimum SDK and 16 KB devices based on the task and actual installed images.
+- Discover Xcode with `xcodebuild -version` and available simulators with `xcrun simctl list devices available`. Read workspaces, schemes, bundle IDs, deployment targets and test commands from the project. No simulator or Xcode version is assumed.
 - Read ticket prefixes, default branches, variants, application IDs and build tasks from the target repository. No global project default is assumed.
 - Command and patch guards require trust through Codex `/hooks` before they run.

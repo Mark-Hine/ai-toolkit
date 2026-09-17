@@ -13,7 +13,8 @@ Two layers. Plugins carry the shareable parts. The `home/` dotfiles layer carrie
 | `plugins/ios-kit/agents/` | `ios-reviewer` (opus, read-only), `ios-researcher` (sonnet, read-only, Apple docs only), `ios-verifier` (sonnet, runs tests and simulator smoke checks) | When delegated |
 | `plugins/ios-kit/hooks/` | SwiftFormat/SwiftLint after `.swift` edits, only in repos that opt in with a config file | On matching edits |
 | `plugins/pr-review/` | Formal written PR review with a standards-cited findings register; Android, iOS and generic grading | On "review this PR" or `/pr-review` |
-| `home/CLAUDE.md` | Global preferences: commits, work style, subagent models, Android routing. Imports `~/.claude/machine.md` | Every session |
+| `home/CLAUDE.md` | Global preferences: subagent models, Android and iOS routing. Imports `~/.claude/machine.md` | Every session |
+| `../shared/guidance/common.md` | Shared Git and work preferences, linked as `~/.claude/rules/common.md` | Every session |
 | `home/rules/writing-style.md` | Plain-prose rules: no em dashes, no colon-hinged sentences, no announcing, tables over paragraphs | Every session |
 | `home/rules/android/` | Kotlin style, Compose, testing, one-shot UI events. Path-scoped, load only when matching files are touched | On matching files |
 | `home/rules/ios/` | Swift style, SwiftUI state ownership and design-system use, testing (Swift Testing/XCTest), one-shot model → UI events. Path-scoped | On matching `.swift` files |
@@ -26,7 +27,7 @@ git clone https://github.com/Mark-Hine/ai-toolkit.git ~/ai-toolkit
 ~/ai-toolkit/claude/install.sh
 ```
 
-The script symlinks the dotfiles, creates `~/.claude/machine.md` from `home/machine.md.example` if missing, merges the settings snippet without overwriting your own keys (backups are written beside the file), adds the marketplace and installs the three plugins. Re-run it after `git pull`. Requires `claude`, `git`, `jq`.
+The script symlinks the dotfiles and shared personal preferences, creates `~/.claude/machine.md` from `home/machine.md.example` if missing, merges the settings snippet without overwriting your own keys (backups are written beside the file), adds the marketplace and installs the three plugins. Re-run it after `git pull`. Requires `claude`, `git`, `jq`.
 
 ## Customise
 
