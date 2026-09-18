@@ -8,7 +8,7 @@ Read by Codex directly and by Claude Code through `CLAUDE.md`. Applies to every 
 - No AI attribution in commits or PR text.
 
 ## Before opening a PR
-- `bash scripts/check-private-terms.sh` must print "No private terms found." Nothing in this repo may name an employer, a work repository, a colleague, a device or a machine path.
+- Run the validation checks required by the files changed. Report failed or unavailable checks in the PR.
 - `bash claude/plugins/android-kit/hooks/test-guards.sh` must pass when a hook changed.
 - `claude plugin validate .` must pass when anything under `claude/plugins/` or `.claude-plugin/` changed.
 - `python3 codex/scripts/validate.py` must pass when anything under `codex/` changed.
