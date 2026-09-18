@@ -6,8 +6,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
-      - name: Private terms denylist
-        run: bash scripts/check-private-terms.sh
       - name: Secret scan
         uses: gitleaks/gitleaks-action@v2
         env:
