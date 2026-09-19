@@ -176,9 +176,10 @@ class Installer:
         self.write(cfg / 'plugins.json', (ROOT / 'home/plugins.json').read_text())
         self.write(cfg / 'skills.json', (ROOT / 'home/skills.json').read_text())
 
-        # 8. Skills linked to skills_home for flat discovery
+        # 8. Skills linked to config_home/skills and skills_home for flat discovery
         for skill_dir in sorted((ROOT / 'skills').iterdir()):
             if (skill_dir / 'SKILL.md').is_file():
+                self.link(skill_dir, cfg / 'skills' / skill_dir.name)
                 self.link(skill_dir, self.skills_home / skill_dir.name)
 
         if self.backups:

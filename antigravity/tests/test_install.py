@@ -82,8 +82,10 @@ class InstallTests(unittest.TestCase):
 
             # Verify skills linked
             self.assertEqual(11, len(list(skills.iterdir())))
+            self.assertEqual(11, len(list((home / 'skills').iterdir())))
             for s in ('android-feature', 'android-bugfix', 'ios-feature', 'ios-bugfix', 'pr-review'):
                 self.assertTrue((skills / s).is_symlink())
+                self.assertTrue(((home / 'skills') / s).is_symlink())
 
             # Verify idempotence on second run
             before_files = {p: p.read_bytes() for p in home.rglob('*') if p.is_file()}
