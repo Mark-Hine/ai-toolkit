@@ -4,10 +4,19 @@ My portable setup for AI coding agents. One folder per agent, with shared person
 
 | Folder | Agent | Status |
 | --- | --- | --- |
+| [`antigravity/`](antigravity/README.md) | Google Antigravity | Eleven skills, Android/iOS specialist agents, plugin architecture, lifecycle hooks (`PreToolUse`, `PostToolUse`), scoped guidance, repeatable installer |
 | [`claude/`](claude/README.md) | Claude Code | Android and iOS playbooks, standards indexes, reviewer/researcher/verifier agents, guard hooks, writing-style rules, global `CLAUDE.md`, one-command installer |
 | [`codex/`](codex/README.md) | OpenAI Codex | Eleven skills, Android/iOS specialist agents, global settings, scoped guidance, guard hooks, repeatable installer |
 
 `.claude-plugin/marketplace.json` at the repo root is required by Claude Code; it points at the plugins under `claude/plugins/`.
+
+## Install (Antigravity)
+
+```bash
+./antigravity/install.sh
+```
+
+Inspect the installed configuration in `~/.gemini/antigravity-cli/` and review registered hooks in `hooks.json`. See [Antigravity setup](antigravity/README.md) for details on plugins, skills, hooks, and verification.
 
 ## Install (Codex)
 
@@ -35,11 +44,11 @@ Plugins only, without the dotfiles layer:
 
 ## Contributing
 
-Branch, PR, green CI. The rules for changes to this repo are in `AGENTS.md` (Codex) and `CLAUDE.md` (Claude Code, which imports it).
+Branch, PR, green CI. The rules for changes to this repo are in `AGENTS.md` (Codex), `CLAUDE.md` (Claude Code), and `GEMINI.md` (Antigravity).
 
 ## Privacy
 
-Machine-specific facts (AVD names, CLI paths, ticket prefix, default branch) live in `~/.claude/machine.md`. The installer creates it from `claude/home/machine.md.example` and never commits it. Codex machine facts live in `~/.codex/machine.md`. Repo-specific facts belong in that repo's own `AGENTS.md` or `CLAUDE.md`, and the playbooks read them from there rather than hardcoding them. CI runs gitleaks on every push to catch credentials.
+Machine-specific facts (AVD names, CLI paths, ticket prefix, default branch) live in `~/.claude/machine.md`. The installer creates it from `claude/home/machine.md.example` and never commits it. Codex machine facts live in `~/.codex/machine.md`. Antigravity machine facts live in `~/.gemini/antigravity-cli/machine.md`. Repo-specific facts belong in that repo's own `AGENTS.md`, `CLAUDE.md`, or `GEMINI.md`, and the playbooks read them from there rather than hardcoding them. CI runs gitleaks on every push to catch credentials.
 
 ## Licence
 

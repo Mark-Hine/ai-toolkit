@@ -1,0 +1,28 @@
+---
+name: android-uplift-deps
+description: "Toolchain/dependency uplift playbook for Android apps: one axis per commit, release-note research, dependency diffs, review."
+---
+
+Read the project AGENTS.md (or GEMINI.md) and applicable guidance first. Fall back to CLAUDE.md if AGENTS.md is absent. Follow global rules for optional tools, specialist subagents and Git actions.
+
+# Dependency uplift: the user request
+
+Repo facts (modules, compile/assemble commands, catalog vs Groovy scripts, deliberate opt-outs) come from the project's
+`AGENTS.md`. Write the step 4 plan before editing dependency versions. Existing authorization to perform the uplift is sufficient.
+
+1. **Baseline.** Clean `git status` on `feature/<ticket>-<slug>`. Run the project's compile checks and
+   `./gradlew :app:dependencies --configuration <debugVariant>RuntimeClasspath > <scratchpad>/deps-before.txt`. Quote results.
+2. **Inventory.** List in-scope entries with current versions (version catalog, or `build.gradle` files in Groovy repos).
+   Note any `gradle.properties` opt-outs and convention plugins the uplift touches.
+3. **Research.** Ask `android-researcher` for latest stable of each item, its release notes, and compatibility
+   (AGP↔Gradle↔JDK, Kotlin↔KSP↔Compose compiler). For AGP majors also load `agp-9-upgrade`.
+4. **Plan.** One commit per axis, ordered Gradle → AGP → Kotlin/KSP → Compose BOM/AndroidX → third-party. Name variants
+   you will build and tests you will run. Proceed within user-authorized scope. Ask only about unresolved scope or consequential choices.
+5. **Apply each axis.** Edit versions only where the project declares them. Rebuild all compile checks; for
+   AGP/Kotlin/Gradle also one release assemble (R8 path) and one debug assemble. Run unit tests that passed at baseline.
+   Diff `deps-after.txt` against `deps-before.txt`; list transitive changes.
+6. **Runtime check** when native or vendored code is involved: `/android-run-app` on the 16 KB AVD, then the
+   `android-verifier` agent runs baseline tests and a smoke journey and returns evidence.
+7. **Review.** `android-reviewer`. Fix Blockers/Majors.
+8. **Commit, only if asked.** Follow shared Git conventions. Do not push unless asked.
+9. **Report** table: item, old, new, build result, test result, notable transitive changes, follow-ups.
