@@ -1,0 +1,16 @@
+{
+  "ios-kit-swift-lint": {
+    "PostToolUse": [
+      {
+        "matcher": "write_to_file|replace_file_content",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ../../hooks/swift_lint.py",
+            "timeout": 60
+          }
+        ]
+      }
+    ]
+  }
+}

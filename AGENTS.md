@@ -1,6 +1,6 @@
 # Working in this repository
 
-Read by Codex directly and by Claude Code through `CLAUDE.md`. Applies to every change in this repo.
+Read by Codex directly, by Claude Code through `CLAUDE.md`, and by Antigravity through `GEMINI.md`. Applies to every change in this repo.
 
 ## Branch and PR
 - `main` is protected. Never commit on it or push to it. Every change goes on a branch named `type/short-slug` (`feat/`, `fix/`, `docs/`, `chore/`) and lands through a pull request that CI has passed.
@@ -12,9 +12,10 @@ Read by Codex directly and by Claude Code through `CLAUDE.md`. Applies to every 
 - `bash claude/plugins/android-kit/hooks/test-guards.sh` must pass when a hook changed.
 - `claude plugin validate .` must pass when anything under `claude/plugins/` or `.claude-plugin/` changed.
 - `python3 codex/scripts/validate.py` must pass when anything under `codex/` changed.
+- `python3 antigravity/scripts/validate.py` and `python3 -m unittest discover -s antigravity/tests` must pass when anything under `antigravity/` changed.
 
 ## Mirroring
-- Shared conventions live in both `claude/` and `codex/`. A change to one is mirrored to the other in the same PR, adapted to each agent's mechanism (Claude plugins, hooks and `~/.claude/rules`; Codex `AGENTS.md`, `config.toml`, agent TOML and Python hooks). Intentional differences, including the two writing styles, stay. The PR description names anything not mirrored and why.
+- Shared conventions live in `claude/`, `codex/`, and `antigravity/`. A change to one is mirrored to the others in the same PR, adapted to each agent's mechanism (Claude plugins, hooks and `~/.claude/rules`; Codex `AGENTS.md`, `config.toml`, agent TOML and Python hooks; Antigravity `plugins/`, `hooks.json`, `GEMINI.md`/`AGENTS.md` and Python hooks). Intentional differences, including writing styles, stay. The PR description names anything not mirrored and why.
 
 ## Layout rules
 - Plugins ship only what applies to every repo. Repo-specific facts belong in that repo's own `CLAUDE.md` or `AGENTS.md`.
