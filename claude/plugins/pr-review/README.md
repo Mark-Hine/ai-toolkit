@@ -7,7 +7,8 @@ promotions — verification of the merge-base, release list, dependency changes 
 references. Every finding is anchored at its root cause, adversarially verified by a second
 opinion, then personally re-verified by the lead before it ships.
 
-It carries deep Android and iOS grading criteria as loadable platform packs, and falls back to a
+It carries deep Android, iOS, Spring Boot and React/Next.js grading criteria as loadable platform
+packs, and falls back to a
 generic pack for any other kind of repo — grading against the repo's own linters, CI config and
 conventions first, then the canonical authority for the stack in play, plus OWASP ASVS/Top 10.
 
@@ -61,7 +62,7 @@ same findings machinery and a simple scope line.
 
 At Phase 0 the skill infers, echoes for correction, and asks only when genuinely ambiguous (in CI:
 never asks — defaults, with every inference recorded in the JSON): the platform (Android / iOS /
-generic), the environment-branch vocabulary this repo actually uses, the ticket key pattern from
+Spring Boot / React/Next.js / generic), the environment-branch vocabulary this repo actually uses, the ticket key pattern from
 commit history, whether a standing quality register exists, the reviewing org for the footer, and
 whether a paired repo has a matching review. Nothing to configure and no state to maintain — it
 works on a repo it has never seen.
@@ -102,6 +103,8 @@ pr-review/
     └── platforms/
         ├── android.md        # architecture, state/Compose/coroutines, MASVS, a11y, standards block
         ├── ios.md            # SwiftUI/concurrency, MASVS, a11y, standards block, consensus cap
+        ├── spring-boot.md    # layering, web contract, OAuth/OIDC, Feign, ASVS/API Top 10, provenance
+        ├── react-nextjs.md   # hooks/effects, Redux, Next.js routers and static export, browser security
         └── generic.md        # any other stack: the repo's own adopted standards first, then the
                               #  canonical authority per stack; deploy/migration ordering
 ```

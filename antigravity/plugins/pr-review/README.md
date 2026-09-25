@@ -13,7 +13,7 @@ Produces verified JSON (`findings.json`) and Markdown review deliverables citing
 - `protocol.md`: Rules of engagement, grading criteria, adversarial pass, and severity guidelines.
 - `template.md`: Section contract for the rendered review document.
 - `output.md`: Schema for the machine-readable `findings.json` artifact.
-- `platforms/`: Platform-specific grading packs (`android.md`, `ios.md`, `generic.md`).
+- `platforms/`: Platform-specific grading packs (`android.md`, `ios.md`, `spring-boot.md`, `react-nextjs.md`, `generic.md`).
 - `ci.md`: Pipeline and headless execution reference.
 
 ## Helpers (`scripts/`)

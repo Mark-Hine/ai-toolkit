@@ -48,7 +48,8 @@ rises because the tone is harsh — it rises because the failure is proven.
 ## 4. Grading posture (default: harsh, standards-cited)
 
 - **Cite the standard per finding**, using the vocabulary of the platform pack you loaded
-  (`platforms/android.md`, `platforms/ios.md`, or `platforms/generic.md`). Where the source grades
+  (`platforms/android.md`, `platforms/ios.md`, `platforms/spring-boot.md`,
+  `platforms/react-nextjs.md`, or `platforms/generic.md`). Where the source grades
   its own advice — Android's SR/R, for instance — quote that grading rather than inventing one.
 - **Where the only authority is community consensus, cap severity.** Some ecosystems publish
   doctrine and some don't; iOS architecture is the standard example. When you can't point at an

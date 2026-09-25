@@ -55,8 +55,11 @@ negotiation, CI conduct) — and **[`references/template.md`](references/templat
 contract, plus **[`references/output.md`](references/output.md)** for the JSON schema. Load
 exactly one platform pack in Phase 2, chosen by what Phase 0 detects:
 [`references/platforms/android.md`](references/platforms/android.md),
-[`references/platforms/ios.md`](references/platforms/ios.md), or
-[`references/platforms/generic.md`](references/platforms/generic.md).
+[`references/platforms/ios.md`](references/platforms/ios.md),
+[`references/platforms/spring-boot.md`](references/platforms/spring-boot.md),
+[`references/platforms/react-nextjs.md`](references/platforms/react-nextjs.md), or
+[`references/platforms/generic.md`](references/platforms/generic.md). In a polyglot repo, load
+the pack that matches the files the delta touches.
 
 Two non-negotiables shape everything else:
 
@@ -73,7 +76,7 @@ ambiguous, and echo the profile back before proceeding** so a wrong inference is
 
 | What | How to infer it | If it stays unclear |
 |---|---|---|
-| Platform | Gradle files / `settings.gradle*` ⇒ Android · `.xcworkspace`/`.xcodeproj`/`Package.swift` ⇒ iOS · otherwise the generic pack | ask |
+| Platform | first match wins: `com.android.application`/`com.android.library` in a Gradle build ⇒ Android · `.xcworkspace`/`.xcodeproj`/`Package.swift` ⇒ iOS · `org.springframework.boot` in a Gradle or Maven build ⇒ Spring Boot · `next` or `react` in a `package.json` dependency list ⇒ React/Next.js · otherwise the generic pack | ask |
 | Source & target | the user's ask, the PR, or the current branch vs its upstream | ask |
 | Environment branches | intersect the remote branch list with the candidate vocabulary in protocol.md §9; treat region/brand/tenant-suffixed variants as their base environment | ask before asserting promotion mode |
 | Ticket key | the most frequent `[A-Z][A-Z0-9]+-\d+` prefix across recent commit subjects | skip ticket reconciliation |
