@@ -18,9 +18,9 @@ Consolidated Swift style, SwiftUI state ownership, UI events, testing, and speci
 
 ## Specialist Subagents (`agents/`)
 
-- `ios-reviewer`: Read-only diff review (`model: pro`, high reasoning). Grades correctness, requirements, security, build health without writing code.
+- `ios-reviewer`: Read-only diff review (`model: pro`). Grades correctness, requirements, security, build health without writing code.
 - `ios-researcher`: Read-only Apple platform and official documentation research (`model: flash`).
-- `ios-verifier`: Runs tests and simulator checks (`model: pro`, workspace writes enabled).
+- `ios-verifier`: Runs tests and simulator checks (`model: flash`, workspace writes enabled).
 
 ## Hooks (`hooks.json`)
 

@@ -5,8 +5,8 @@ These rules apply when working with Android and Kotlin code in this repository.
 ## Subagents and Specialist Delegation
 
 - Delegate current platform research to `android-researcher` (`model: flash`, read-only).
-- Delegate non-trivial diff review to `android-reviewer` (`model: pro`, high reasoning, read-only).
-- Delegate test execution and emulator verification to `android-verifier` (`model: pro`, workspace writes enabled).
+- Delegate non-trivial diff review to `android-reviewer` (`model: pro`, read-only).
+- Delegate test execution and emulator verification to `android-verifier` (`model: flash`, workspace writes enabled).
 - When specialists are not yet defined, configure them with `define_subagent` using the specifications in `agents/` and invoke them with `invoke_subagent`.
 
 ## Kotlin Style

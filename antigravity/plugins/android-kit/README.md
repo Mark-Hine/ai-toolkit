@@ -18,9 +18,9 @@ Consolidated Kotlin, Jetpack Compose, UI events, testing and subagent delegation
 
 ## Specialist Subagents (`agents/`)
 
-- `android-reviewer`: Read-only diff review (`model: pro`, high reasoning). Grades correctness, requirements, security, build health without writing code.
+- `android-reviewer`: Read-only diff review (`model: pro`). Grades correctness, requirements, security, build health without writing code.
 - `android-researcher`: Read-only platform and official documentation research (`model: flash`).
-- `android-verifier`: Test runner and emulator journey verification (`model: pro`, workspace write enabled).
+- `android-verifier`: Test runner and emulator journey verification (`model: flash`, workspace write enabled).
 
 ## Hooks (`hooks.json`)
 

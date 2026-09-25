@@ -45,8 +45,8 @@ Start a new Codex session, then open `/hooks` to review and trust the command gu
 | `$ios-standards` | Apple/Swift/Xcode docs, house patterns and a project instructions template |
 | `$pr-review` | Formal JSON and Markdown review, release-promotion checks and re-review tracking |
 | `android-reviewer`, `ios-reviewer` | `gpt-6-astra`, high reasoning, read-only code review |
-| `android-researcher`, `ios-researcher` | `gpt-5.6-terra`, medium reasoning, read-only official-source research |
-| `android-verifier`, `ios-verifier` | `gpt-5.6-terra`, medium reasoning, workspace writes for build/test outputs and device evidence |
+| `android-researcher`, `ios-researcher` | `gpt-6-sol`, medium reasoning, read-only official-source research |
+| `android-verifier`, `ios-verifier` | `gpt-6-sol`, medium reasoning, workspace writes for build/test outputs and device evidence |
 
 Existing main-session model settings win. Fresh installations default to `gpt-6-astra` and high reasoning, `on-request` approvals, `workspace-write` sandboxing and live web search. Subagent concurrency is capped at three unless already configured. No login token, MCP credential or broad project trust is added.
 
