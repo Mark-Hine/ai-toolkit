@@ -1,6 +1,6 @@
 # Platform pack — generic
 
-Load this pack when the repo is neither Android nor iOS. There is no single authority to cite for
+Load this pack when the repo is none of Android, iOS, Spring Boot or React/Next.js. There is no single authority to cite for
 "software in general", so the grading posture shifts: instead of measuring the change against an
 external doctrine, measure it against **the standards the project has already adopted** and against
 the language/framework's own official documentation. A finding that says "this contradicts the
@@ -53,10 +53,10 @@ repo pins.
 
 | Stack in play | Cite |
 |---|---|
-| JavaScript / TypeScript | MDN for language and web APIs; the runtime's own docs (Node/Deno/Bun); the framework's official docs; the TS handbook for type questions |
+| JavaScript / TypeScript | MDN for language and web APIs; the runtime's own docs (Node/Deno/Bun); the framework's official docs; the TS handbook for type questions. A React or Next.js repo loads [`react-nextjs.md`](react-nextjs.md) instead of this pack |
 | Python | the relevant PEP (PEP 8/484/604…) plus the project's `ruff`/`mypy`/`pyproject` config; library docs for API use |
 | Go | Effective Go, the Go style guide, and `go vet`/staticcheck rule IDs |
-| JVM (Java / Kotlin / Spring) | the framework reference docs; Kotlin coding conventions; the JDK API docs for concurrency and time |
+| JVM (Java / Kotlin / Spring) | the framework reference docs; Kotlin coding conventions; the JDK API docs for concurrency and time. A Spring Boot service loads [`spring-boot.md`](spring-boot.md) instead of this pack |
 | .NET / C# | Microsoft Learn framework design guidelines and the .NET API docs |
 | Ruby / Rails | the Rails guides and the project's `.rubocop.yml` |
 | PHP / Laravel | PSR standards and the framework's own docs |

@@ -37,7 +37,8 @@ are independent rather than copy-pasted.
 ## Standards basis
 
 One paragraph naming every standard the findings cite, with URLs. **Paste the standards-basis block
-from the platform pack you loaded** (`platforms/android.md`, `platforms/ios.md`) or, for the generic
+from the platform pack you loaded** (`platforms/android.md`, `platforms/ios.md`,
+`platforms/spring-boot.md`, `platforms/react-nextjs.md`) or, for the generic
 pack, the basis you established from the repo's own configs, docs and the stack's official
 guidance.
 

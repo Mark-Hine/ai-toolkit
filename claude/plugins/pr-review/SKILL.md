@@ -5,9 +5,10 @@ description: >-
   findings register (Blocker/Question/Major/Nit) with concise PR comments written for senior
   developers, a scoped-approval statement, and, for environment-branch promotions (staging→production,
   sit→uat, release trains), promotion-manifest verification of the merge-base, release list,
-  dependency changes and ticket references. Carries deep Android and iOS grading criteria and
-  works on any other repo too. Use whenever the user asks to "review this PR", "review the
-  promotion", "formal PR review", "vendor PR review", "review the sit→uat / staging→prod PR",
+  dependency changes and ticket references. Carries deep Android, iOS, Spring Boot and
+  React/Next.js grading criteria and works on any other repo too. Use whenever the user asks to
+  "review this PR", "review the promotion", "formal PR review", "vendor PR review", "review the
+  sit→uat / staging→prod PR",
   "write up a review we can post", or "re-review the PR" after new commits land — even without
   naming this skill. NOT the built-in /code-review: that gives quick inline findings on a
   working-tree diff; this produces the written review document that gets posted to the PR and
@@ -63,8 +64,11 @@ negotiation, CI conduct) — and **[`references/template.md`](references/templat
 contract, plus **[`references/output.md`](references/output.md)** for the JSON schema. Load
 exactly one platform pack in Phase 2, chosen by what Phase 0 detects:
 [`references/platforms/android.md`](references/platforms/android.md),
-[`references/platforms/ios.md`](references/platforms/ios.md), or
-[`references/platforms/generic.md`](references/platforms/generic.md).
+[`references/platforms/ios.md`](references/platforms/ios.md),
+[`references/platforms/spring-boot.md`](references/platforms/spring-boot.md),
+[`references/platforms/react-nextjs.md`](references/platforms/react-nextjs.md), or
+[`references/platforms/generic.md`](references/platforms/generic.md). In a polyglot repo, load
+the pack that matches the files the delta touches.
 
 Two non-negotiables shape everything else:
 
@@ -81,7 +85,7 @@ ambiguous, and echo the profile back before proceeding** so a wrong inference is
 
 | What | How to infer it | If it stays unclear |
 |---|---|---|
-| Platform | Gradle files / `settings.gradle*` ⇒ Android · `.xcworkspace`/`.xcodeproj`/`Package.swift` ⇒ iOS · otherwise the generic pack | ask |
+| Platform | first match wins: `com.android.application`/`com.android.library` in a Gradle build ⇒ Android · `.xcworkspace`/`.xcodeproj`/`Package.swift` ⇒ iOS · `org.springframework.boot` in a Gradle or Maven build ⇒ Spring Boot · `next` or `react` in a `package.json` dependency list ⇒ React/Next.js · otherwise the generic pack | ask |
 | Source & target | the user's ask, the PR, or the current branch vs its upstream | ask |
 | Environment branches | intersect the remote branch list with the candidate vocabulary in protocol.md §9; treat region/brand/tenant-suffixed variants as their base environment | ask before asserting promotion mode |
 | Ticket key | the most frequent `[A-Z][A-Z0-9]+-\d+` prefix across recent commit subjects | skip ticket reconciliation |
