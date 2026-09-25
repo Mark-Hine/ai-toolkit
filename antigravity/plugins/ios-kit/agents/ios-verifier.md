@@ -2,7 +2,7 @@
 name: ios-verifier
 description: Runs xcodebuild tests and simulator smoke checks and reports results as evidence. Use after a build when a playbook reaches its verification step, so xcresult output and screenshots stay out of the main context. Writes no code, never edits a test.
 role: iOS Test and Simulator Verifier
-model: pro
+model: flash
 enable_write_tools: true
 enable_subagent_tools: false
 enable_mcp_tools: false

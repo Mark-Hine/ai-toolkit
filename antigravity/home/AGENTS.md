@@ -4,7 +4,7 @@ Read `~/.gemini/config/machine.md` for local tool and device facts. If `GEMINI_C
 
 ## Subagents
 
-- Always match subagent capabilities to the task. Research and official-source lookups use fast models (`model: flash`, read-only). Deep code reviews and judgements use high-reasoning models (`model: pro`, read-only). Verifiers collect build, test, simulator and emulator evidence (`model: pro` or `model: flash`, workspace writes enabled).
+- Always match subagent capabilities to the task. Research and official-source lookups use fast models (`model: flash`, read-only). Deep code reviews and judgements use high-reasoning models (`model: pro`, read-only). Verifiers collect build, test, simulator and emulator evidence (`model: flash`, workspace writes enabled).
 - When a specialist role is not already active, define it with `define_subagent` using the specifications in `agents/` and invoke it via `invoke_subagent`.
 
 ## Android and Kotlin

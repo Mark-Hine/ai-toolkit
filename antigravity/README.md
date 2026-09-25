@@ -63,10 +63,10 @@ Defined via `define_subagent` and invoked via `invoke_subagent` using the specif
 | --- | --- | --- | --- |
 | `android-reviewer` | `pro` | Read-only | Evaluates diff against criteria, grades Blocker/Major/Nit, writes no code |
 | `android-researcher` | `flash` | Read-only | Queries official Android/Kotlin/Gradle documentation |
-| `android-verifier` | `pro` | Workspace write | Runs Gradle test tasks and emulator journeys, collects evidence |
+| `android-verifier` | `flash` | Workspace write | Runs Gradle test tasks and emulator journeys, collects evidence |
 | `ios-reviewer` | `pro` | Read-only | Evaluates Swift diffs, grades Blocker/Major/Nit, writes no code |
 | `ios-researcher` | `flash` | Read-only | Queries official Apple/Swift/Xcode documentation |
-| `ios-verifier` | `pro` | Workspace write | Runs `xcodebuild test` and simulator smoke checks, collects evidence |
+| `ios-verifier` | `flash` | Workspace write | Runs `xcodebuild test` and simulator smoke checks, collects evidence |
 
 ## Migration decisions and Antigravity best practices
 

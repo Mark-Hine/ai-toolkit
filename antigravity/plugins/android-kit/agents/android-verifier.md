@@ -2,7 +2,7 @@
 name: android-verifier
 description: Runs unit tests and Android CLI journeys on the emulator and reports results as evidence. Use after a build when a playbook reaches its verification step, so screenshots and UI dumps stay out of the main context. Writes no code, never edits a journey.
 role: Android Test and Journey Verifier
-model: pro
+model: flash
 enable_write_tools: true
 enable_subagent_tools: false
 enable_mcp_tools: false

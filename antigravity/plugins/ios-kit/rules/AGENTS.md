@@ -5,8 +5,8 @@ These rules apply when working with iOS and Swift code in this repository.
 ## Subagents and Specialist Delegation
 
 - Delegate current platform research to `ios-researcher` (`model: flash`, read-only).
-- Delegate non-trivial diff review to `ios-reviewer` (`model: pro`, high reasoning, read-only).
-- Delegate test execution and simulator evidence collection to `ios-verifier` (`model: pro`, workspace writes enabled).
+- Delegate non-trivial diff review to `ios-reviewer` (`model: pro`, read-only).
+- Delegate test execution and simulator evidence collection to `ios-verifier` (`model: flash`, workspace writes enabled).
 - When specialists are not yet defined, configure them with `define_subagent` using the specifications in `agents/` and invoke them with `invoke_subagent`.
 
 ## Swift Style
