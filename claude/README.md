@@ -12,7 +12,7 @@ Two layers. Plugins carry the shareable parts. The `home/` dotfiles layer carrie
 | `plugins/ios-kit/skills/` | `/ios-kit:feature`, `bugfix`, `uplift-deps`, `run-app`, `standards` (Apple docs index plus a per-repo `CLAUDE.md` template) | On invocation or when relevant |
 | `plugins/ios-kit/agents/` | `ios-reviewer` (opus, read-only), `ios-researcher` (sonnet, read-only, Apple docs only), `ios-verifier` (sonnet, runs tests and simulator smoke checks) | When delegated |
 | `plugins/ios-kit/hooks/` | SwiftFormat/SwiftLint after `.swift` edits, only in repos that opt in with a config file | On matching edits |
-| `plugins/pr-review/` | Formal written PR review with a standards-cited findings register; Android, iOS and generic grading | On "review this PR" or `/pr-review` |
+| `plugins/pr-review/` | Formal written PR review with a standards-cited findings register, grading Android, iOS, Spring Boot, React/Next.js and generic repos | On "review this PR" or `/pr-review` |
 | `home/CLAUDE.md` | Global preferences: subagent models, Android and iOS routing. Imports `~/.claude/machine.md` | Every session |
 | `../shared/guidance/common.md` | Shared Git and work preferences, linked as `~/.claude/rules/common.md` | Every session |
 | `home/rules/writing-style.md` | Plain-prose rules: no em dashes, no colon-hinged sentences, no announcing, tables over paragraphs | Every session |

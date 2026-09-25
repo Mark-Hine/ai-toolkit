@@ -30,12 +30,15 @@
     {
       "name": "pr-review",
       "source": "./claude/plugins/pr-review",
-      "description": "Formal written PR review: standards-cited findings register, verdict, promotion-manifest checks, optional CI posting. Android, iOS and generic repos.",
+      "description": "Formal written PR review: standards-cited findings register, verdict, promotion-manifest checks, optional CI posting. Android, iOS, Spring Boot, React/Next.js and generic repos.",
       "keywords": [
         "review",
         "pull-request",
         "android",
-        "ios"
+        "ios",
+        "spring-boot",
+        "react",
+        "nextjs"
       ]
     }
   ]

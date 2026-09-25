@@ -58,7 +58,7 @@ Existing main-session model settings win. Fresh installations default to `gpt-6-
 - Plans precede multi-file edits and dependency work. Already authorized work proceeds without another approval gate. Commits and pushes require the user's request.
 - Claude model aliases, tool lists, persistent agent memory and max-turn metadata are replaced with supported Codex agent configuration. Reviewer/researcher use a read-only sandbox. The verifier can write build artifacts but its hooks block direct source edits and constrain shell commands.
 - Command rules migrate the routine allowlist. `git branch` is narrowed to `git branch --list` because the broader prefix also permits branch mutation. Attribution is controlled by global instructions.
-- PR-review references retain Android, iOS and generic grading. Azure DevOps posting remains an explicitly invoked pipeline helper. The CI example now uses Codex but has not been run against an Azure pipeline.
+- PR-review references carry Android, iOS, Spring Boot, React/Next.js and generic grading. Azure DevOps posting remains an explicitly invoked pipeline helper. The CI example now uses Codex but has not been run against an Azure pipeline.
 - External Android skills, `using-chrisbanes-skills`, Android CLI, SDK packages and AVDs are not bundled. Discover installed tools and use the documented SDK/official-documentation fallback. Device verification remains unavailable when the necessary SDK or emulator is absent.
 
 ## Configuration ownership
