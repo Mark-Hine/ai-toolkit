@@ -14,7 +14,7 @@ Paste this into the review's Standards basis section, then append the verificati
 
 ```markdown
 Findings are graded against the published Android engineering guidance, cited per finding:
-**[ARCH-RECS]** Architecture recommendations — https://developer.android.com/topic/architecture/recommendations (SR = strongly recommended, R = recommended) · **[ARCH-GUIDE]** https://developer.android.com/topic/architecture · **[COROUTINES]** Coroutines best practices — https://developer.android.com/kotlin/coroutines/coroutines-best-practices · **[COMPOSE-API]** Compose API guidelines — https://github.com/androidx/androidx/blob/androidx-main/compose/docs/compose-api-guidelines.md · **[COMPOSE-STABILITY]** https://developer.android.com/develop/ui/compose/performance/stability · **[NAV-TYPESAFE]** https://developer.android.com/guide/navigation/design/type-safety · **[EUM-LOADING]** initial-load guidance (cold flow + `stateIn`, not `LaunchedEffect`) — https://proandroiddev.com/loading-initial-data-in-launchedeffect-vs-viewmodel-f1747c20ce62 · **WCAG 2.1 AA** §1.4.3 · **OWASP MASVS** v2.1.0.
+**[ARCH-RECS]** Architecture recommendations — https://developer.android.com/topic/architecture/recommendations (SR = strongly recommended, R = recommended) · **[ARCH-GUIDE]** https://developer.android.com/topic/architecture · **[COROUTINES]** Coroutines best practices — https://developer.android.com/kotlin/coroutines/coroutines-best-practices · **[COMPOSE-API]** Compose API guidelines — https://github.com/androidx/androidx/blob/androidx-main/compose/docs/compose-api-guidelines.md · **[COMPOSE-STABILITY]** https://developer.android.com/develop/ui/compose/performance/stability · **[NAV-TYPESAFE]** https://developer.android.com/guide/navigation/design/type-safety · **[EUM-LOADING]** initial-load guidance (cold flow + `stateIn`, not `LaunchedEffect`) — https://proandroiddev.com/loading-initial-data-in-launchedeffect-vs-viewmodel-f1747c20ce62 · **[M3-DESIGN]** Material Design 3 — https://m3.material.io · **[UI-STANDARDS]** UI/UX anti-slop standards · **WCAG 2.1 AA** §1.4.3 · **OWASP MASVS** v2.1.0.
 ```
 
 ## Architecture — official guidance + NowInAndroid
@@ -138,6 +138,14 @@ screen consumes it). Check:
   types and collection-holding wrappers; screen-local UI models rather than data-layer types in
   composable signatures. Profile first (JankStats/Perfetto) — recomposition findings without a
   metric or quoted unstable parameter are `Unverified`.
+
+**UI/UX & Anti-Slop ([M3-DESIGN], [UI-STANDARDS]):**
+- Anti-slop tropes: unmotivated purple/pink gradients, glow borders, floating pill badges, emoji bullets.
+- Container soup: redundant nested `Card`s/`Surface`s with stacked borders/shadows instead of proximity grouping and whitespace.
+- Spatial grid: padding/margins/gaps follow the 8dp spatial scale (`8, 16, 24, 32, 48, 64 dp`); no arbitrary padding (11dp, 23dp).
+- The 5-State Completeness Law: screen must define Loading (geometry-matching skeleton loader), Populated, Empty (actionable CTA), Error (plain language + recovery), and Partial/Degraded states.
+- Ergonomics & Accessibility: minimum 48×48 dp interactive touch targets (`Modifier.minimumInteractiveComponentSize()`); WCAG 2.1 AA 4.5:1 text / 3:1 control contrast; Dynamic Type scaling up to 200% without clipping; decorative icons have `contentDescription = null`.
+- M3 Fidelity: semantic color tokens (`MaterialTheme.colorScheme.surfaceContainer`, `primary`, etc.), no raw hex (`Color(0xFF...)`), full edge-to-edge handling with `WindowInsets`, responsive window size classes (Compact, Medium, Expanded) with no orientation locks.
 
 **Coroutines & Flow ([ARCH-RECS], [ARCH-GUIDE], [NIA], [COROUTINES]):**
 - Layers communicate via coroutines/Flow (SR); ViewModels receive Flows and launch work in

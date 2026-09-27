@@ -18,7 +18,7 @@ Paste this into the review's Standards basis section, then append the verificati
 (template.md):
 
 ```markdown
-Findings are graded against published guidance, cited per finding: **[SWIFTUI-DATAFLOW]** Apple's SwiftUI model-data documentation (state ownership, single source of truth) — https://developer.apple.com/documentation/swiftui/model-data · **[SWIFT-CONCURRENCY]** the Swift book's concurrency chapter — https://docs.swift.org/swift-book/documentation/the-swift-programming-language/concurrency/ · **[HIG]** Human Interface Guidelines (44 pt targets, alerts, dark mode, typography) — https://developer.apple.com/design/human-interface-guidelines · **[A11Y]** Apple accessibility documentation — https://developer.apple.com/documentation/accessibility · **[SWIFTLINT]** https://github.com/realm/SwiftLint · **OWASP MASVS** v2.1.0 · WCAG 2.1 AA. Apple publishes no official architecture doctrine, so architecture items are graded as *consensus* — where the only authority is consensus, we grade the code against **its own patterns in the same PR** rather than doctrine, and severity is capped accordingly.
+Findings are graded against published guidance, cited per finding: **[SWIFTUI-DATAFLOW]** Apple's SwiftUI model-data documentation (state ownership, single source of truth) — https://developer.apple.com/documentation/swiftui/model-data · **[SWIFT-CONCURRENCY]** the Swift book's concurrency chapter — https://docs.swift.org/swift-book/documentation/the-swift-programming-language/concurrency/ · **[HIG]** Human Interface Guidelines (44 pt targets, alerts, dark mode, typography) — https://developer.apple.com/design/human-interface-guidelines · **[UI-STANDARDS]** UI/UX anti-slop standards · **[A11Y]** Apple accessibility documentation — https://developer.apple.com/documentation/accessibility · **[SWIFTLINT]** https://github.com/realm/SwiftLint · **OWASP MASVS** v2.1.0 · WCAG 2.1 AA. Apple publishes no official architecture doctrine, so architecture items are graded as *consensus* — where the only authority is consensus, we grade the code against **its own patterns in the same PR** rather than doctrine, and severity is capped accordingly.
 ```
 
 ## Architecture — synthesised (no official Apple equivalent)
@@ -104,6 +104,14 @@ screen consumes it). Check:
   grade preview coverage of the component catalog, not mere existence.
 - **Per-component accessibility (see Accessibility below):** labels/traits baked into interactive components —
   a11y is won or lost in the design system.
+
+**UI/UX & Anti-Slop ([HIG], [UI-STANDARDS]):**
+- Anti-slop tropes: unmotivated purple/pink gradients, glow borders, floating pill badges, emoji bullets.
+- Container soup: redundant nested cards/containers with stacked borders/shadows instead of proximity grouping and whitespace.
+- Spatial grid: padding/margins/gaps follow the 8pt spatial scale (`8, 16, 24, 32, 48, 64 pt`); no arbitrary padding (11pt, 23pt).
+- The 5-State Completeness Law: screen must define Loading (geometry-matching skeleton loader), Populated, Empty (actionable CTA), Error (plain language + recovery), and Partial/Degraded states.
+- Ergonomics & Accessibility: minimum 44×44 pt interactive touch targets; WCAG 2.1 AA 4.5:1 text / 3:1 control contrast; Dynamic Type scaling up to 200% without clipping or layout breakage; decorative images have `.accessibilityHidden(true)`.
+- HIG Fidelity: semantic system colors (`Color(.systemBackground)`, `.secondarySystemBackground`, `Color(.label)`), materials (`.ultraThinMaterial`), Safe Area insets (`SafeAreaInsets`), native haptics on primary actions, typed navigation data models (`NavigationStack(path:)`, sheets, alerts).
 
 **SwiftUI update performance & identity ([SWIFTUI-DATAFLOW]):**
 - Prefer `@Observable` (field-level access tracking) over `ObservableObject` whole-object

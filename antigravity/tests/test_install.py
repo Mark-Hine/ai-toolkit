@@ -45,6 +45,7 @@ class InstallTests(unittest.TestCase):
             self.assertEqual('dark', cfg['theme'])
             self.assertTrue(cfg['plugins']['custom-plugin']['enabled'])
             self.assertTrue(cfg['plugins']['android-kit']['enabled'])
+            self.assertTrue(cfg['plugins']['design-kit']['enabled'])
             self.assertTrue(cfg['plugins']['ios-kit']['enabled'])
             self.assertTrue(cfg['plugins']['pr-review']['enabled'])
 
@@ -68,6 +69,8 @@ class InstallTests(unittest.TestCase):
             # Verify guidance links
             self.assertEqual((home / 'guidance/common.md').resolve(),
                              (ROOT.parent / 'shared/guidance/common.md').resolve())
+            self.assertEqual((home / 'guidance/design-standards.md').resolve(),
+                             (ROOT.parent / 'shared/guidance/design-standards.md').resolve())
             self.assertEqual((home / 'guidance/writing-style.md').resolve(),
                              (ROOT / 'home/guidance/writing-style.md').resolve())
             self.assertEqual((home / 'guidance/android').resolve(),
@@ -77,13 +80,14 @@ class InstallTests(unittest.TestCase):
 
             # Verify plugins linked
             self.assertTrue((home / 'plugins/android-kit').is_symlink())
+            self.assertTrue((home / 'plugins/design-kit').is_symlink())
             self.assertTrue((home / 'plugins/ios-kit').is_symlink())
             self.assertTrue((home / 'plugins/pr-review').is_symlink())
 
             # Verify skills linked
-            self.assertEqual(11, len(list(skills.iterdir())))
-            self.assertEqual(11, len(list((home / 'skills').iterdir())))
-            for s in ('android-feature', 'android-bugfix', 'ios-feature', 'ios-bugfix', 'pr-review'):
+            self.assertEqual(12, len(list(skills.iterdir())))
+            self.assertEqual(12, len(list((home / 'skills').iterdir())))
+            for s in ('android-feature', 'android-bugfix', 'ios-feature', 'ios-bugfix', 'pr-review', 'design-standards'):
                 self.assertTrue((skills / s).is_symlink())
                 self.assertTrue(((home / 'skills') / s).is_symlink())
 

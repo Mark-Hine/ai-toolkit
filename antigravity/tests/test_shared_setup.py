@@ -14,19 +14,23 @@ class SharedSetupTests(unittest.TestCase):
     def test_skill_parity_across_agents(self):
         codex_skills = {p.name for p in (ROOT / 'codex/skills').iterdir() if (p / 'SKILL.md').is_file()}
         agy_skills = {p.name for p in (ROOT / 'antigravity/skills').iterdir() if (p / 'SKILL.md').is_file()}
-        self.assertEqual(11, len(codex_skills))
+        self.assertEqual(12, len(codex_skills))
         self.assertEqual(codex_skills, agy_skills)
 
     def test_plugin_parity_across_agents(self):
         claude_plugins = {p.name for p in (ROOT / 'claude/plugins').iterdir() if p.is_dir()}
         agy_plugins = {p.name for p in (ROOT / 'antigravity/plugins').iterdir() if p.is_dir()}
-        self.assertEqual({'android-kit', 'ios-kit', 'pr-review'}, agy_plugins)
+        self.assertEqual({'android-kit', 'ios-kit', 'pr-review', 'design-kit'}, agy_plugins)
         self.assertEqual(claude_plugins, agy_plugins)
 
     def test_antigravity_home_symlinks(self):
         common_link = ROOT / 'antigravity/home/guidance/common.md'
         self.assertTrue(common_link.is_symlink())
         self.assertEqual(common_link.resolve(), (ROOT / 'shared/guidance/common.md').resolve())
+
+        design_link = ROOT / 'antigravity/home/guidance/design-standards.md'
+        self.assertTrue(design_link.is_symlink())
+        self.assertEqual(design_link.resolve(), (ROOT / 'shared/guidance/design-standards.md').resolve())
 
         gemini_link = ROOT / 'antigravity/home/GEMINI.md'
         self.assertTrue(gemini_link.is_symlink())

@@ -137,7 +137,7 @@ the change actually touches:
 1. **Data boundary** — services, DTOs, repositories, wire-contract changes, error handling, caches.
 2. **State and control flow** — state ownership, persisted flags, navigation/routing, resume paths.
 3. **UI and shared components** — a defect in a shared component is app-wide by definition, so
-   weight it accordingly.
+   weight it accordingly. Audit against UI/UX design standards: anti-slop directives (no unmotivated purple gradients, container soup, floating pill badges), 8-point spatial grid, 5-state completeness (Loading, Populated, Empty, Error, Degraded), touch target sizing (44pt iOS / 48dp Android), and WCAG contrast.
 4. **Security, privacy and logging** — secrets, PII placement, authorisation, injection surfaces.
 5. **Accessibility, tests and CI** — semantics and labels, test quality, pipeline integrity. A test
    step that cannot fail is a Blocker: it falsely certifies everything else.
