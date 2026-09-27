@@ -34,7 +34,7 @@ Graded against [REACT-RULES] and [REACT-HOOKS-RULES]. These are correctness rule
 - **Stale closures.** Callbacks registered once (listeners, intervals, `redux-persist` callbacks) that read state captured at registration time.
 - **Keys ([REACT-KEYS]).** List keys are stable identifiers from the data. Array indexes as keys are a finding only when the list reorders, filters or inserts.
 - **Memoisation.** `useMemo`, `useCallback` and `React.memo` need a measured reason or a referential-equality dependency downstream. Their absence is not a finding (see guardrails).
- 
+
 ## UI/UX & Web Anti-Slop ([UI-STANDARDS])
 
 - **Anti-slop tropes:** unmotivated purple/pink gradients, glow borders, floating pill badges, emoji bullets.
