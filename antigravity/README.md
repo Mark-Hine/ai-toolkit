@@ -1,6 +1,6 @@
 # Antigravity setup
 
-The Antigravity port of the portable AI toolkit packages three plugins, eleven skills, six specialist subagents, personal instructions, Android, iOS and writing guidance, and lifecycle hooks according to Antigravity best practices. The Claude Code setup remains in `../claude/` and the OpenAI Codex setup in `../codex/`.
+The Antigravity port of the portable AI toolkit packages four plugins, twelve skills, seven specialist subagents, personal instructions, Android, iOS, UI/UX and writing guidance, and lifecycle hooks according to Antigravity best practices. The Claude Code setup remains in `../claude/` and the OpenAI Codex setup in `../codex/`.
 
 ## Install
 
@@ -23,7 +23,7 @@ Rerun the installer after pulling toolkit updates. It preserves existing configu
 | `home/GEMINI.md` | `~/.gemini/config/GEMINI.md` symlink | Symlink to `AGENTS.md` for dual Antigravity discovery |
 | `../shared/guidance/common.md` | `~/.gemini/config/guidance/common.md` | Shared Git and work preferences used across all agents |
 | `home/guidance/` | `~/.gemini/config/guidance/` | Writing preferences and modular Android/iOS rules |
-| `home/config.defaults.json` | Merged into `~/.gemini/config/config.json` | Registers plugins `android-kit`, `ios-kit`, and `pr-review` as enabled |
+| `home/config.defaults.json` | Merged into `~/.gemini/config/config.json` | Registers plugins `android-kit`, `ios-kit`, `pr-review`, and `design-kit` as enabled |
 | `home/machine.md.example` | `~/.gemini/config/machine.md`, created only if absent | Private machine facts (simulators, AVDs, CLI paths) |
 | `home/plugins.json` | `~/.gemini/config/plugins.json` | Explicit plugins manifest for discovery |
 | `home/skills.json` | `~/.gemini/config/skills.json` | Explicit skills manifest for discovery |
@@ -38,6 +38,7 @@ Rerun the installer after pulling toolkit updates. It preserves existing configu
 - **`android-kit`**: Android development plugin bundling 5 skills, consolidated Kotlin/Compose rules, guard hooks, and 3 specialist subagent definitions.
 - **`ios-kit`**: iOS/Swift development plugin bundling 5 skills, consolidated Swift/SwiftUI rules, Swift lint hooks, and 3 specialist subagent definitions.
 - **`pr-review`**: Formal PR and release-promotion review plugin with multi-platform grading criteria and Azure DevOps integration.
+- **`design-kit`**: UI/UX design standards and anti-slop review plugin bundling anti-slop directives, spatial grid and typography tokens, the 5-state completeness law, accessibility requirements, and the `ui-reviewer` specialist subagent.
 
 ### Skills
 
@@ -54,6 +55,7 @@ Rerun the installer after pulling toolkit updates. It preserves existing configu
 | `/ios-run-app` | Explicitly invoked simulator build, install, launch and screenshots |
 | `/ios-standards` | Apple/Swift/Xcode docs, house patterns and project instructions template |
 | `/pr-review` | Formal JSON and Markdown review, release-promotion verification, and re-review tracking |
+| `/design-standards` | Interactive UI/UX design standards: anti-slop directives, 8-point spatial grid, typographic scale, 5 states, accessibility, and platform fidelity |
 
 ### Specialist Subagents
 
@@ -67,6 +69,7 @@ Defined via `define_subagent` and invoked via `invoke_subagent` using the specif
 | `ios-reviewer` | `pro` | Read-only | Evaluates Swift diffs, grades Blocker/Major/Nit, writes no code |
 | `ios-researcher` | `flash` | Read-only | Queries official Apple/Swift/Xcode documentation |
 | `ios-verifier` | `flash` | Workspace write | Runs `xcodebuild test` and simulator smoke checks, collects evidence |
+| `ui-reviewer` | `pro` | Read-only | Audits UI screens, components, and diffs against anti-slop rules, HIG/M3 fidelity, spatial grid, and 5-state completeness; writes no code |
 
 ## Migration decisions and Antigravity best practices
 
