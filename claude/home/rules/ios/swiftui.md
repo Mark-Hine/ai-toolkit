@@ -28,3 +28,4 @@ paths:
 - Accessibility on every new control: `accessibilityLabel`/`Hint`/traits, 44×44 pt minimum hit target, Dynamic Type via
   text styles or `@ScaledMetric`, layout checked at `accessibility-extra-large`; decorative images `.accessibilityHidden(true)`.
 - Layout adapts to size classes; no fixed device-size frames, no orientation assumptions; check iPad when the target supports it.
+- UI/UX & Anti-Slop: follow `~/.claude/rules/design-standards.md`. Ban generic purple gradients, card soup, floating badges, and arbitrary spacing. Handle the 5-state completeness law (Loading, Populated, Empty, Error, Degraded). Enforce minimum 44×44 pt touch targets and Dynamic Type scaling. Delegate UI diff reviews to `ui-reviewer`.

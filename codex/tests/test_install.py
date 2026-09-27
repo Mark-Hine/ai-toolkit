@@ -47,11 +47,13 @@ class InstallTests(unittest.TestCase):
                 {'hooks': [{'type': 'command', 'command': 'custom-prompt'}]}])
             self.assertEqual(len(installed_hooks['PostToolUse']), 2)
             self.assertEqual(len(installed_hooks['PreToolUse']), 2)
-            self.assertEqual(len(list(skills.iterdir())), 11)
+            self.assertEqual(len(list(skills.iterdir())), 12)
             self.assertEqual((home / 'guidance/ios').resolve(), ROOT / 'home/guidance/ios')
             self.assertEqual((home / 'guidance/common.md').read_text(),
                              (ROOT.parent / 'shared/guidance/common.md').read_text())
-            for role in ('ios-researcher', 'ios-reviewer', 'ios-verifier'):
+            self.assertEqual((home / 'guidance/design-standards.md').read_text(),
+                             (ROOT.parent / 'shared/guidance/design-standards.md').read_text())
+            for role in ('ios-researcher', 'ios-reviewer', 'ios-verifier', 'ui-reviewer'):
                 agent = tomllib.loads((home / 'agents' / (role + '.toml')).read_text())
                 self.assertIn(str(home), agent['developer_instructions'])
                 self.assertTrue(agent['hooks']['PreToolUse'][0]['hooks'][0]['command'].endswith(role))

@@ -7,6 +7,13 @@ Read `~/.gemini/config/machine.md` for local tool and device facts. If `GEMINI_C
 - Always match subagent capabilities to the task. Research and official-source lookups use fast models (`model: flash`, read-only). Deep code reviews and judgements use high-reasoning models (`model: pro`, read-only). Verifiers collect build, test, simulator and emulator evidence (`model: flash`, workspace writes enabled).
 - When a specialist role is not already active, define it with `define_subagent` using the specifications in `agents/` and invoke it via `invoke_subagent`.
 
+## UI/UX and Design Standards
+
+- Read `guidance/design-standards.md` before creating or modifying UI screens, components, and design systems.
+- When `design-kit` is enabled, its consolidated rules under `rules/AGENTS.md` are active.
+- Use `/design-standards` for anti-slop guidelines, spatial rhythm, 5-state completeness, accessibility requirements, and platform fidelity (Material Design 3 and Apple HIG).
+- Delegate UI/UX diffs, component audits, and screen reviews to `ui-reviewer` (`model: pro`, read-only). Give it a bounded task and re-check findings. If unavailable, review inline and disclose the limitation.
+
 ## Android and Kotlin
 
 - Read matching guidance before editing. `guidance/android/kotlin-style.md` applies to Android `.kt` and `.kts` files. `compose.md` applies to Compose screens and components. `ui-events.md` applies to ViewModels and UI event collectors. `testing.md` applies to tests and journeys.

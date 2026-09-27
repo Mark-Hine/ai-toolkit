@@ -2,10 +2,15 @@
 
 @~/.claude/machine.md
 
-Shared Git and work preferences load from `~/.claude/rules/common.md`. Writing preferences load from `~/.claude/rules/writing-style.md`.
+Shared Git and work preferences load from `~/.claude/rules/common.md`. Writing preferences load from `~/.claude/rules/writing-style.md`. Design and anti-slop rules load from `~/.claude/rules/design-standards.md`.
 
 ## Subagents
 - Always pin `model`; never `inherit`. Research/fetch agents: `sonnet`. Review/judgement agents: `opus`.
+
+## UI/UX and Design Standards
+- Read `~/.claude/rules/design-standards.md` before creating or modifying UI screens, components, and design systems.
+- Use `/design-kit:standards` for anti-slop guidelines, spatial rhythm, 5-state completeness, accessibility requirements, and platform fidelity (Material Design 3 and Apple HIG).
+- Delegate UI/UX diffs, component audits, and screen reviews to `ui-reviewer`. Give it a bounded task and re-check findings before reporting them.
 
 ## Android/Kotlin work
 - Before implementing, check `/skills` for an installed skill that covers the task and load it. Official Android skills

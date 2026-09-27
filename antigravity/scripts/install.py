@@ -164,6 +164,7 @@ class Installer:
         # 5. Guidance links
         self.link(ROOT / 'home/guidance/writing-style.md', cfg / 'guidance/writing-style.md')
         self.link(ROOT.parent / 'shared/guidance/common.md', cfg / 'guidance/common.md')
+        self.link(ROOT.parent / 'shared/guidance/design-standards.md', cfg / 'guidance/design-standards.md')
         self.link(ROOT / 'home/guidance/android', cfg / 'guidance/android')
         self.link(ROOT / 'home/guidance/ios', cfg / 'guidance/ios')
 

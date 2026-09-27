@@ -29,3 +29,4 @@ paths:
 - Insets: content honours system bars via `WindowInsets`/`Scaffold` padding; use the `edge-to-edge` skill when
   touching screen roots. Large screens: no orientation locks (ignored on sw600dp+ from target 36); check layout on the tablet AVD (`adaptive` skill).
 - Reference shape for a design system and theming: JetSnack (`android-standards` skill, `references/jetsnack.md`).
+- UI/UX & Anti-Slop: follow `guidance/design-standards.md`. Ban generic purple gradients, card soup, floating badges, and arbitrary spacing. Handle the 5-state completeness law (Loading, Populated, Empty, Error, Degraded). Enforce minimum 48×48 dp touch targets. Delegate UI diff reviews to `ui-reviewer`.

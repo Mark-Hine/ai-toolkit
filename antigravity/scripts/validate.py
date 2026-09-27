@@ -13,14 +13,14 @@ for path in root.rglob('*.py'):
 
 # 2. Plugins
 plugins = list(root.glob('plugins/*/plugin.json'))
-assert len(plugins) == 3, f"Expected 3 plugins, found {len(plugins)}"
+assert len(plugins) == 4, f"Expected 4 plugins, found {len(plugins)}"
 for path in plugins:
     data = json.loads(path.read_text())
     assert 'name' in data and data['name'] == path.parent.name, path
 
 # 3. Skills
 skills = list(root.glob('plugins/*/skills/*/SKILL.md'))
-assert len(skills) == 11, f"Expected 11 skills, found {len(skills)}"
+assert len(skills) == 12, f"Expected 12 skills, found {len(skills)}"
 for path in skills:
     parts = path.read_text().split('---', 2)
     assert len(parts) >= 3, f"Missing frontmatter in {path}"
@@ -32,7 +32,7 @@ for path in skills:
 
 # 4. Agents
 agents = list(root.glob('plugins/*/agents/*.md'))
-assert len(agents) == 6, f"Expected 6 agents, found {len(agents)}"
+assert len(agents) == 7, f"Expected 7 agents, found {len(agents)}"
 for path in agents:
     parts = path.read_text().split('---', 2)
     assert len(parts) >= 3, f"Missing frontmatter in {path}"

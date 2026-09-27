@@ -40,6 +40,20 @@
         "react",
         "nextjs"
       ]
+    },
+    {
+      "name": "design-kit",
+      "source": "./claude/plugins/design-kit",
+      "description": "UI/UX design standards, anti-slop guidelines, spatial/typographic rhythm, 5 states, accessibility, and dedicated UI reviewer agent.",
+      "keywords": [
+        "design",
+        "ui",
+        "ux",
+        "anti-slop",
+        "accessibility",
+        "material3",
+        "swiftui"
+      ]
     }
   ]
 }

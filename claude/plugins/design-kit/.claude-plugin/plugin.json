@@ -1,0 +1,7 @@
+{
+  "name": "design-kit",
+  "description": "UI/UX design standards, anti-slop guidelines, and dedicated UI reviewer agent for Claude Code",
+  "author": { "name": "Mark Hine", "url": "https://github.com/Mark-Hine" },
+  "repository": "https://github.com/Mark-Hine/ai-toolkit",
+  "license": "MIT"
+}

@@ -17,15 +17,14 @@ Repo facts (modules, build/test commands, design-system names, app id) come from
 3. **Consult skills and references.** Route through `using-chrisbanes-skills`; load the compose-*/kotlin-* skills it names.
    Ask `android-researcher` only where guidance may have moved (navigation, insets, permissions, target-SDK behaviour).
 4. **Plan.** Files to add or change, state model (`UiState` sealed interface, StateFlow), where data code goes,
-   DI wiring, test list, device checks. Follow the project's architecture rules. Proceed within user-authorized scope. Ask only about unresolved scope or consequential choices.
-5. **Implement** in small steps, running the project's compile check after each. New UI is Compose, Material3, inside the
-   project's theme and components, split into stateless `XContent` and stateful `XScreen`. No orientation locks.
+   DI wiring, test list, device checks. For UI changes, consult `/design-standards` (anti-slop directives, 8dp spatial grid, 5 states). Follow the project's architecture rules. Proceed within user-authorized scope. Ask only about unresolved scope or consequential choices.
+5. **Implement** in small steps, running the project's compile check after each. New UI is Compose, Material3, adhering to `/design-standards` (semantic color tokens, surface containers, min 48dp touch targets, edge-to-edge insets), inside the project's theme and components, split into stateless `XContent` and stateful `XScreen`. No orientation locks.
 6. **Tests.** ViewModel and use-case tests (JUnit5/Kotest/MockK, `runTest`). Run them with `--tests` and quote the summary.
 7. **Device verification.** `/android-run-app` on the default phone AVD, navigate to the feature, `android screen`; repeat
    on the tablet AVD for any new or changed screen. Check insets (`edge-to-edge`) and large-screen layout (`adaptive`).
    Then hand off to the `android-verifier` agent with the test command, the journey file(s) for the touched screen, the
    device serial and application id. It returns the JSON journey result and screenshot paths; a FAILED action is a
    finding, not something to fix inside this step. A new screen gets a new journey.
-8. **Review.** `android-reviewer` against the acceptance criteria. Fix Blockers/Majors; list declined Nits.
+8. **Review.** `android-reviewer` against the acceptance criteria, and delegate UI/layout changes to `ui-reviewer`. Fix Blockers/Majors; list declined Nits.
 9. **Commit, only if asked.** Follow shared Git conventions. Do not push unless asked.
 10. **Report**: files changed, commands run with results, screenshot paths, what is left for QA.
