@@ -4,14 +4,6 @@
 
 Shared Git and work preferences load from `~/.claude/rules/common.md`. Writing preferences load from `~/.claude/rules/writing-style.md`. Design and anti-slop rules load from `~/.claude/rules/design-standards.md`.
 
-## Git Conventions
-
-- Always check the current branch before committing. If on `main`, `master`, `develop`, `release/*` or another protected branch, create and switch to a suitably named feature or task branch (`feat/*`, `fix/*`, `docs/*`) before committing. Never commit directly to `main` or `master`.
-- Use Conventional Commits with a lowercase, imperative subject line of at most 72 characters (e.g. `feat(backend): add barcode validation`).
-- Keep commits atomic to one logical change. Run relevant build and test checks before committing.
-- Commit and push only when explicitly asked. Never push directly to a protected branch. Do not amend commits or force-push without authorization.
-- Strictly omit AI attribution, generated-by footers, or Co-Authored-By trailers.
-
 ## Subagents
 - Always pin `model`; never `inherit`. Research/fetch agents: `sonnet`. Review/judgement agents: `opus`.
 

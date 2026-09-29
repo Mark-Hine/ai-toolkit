@@ -11,7 +11,7 @@ Repo facts (workspace, schemes, build/test commands, test framework, design-syst
 come from the project's `AGENTS.md`. Never guess them.
 
 1. **Intake.** If an Atlassian MCP tool is available, fetch the Jira ticket and quote its acceptance criteria; otherwise
-   restate the goal in three bullets plus an out-of-scope list. Branch `feature/<ticket>-<slug>` off the default branch.
+   restate the goal in three bullets plus an out-of-scope list. Branch `feat/<ticket>-<slug>` (or the project's documented branch convention) off the default branch.
 2. **Discover the pattern.** Use a research subagent to find the closest existing screen or flow: its SwiftUI `View` or
    `UIViewController`, view model / `@Observable` model, service or repository, where dependencies are assembled
    (composition root, `@Environment`), and tests. Note whether it is SwiftUI or UIKit and which test framework it uses.

@@ -14,7 +14,7 @@ hooks:
     - matcher: Bash
       hooks:
         - type: command
-          command: "$HOME/Documents/projects/house-ai-skills/claude-agents/hooks/android-researcher-bash.sh"
+          command: "\"${CLAUDE_PLUGIN_ROOT}\"/agents/hooks/android-researcher-bash.sh"
 ---
 
 # Android researcher

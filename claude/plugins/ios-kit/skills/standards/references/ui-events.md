@@ -1,7 +1,7 @@
 # One-shot model → UI events on iOS: house pattern and reference code
 
-Rule: `claude-rules/ios/ui-events.md`. This file holds the canonical code and the reasoning. Android twin:
-`android-standards` → `references/ui-events.md`; the two differ on purpose, see "Why this differs from Android".
+Rule: `~/.claude/rules/ios/ui-events.md`. This file holds the canonical code and the reasoning. Android twin:
+`android-kit:standards` → `references/ui-events.md`; the two differ on purpose, see "Why this differs from Android".
 
 ## Position (decided 2026-09-04, sources verified the same day)
 - SwiftUI presentation is binding-driven and the framework clears the binding itself. `alert(_:isPresented:actions:)`:

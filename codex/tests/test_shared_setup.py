@@ -20,7 +20,9 @@ class SharedSetupTests(unittest.TestCase):
             binaries = temp / 'bin'
             binaries.mkdir()
             fake_cli = binaries / 'claude'
-            fake_cli.write_text('#!/bin/sh\nexit 0\n')
+            log = temp / 'claude.log'
+            fake_cli.write_text('#!/bin/sh\necho "$@" >> "' + str(log) + '"\n'
+                                'case "$1 $2" in "plugin marketplace") [ "$3" = list ] && echo "[]";; "plugin list") echo "[]";; esac\nexit 0\n')
             fake_cli.chmod(0o755)
             custom = {'hooks': [{'type': 'command', 'command': 'custom-prompt'}]}
             lint = {'hooks': [{'type': 'command', 'command': 'custom-lint'}]}
@@ -42,6 +44,12 @@ class SharedSetupTests(unittest.TestCase):
             self.assertEqual(snapshots[1]['hooks']['PostToolUse'], [lint])
             self.assertIn('Read(example)', snapshots[1]['permissions']['allow'])
             self.assertEqual((home / 'rules/common.md').resolve(), ROOT / 'shared/guidance/common.md')
+            self.assertEqual((home / 'rules/design-standards.md').resolve(), ROOT / 'shared/guidance/design-standards.md')
+            calls = log.read_text().splitlines()
+            self.assertEqual(2, calls.count(f'plugin marketplace add {ROOT}'), calls)
+            self.assertEqual(8, sum(1 for c in calls if c.startswith('plugin install ')), calls)
+            self.assertNotIn('includeCoAuthoredBy', snapshots[1])
+            self.assertEqual({'commit': '', 'pr': ''}, snapshots[1]['attribution'])
             self.assertEqual((home / 'machine.md').read_text(), 'Private machine facts.\n')
 
 

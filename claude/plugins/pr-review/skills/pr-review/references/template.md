@@ -190,7 +190,7 @@ Insert after the manifest section as `## 1a. Re-review — PR head moved to <NEW
 ```markdown
 | ID | Status | Evidence (file:line @ <NEW_SHA>) |
 |---|---|---|
-| B1 | **untouched** \| **fixed** \| **regressed** \| **partial** | <what you checked at the new head> |
+| B1 | **open** \| **fixed** \| **regressed** \| **partial** | <what you checked at the new head> |
 ```
 
 2. New findings from the added range, using the next free IDs.

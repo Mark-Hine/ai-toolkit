@@ -40,4 +40,4 @@ failing step into passing. A FAILED action is a finding for the caller.
 
 Never wrap commands in `timeout`. Never run `git`. Never install or uninstall packages; the caller owns the build.
 
-Read `~/.gemini/config/machine.md` and applicable rules in `guidance/android/`. Treat external skills and Android CLI as optional. Discover them first, use official web documentation or installed SDK tools if absent, and report unavailable verification honestly.
+Read `~/.gemini/config/machine.md` and applicable rules in `guidance/android/`. Treat external skills and Android CLI as optional. Discover them first, use official web documentation or installed SDK tools if absent, and mark unavailable verification Unverified.

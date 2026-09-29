@@ -1,24 +1,44 @@
 {
-  "includeCoAuthoredBy": false,
-  "skillOverrides": {
-    "wear-compose-m3": "off",
-    "jetpack-compose-m3": "off",
-    "display-glasses-with-jetpack-compose-glimmer": "off",
-    "leanback-to-compose-tv-migration": "off"
+  "attribution": {
+    "commit": "",
+    "pr": ""
   },
   "permissions": {
     "allow": [
-      "Bash(./gradlew *)",
-      "Bash(git status*)", "Bash(git diff*)", "Bash(git log*)", "Bash(git show*)", "Bash(git branch*)",
-      "Bash(android docs *)", "Bash(android info*)", "Bash(android emulator list*)", "Bash(android sdk list *)",
-      "Bash(android skills list*)", "Bash(android screen *)", "Bash(android layout *)",
-      "Bash(adb devices*)", "Bash(adb logcat *)"
+      "Bash(./gradlew *compile*)",
+      "Bash(./gradlew *test*)",
+      "Bash(./gradlew *assemble*)",
+      "Bash(./gradlew *lint*)",
+      "Bash(./gradlew *dependencies*)",
+      "Bash(./gradlew help*)",
+      "Bash(./gradlew tasks*)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git show*)",
+      "Bash(git branch --list*)",
+      "Bash(git branch --show-current)",
+      "Bash(android docs *)",
+      "Bash(android info*)",
+      "Bash(android emulator list*)",
+      "Bash(android sdk list *)",
+      "Bash(android skills list*)",
+      "Bash(android screen *)",
+      "Bash(android layout *)",
+      "Bash(adb devices*)",
+      "Bash(adb logcat *)"
     ]
   },
   "hooks": {
     "UserPromptSubmit": [
-      { "hooks": [ { "type": "command",
-        "command": "echo 'Style: follow ~/.claude/rules/writing-style.md. No em dashes, no colon-hinged sentences, no announcing, end when the content ends.'" } ] }
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Style: follow ~/.claude/rules/writing-style.md. No em dashes, no colon-hinged sentences, no announcing, end when the content ends.'"
+          }
+        ]
+      }
     ]
   }
 }

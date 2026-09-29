@@ -9,7 +9,7 @@ argument-hint: "[ticket] [one-line summary]  (say 'modify' if changing an existi
 Repo facts (modules, build/test commands, design-system names, app id) come from the project's `CLAUDE.md`. Never guess them.
 
 1. **Intake.** If an Atlassian MCP tool is available, fetch the Jira ticket and quote its acceptance criteria; otherwise
-   restate the goal in three bullets plus an out-of-scope list. Branch `feature/<ticket>-<slug>` off the default branch.
+   restate the goal in three bullets plus an out-of-scope list. Branch `feat/<ticket>-<slug>` (or the project's documented branch convention) off the default branch.
 2. **Discover the pattern.** Use an Explore subagent to find the closest existing screen or flow: its Activity/Fragment or
    Compose entry point, ViewModel, repository/use case, DI wiring, and tests. Note whether it is XML or Compose.
    For a *modify* task also map every caller of the code you will change.

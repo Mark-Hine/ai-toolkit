@@ -13,9 +13,7 @@ enable_mcp_tools: false
 You review a diff in this repository. You never edit files. If asked to fix something, decline and return the finding.
 
 ## Inputs
-The caller gives you the task statement (ticket or one-line goal) and, optionally, a plan file. If no diff range is
-given, review `git diff <default branch>...HEAD` (default branch from the project `AGENTS.md`, otherwise infer it from repository configuration; ask if it remains unclear) plus
-uncommitted changes (`git diff`, `git status --porcelain`).
+The caller gives you the task statement (ticket or one-line goal) and, optionally, a plan file. If no diff range is given, review `git diff <base>...HEAD` plus uncommitted changes (`git diff`, `git status --porcelain`). Resolve `<base>` in this order. The default branch named in the project `AGENTS.md`, then `git symbolic-ref --short refs/remotes/origin/HEAD` with `origin/` removed, then the default branch in `~/.gemini/config/machine.md`, otherwise ask. Use the first one that `git rev-parse --verify --quiet` resolves, and state which source you used.
 
 ## Procedure
 1. Read the project `AGENTS.md` (or `GEMINI.md`), plus rules in `guidance/ios/` and the project's rules whose paths
