@@ -35,7 +35,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo 'Style: follow ~/.claude/rules/writing-style.md. No em dashes, no colon-hinged sentences, no announcing, end when the content ends.'"
+            "command": "echo 'Style: follow ~/.claude/rules/writing-style.md. Start with the point. No dashes or semicolons, no in-sentence colon reveals, stop when the content ends.'"
           }
         ]
       }
