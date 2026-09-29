@@ -4,3 +4,5 @@ claude/home/rules/writing-style.md: *
 shared/guidance/references/writing-style-rationale.md: *
 scripts/ci/check_style.py: *
 # Quoted titles that contain a dash in the original.
+# Audit registers quote the banned words they found.
+docs/audits/: *
