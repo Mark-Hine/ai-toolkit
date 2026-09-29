@@ -14,7 +14,7 @@ Paste this into the review's Standards basis section, then append the verificati
 
 ```markdown
 Findings are graded against the published Android engineering guidance, cited per finding:
-**[ARCH-RECS]** Architecture recommendations — https://developer.android.com/topic/architecture/recommendations (SR = strongly recommended, R = recommended) · **[ARCH-GUIDE]** https://developer.android.com/topic/architecture · **[COROUTINES]** Coroutines best practices — https://developer.android.com/kotlin/coroutines/coroutines-best-practices · **[COMPOSE-API]** Compose API guidelines — https://github.com/androidx/androidx/blob/androidx-main/compose/docs/compose-api-guidelines.md · **[COMPOSE-STABILITY]** https://developer.android.com/develop/ui/compose/performance/stability · **[NAV-TYPESAFE]** https://developer.android.com/guide/navigation/design/type-safety · **[EUM-LOADING]** initial-load guidance (cold flow + `stateIn`, not `LaunchedEffect`) — https://proandroiddev.com/loading-initial-data-in-launchedeffect-vs-viewmodel-f1747c20ce62 · **[M3-DESIGN]** Material Design 3 — https://m3.material.io · **[UI-STANDARDS]** UI/UX anti-slop standards · **WCAG 2.1 AA** §1.4.3 · **OWASP MASVS** v2.1.0.
+**[ARCH-RECS]** Architecture recommendations — https://developer.android.com/topic/architecture/recommendations (SR = strongly recommended, R = recommended) · **[ARCH-GUIDE]** https://developer.android.com/topic/architecture · **[COROUTINES]** Coroutines best practices — https://developer.android.com/kotlin/coroutines/coroutines-best-practices · **[COMPOSE-API]** Compose API guidelines — https://github.com/androidx/androidx/blob/androidx-main/compose/docs/compose-api-guidelines.md · **[COMPOSE-STABILITY]** https://developer.android.com/develop/ui/compose/performance/stability · **[NAV-TYPESAFE]** https://developer.android.com/guide/navigation/design/type-safety · **[EUM-LOADING]** initial-load guidance (cold flow + `stateIn`, not `LaunchedEffect`) — https://proandroiddev.com/loading-initial-data-in-launchedeffect-vs-viewmodel-f1747c20ce62 · **[M3-DESIGN]** Material Design 3 — https://m3.material.io · **[UI-STANDARDS]** tiered UI design rules, T2 graded Nit · **[WCAG22]** WCAG 2.2 AA · **OWASP MASVS** v2.1.0.
 ```
 
 ## Architecture — official guidance + NowInAndroid
@@ -139,13 +139,8 @@ screen consumes it). Check:
   composable signatures. Profile first (JankStats/Perfetto) — recomposition findings without a
   metric or quoted unstable parameter are `Unverified`.
 
-**UI/UX & Anti-Slop ([M3-DESIGN], [UI-STANDARDS]):**
-- Anti-slop tropes: unmotivated purple/pink gradients, glow borders, floating pill badges, emoji bullets.
-- Container soup: redundant nested `Card`s/`Surface`s with stacked borders/shadows instead of proximity grouping and whitespace.
-- Spatial grid: padding/margins/gaps follow the 8dp spatial scale (`8, 16, 24, 32, 48, 64 dp`); no arbitrary padding (11dp, 23dp).
-- The 5-State Completeness Law: screen must define Loading (geometry-matching skeleton loader), Populated, Empty (actionable CTA), Error (plain language + recovery), and Partial/Degraded states.
-- Ergonomics & Accessibility: minimum 48×48 dp interactive touch targets (`Modifier.minimumInteractiveComponentSize()`); WCAG 2.1 AA 4.5:1 text / 3:1 control contrast; Dynamic Type scaling up to 200% without clipping; decorative icons have `contentDescription = null`.
-- M3 Fidelity: semantic color tokens (`MaterialTheme.colorScheme.surfaceContainer`, `primary`, etc.), no raw hex (`Color(0xFF...)`), full edge-to-edge handling with `WindowInsets`, responsive window size classes (Compact, Medium, Expanded) with no orientation locks.
+**UI design ([UI-STANDARDS], [M3-DESIGN], [WCAG22]):**
+- Grade UI against the tiered design rules in `~/.claude/rules/design-standards.md` (the `design-kit` standards skill carries the sources, rationale and APIs). Cite the rule ID and source key in each finding. T1 breaches grade Blocker or Major by user impact, T2 breaches grade Nit unless the project opts the rule in. Android specifics are AND-1 to AND-6 (colour roles, edge to edge, five window size classes, orientation at target 36, motion scheme, predictive back), with A11Y-3 for the 48 dp target and A11Y-7 for 200% font scale.
 
 **Coroutines & Flow ([ARCH-RECS], [ARCH-GUIDE], [NIA], [COROUTINES]):**
 - Layers communicate via coroutines/Flow (SR); ViewModels receive Flows and launch work in
@@ -244,6 +239,9 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
 | [COMPOSE-STABILITY] | https://getstream.io/blog/jetpack-compose-stability/ + https://developer.android.com/develop/ui/compose/performance/stability |
 | [A11Y] | https://developer.android.com/develop/ui/compose/accessibility (+ /semantics, /testing) |
 | [EUM-LOADING] | https://proandroiddev.com/loading-initial-data-in-launchedeffect-vs-viewmodel-f1747c20ce62 |
+| [UI-STANDARDS] | `~/.claude/rules/design-standards.md` (shared/guidance/design-standards.md in ai-toolkit), tiered rules with IDs. Sources per key in the design-kit standards skill, `references/sources.md` |
+| [M3-DESIGN] | https://m3.material.io — cite the page per finding (colour roles, grids and spacing, type scale, motion) |
+| [WCAG22] | https://www.w3.org/TR/WCAG22/ (W3C Recommendation, 2024-12-12), cite the success criterion per finding |
 | [VM-EVENTS] | https://developer.android.com/topic/architecture/ui-layer/events — the state-based alternatives (`userMessage` + `userMessageShown()`, `flowWithLifecycle`, `dropUnlessResumed`) |
 | [EVENT-ANTIPATTERNS] | https://manuelvivo.dev/viewmodel-events-antipatterns (2022-06-01) — the authority behind the SR row; note its own "opinionated" framing, the "adapt it to your requirements" disclaimer, and the conceded `Dispatchers.Main.immediate` mitigation |
 | [KTX-2886] | https://github.com/Kotlin/kotlinx.coroutines/issues/2886 — Elizarov's `Main.immediate` solution (top-voted); **open since Aug 2021**, i.e. the ecosystem never settled this |
@@ -277,6 +275,9 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
 [COMPOSE-STABILITY]: https://developer.android.com/develop/ui/compose/performance/stability
 [A11Y]: https://developer.android.com/develop/ui/compose/accessibility
 [EUM-LOADING]: https://proandroiddev.com/loading-initial-data-in-launchedeffect-vs-viewmodel-f1747c20ce62
+[UI-STANDARDS]: https://github.com/Mark-Hine/ai-toolkit/blob/main/shared/guidance/design-standards.md
+[M3-DESIGN]: https://m3.material.io
+[WCAG22]: https://www.w3.org/TR/WCAG22/
 [VM-EVENTS]: https://developer.android.com/topic/architecture/ui-layer/events
 [EVENT-ANTIPATTERNS]: https://manuelvivo.dev/viewmodel-events-antipatterns
 [KTX-2886]: https://github.com/Kotlin/kotlinx.coroutines/issues/2886
