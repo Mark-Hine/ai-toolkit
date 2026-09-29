@@ -8,7 +8,7 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$HERE/.." && pwd)"
 CFG="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
 MARKET="${MARKETPLACE_SOURCE:-$REPO_ROOT}"
-PLUGINS=(android-kit ios-kit pr-review design-kit)
+PLUGINS=(guard-kit android-kit ios-kit pr-review design-kit)
 for bin in claude git jq; do command -v "$bin" >/dev/null || { echo "missing: $bin"; exit 1; }; done
 mkdir -p "$CFG/rules"
 

@@ -75,11 +75,11 @@ The five skills, three specialists, four scoped rules and standards references m
 
 The Swift lint hook handles `apply_patch`, `Edit` and `Write`. It runs installed SwiftFormat/SwiftLint only when the edited file's repository has the corresponding config. It reports findings without rewriting files. Shell-based edits are outside this hook's coverage. Xcode, simulators and linters are not installed by the toolkit; their live execution must be verified in an app repository.
 
-Intentional differences remain. Codex uses its existing stricter push policy, including explicit literal refspecs and no remote deletion. Its specialist commands are single invocations without shell filters. Source references preserve the upstream guidance and dates; this port does not revalidate every Apple example or version claim. Recheck those sources when applying them.
+Intentional differences remain. Its specialist commands are single invocations without shell filters. Source references preserve the upstream guidance and dates; this port does not revalidate every Apple example or version claim. Recheck those sources when applying them.
 
 ## Guard coverage
 
-The command hook blocks protected-branch pushes, force pushes, unchecked implicit pushes, destructive Git operations and `timeout` wrappers. Use an explicit remote and feature refspec when pushing. The patch hook checks added, updated, deleted and moved paths for secrets, signing files, Firebase/network configuration, generated binaries, iOS entitlements, export options and dependency lock files. Regenerate lock files with the package manager instead of editing them. Specialist hooks also block direct source edits and limit research or verification commands.
+The guard is the shared module `shared/hooks/guard.py`, copied here and into the Claude `guard-kit` plugin and kept identical by CI. The command hook blocks protected-branch pushes, force pushes, implicit pushes, branch deletion pushes, `HEAD` as a push destination, destructive Git operations (including `git checkout .` and `git restore .`) and `timeout` wrappers behind `sudo`, `env`, `time`, `xargs`, `nice`, `caffeinate`, `eval` and nested shells. Use an explicit remote and feature refspec when pushing. Edits to `.github/workflows/*` and `azure-pipelines*.yml` are denied here and prompt on Claude, because Codex hooks cannot ask. `.env.example` and similar templates are editable. The patch hook checks added, updated, deleted and moved paths for secrets (including `.envrc` and `keystore.properties`), signing files (including `.p8` keys), anything under `.git/`, Firebase/network configuration, generated binaries, iOS entitlements, export options and dependency lock files. Regenerate lock files with the package manager instead of editing them. Specialist hooks also block direct source edits and limit research or verification commands.
 
 Push flags are checked within their own shell segment, including combined force flags such as `-uf`.
 
@@ -90,12 +90,13 @@ These hooks prevent common mistakes. They are not a shell sandbox or a complete 
 ## Validation
 
 ```bash
+python3 -m unittest discover -s shared/tests -v
 python3 -m unittest discover -s codex/tests -v
 python3 codex/scripts/validate.py
 bash -n codex/install.sh
 ```
 
-The tests exercise actual guard inputs and installer behavior, including preservation, backups, repeated installs, dry runs and malformed configuration. CI validates skill frontmatter, local links, TOML and source syntax. The iOS port adds specialist command, Swift lint and installer upgrade coverage.
+The guard and Swift lint tests live in `shared/tests` and run in CI for all layers. The tests here exercise installer behavior, including preservation, backups, repeated installs, dry runs and malformed configuration, plus the validator. CI validates skill frontmatter, local links, TOML and source syntax.
 
 ## Official references
 

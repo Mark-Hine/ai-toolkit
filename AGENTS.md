@@ -9,7 +9,7 @@ Read by Codex directly, by Claude Code through `CLAUDE.md`, and by Antigravity t
 
 ## Before opening a PR
 - Run the validation checks required by the files changed. Report failed or unavailable checks in the PR.
-- `bash claude/plugins/android-kit/hooks/test-guards.sh` must pass when a hook changed.
+- `python3 -m unittest discover -s shared/tests` and `bash claude/tests/test-guards.sh` must pass when a hook changed. Hook modules are canonical under `shared/hooks/`; edit them there and run `python3 scripts/ci/check_parity.py --write` to refresh the plugin and Codex copies.
 - `claude plugin validate . --strict` and `claude plugin validate claude/plugins/<name> --strict` must pass when anything under `claude/plugins/` or `.claude-plugin/` changed. Bump `version` in that plugin's `plugin.json` whenever its files change, because installs pin to the version.
 - `python3 scripts/ci/check_repo.py` and `python3 scripts/ci/check_parity.py` must pass on every change. Files mirrored byte-for-byte across layers are listed in `check_parity.py`; edit the canonical copy and run it with `--write`.
 - `python3 codex/scripts/validate.py` and `python3 -m unittest discover -s codex/tests` must pass when anything under `codex/` changed.

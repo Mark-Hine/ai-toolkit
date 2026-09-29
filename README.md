@@ -37,6 +37,7 @@ Plugins only, without the dotfiles layer:
 
 ```
 /plugin marketplace add Mark-Hine/ai-toolkit
+/plugin install guard-kit@ai-toolkit
 /plugin install android-kit@ai-toolkit
 /plugin install ios-kit@ai-toolkit
 /plugin install pr-review@ai-toolkit

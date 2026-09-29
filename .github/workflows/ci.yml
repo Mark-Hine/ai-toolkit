@@ -32,7 +32,7 @@ jobs:
           claude plugin validate . --strict
           for p in claude/plugins/*/; do claude plugin validate "$p" --strict; done
       - name: Hook regression checks
-        run: bash claude/plugins/android-kit/hooks/test-guards.sh
+        run: bash claude/tests/test-guards.sh
       - name: Shell syntax
         run: git ls-files 'claude/*.sh' 'claude/**/*.sh' | xargs -n1 bash -n
   validate-shared:

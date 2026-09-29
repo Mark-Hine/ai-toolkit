@@ -47,7 +47,7 @@ class SharedSetupTests(unittest.TestCase):
             self.assertEqual((home / 'rules/design-standards.md').resolve(), ROOT / 'shared/guidance/design-standards.md')
             calls = log.read_text().splitlines()
             self.assertEqual(2, calls.count(f'plugin marketplace add {ROOT}'), calls)
-            self.assertEqual(8, sum(1 for c in calls if c.startswith('plugin install ')), calls)
+            self.assertEqual(10, sum(1 for c in calls if c.startswith('plugin install ')), calls)  # five plugins, two runs
             self.assertNotIn('includeCoAuthoredBy', snapshots[1])
             self.assertEqual({'commit': '', 'pr': ''}, snapshots[1]['attribution'])
             self.assertEqual((home / 'machine.md').read_text(), 'Private machine facts.\n')
