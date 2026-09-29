@@ -25,8 +25,8 @@ Findings are graded against published guidance, cited per finding: **[SWIFTUI-DA
 
 **Authority note (read before grading):** Apple publishes no equivalent of Android's official
 architecture-recommendations page. This benchmark is **synthesised** from Apple's SwiftUI data-flow
-documentation ([SWIFTUI-DATAFLOW]), Apple's own sample apps (Backyard Birds, Fruta, Food Truck —
-[BACKYARD-BIRDS], [FOOD-TRUCK]) and stated community consensus. Its items therefore carry **less
+documentation ([SWIFTUI-DATAFLOW]), Apple's own sample apps (Backyard Birds and Food Truck —
+[BACKYARD-BIRDS], [FOOD-TRUCK]; Fruta uses pre-Observation APIs and informs structure only) and stated community consensus. Its items therefore carry **less
 authority than the security section below** — grade accordingly: prefer "inconsistent with itself"
 findings over "inconsistent with a doctrine", and cap severity where the only authority is
 consensus. Items are marked **(C)** = consensus (Apple-documented pattern and/or broad community
@@ -81,9 +81,11 @@ agreement) — there is no SR/R grading to inherit, so do not invent one in find
 - **No initial data loading in view-model `init` and no fire-and-forget `Task {}` in `onAppear`** —
   both are graded findings; the fix is `.task { }` on the view (or an owner-scoped structured task)
   so the load is cancelled with the view's identity.
-- One-shot events (navigation, toasts) delivered via `AsyncStream` / `PassthroughSubject` consumed
-  exactly once — not modelled as state that re-fires on every re-render or restoration; quote the
-  consumption site and how it is reset.
+- Navigation, sheets and alerts are state bound to presentation modifiers (`NavigationStack(path:)`, `sheet(item:)`,
+  `alert(_:isPresented:presenting:actions:message:)`), which reset the binding on dismiss. Grade a boolean or optional
+  trigger that the model resets after a delay or that re-fires on restoration. Only effects without a presentation
+  binding, such as haptics, scroll, focus and dismiss, are one-shot. Where they use an `AsyncStream`, grade a single
+  consumer, buffering while unsubscribed, and a fresh stream per subscription.
 
 **SwiftUI design system — correctness audit ([HIG], [SWIFTUI-DATAFLOW]):** open the design-system
 package (or equivalent) and grade its *correctness* — presence of a design-system module is not a
@@ -128,13 +130,14 @@ screen consumes it). Check:
   mutable state off the UI.
 - **Main-safety is the data layer's job, not the view model's:** main-safety belongs to whichever
   type does the blocking work — repository/data-source `async` functions run off the main actor by
-  design (nonisolated async / actor-isolated), so callers need no dispatch hops. A `@MainActor`
+  design (`@concurrent` or actor-isolated async functions. A plain `nonisolated async` function runs on the caller's actor
+  when `NonisolatedNonsendingByDefault` is on, so it is not main-safe by itself, [SE-0461]), so callers need no dispatch hops. A `@MainActor`
   view model simply `await`s already-main-safe functions; **`DispatchQueue.global()` or
   `Task.detached` inside a view model is a smell** that main-safety leaked up from the data layer —
   grade it as a style issue, not a bug (per the pragmatism guardrails above), unless it demonstrably blocks the main
   thread.
 - **Swift 6 / strict concurrency as a currency signal:** note the language mode and
-  `SWIFT_STRICT_CONCURRENCY` level, `Sendable` adoption on crossing types, and whether warnings are
+  `SWIFT_STRICT_CONCURRENCY` level, `SWIFT_DEFAULT_ACTOR_ISOLATION` and `SWIFT_APPROACHABLE_CONCURRENCY` ([SE-0466]), `Sendable` adoption on crossing types, and whether warnings are
   suppressed with `@unchecked Sendable` (each one is a claim to verify) — feeds currency findings.
 - Smells to grep and quote: `DispatchSemaphore`/`DispatchGroup.wait` on the main thread (deadlock
   class), runloop spinning, GCD-and-async/await mixed without a single bridging seam
@@ -150,7 +153,7 @@ expectations.
 ## Security — MASVS v2.1.0 control map (+ Top 10 2024 cross-map)
 
 **Framework ([MASVS], [MASTG]):** OWASP MASVS v2.1.0 is the verification standard (8 groups, 24
-controls); MASTG v2.0.0 (stable 2026-06) supplies atomic tests (`MASTG-TEST-xxxx`) — cite test IDs
+controls); MASTG supplies atomic tests (`MASTG-TEST-xxxx`) — cite test IDs
 in Refs where known. **Declare the target MAS profile in the review**: L1 = baseline for all apps;
 **L2 = defense-in-depth for sensitive-data apps (finance/health — typically the right target
 here)**; R = resilience add-on where the threat model warrants it. Grade each control
@@ -170,7 +173,7 @@ Pass/Fail/Partial/Unverified with `file:line` evidence.
 | PLATFORM-1 | Secure IPC | Entry-point audit: custom URL schemes (`CFBundleURLTypes`) vs universal links + AASA — schemes are claimable by any installed app, so sensitive flows over a bare scheme are graded; incoming-URL handling (`onOpenURL` / `application(_:open:)`) validated, no open-redirect or unvalidated parameter forwarding into WebViews/navigation; `LSApplicationQueriesSchemes` breadth; app extensions + App Groups — what crosses the shared container and at what protection class; entitlements review. Refs: MASVS-PLATFORM-1 · [MASTG] |
 | PLATFORM-2 | Secure WebViews | `WKWebView` configuration: `allowFileAccessFromFileURLs` / `allowUniversalAccessFromFileURLs` preference flags, `loadFileURL(_:allowingReadAccessTo:)` scope, JS enabled for untrusted content; enumerate every `WKScriptMessageHandler` bridge and grade its trust of `postMessage` input (origin/host checks, capability exposed); `isInspectable` left true in Release. Refs: MASVS-PLATFORM-2 · [MASTG] |
 | PLATFORM-3 | Secure UI usage | **Input privacy on sensitive fields:** `isSecureTextEntry` / `SecureField`, `textContentType` (`.password`/`.oneTimeCode`/`.newPassword`), autocorrection and spell-checking disabled (`autocorrectionType = .no`, `.autocorrectionDisabled()`) so the keyboard cache learns nothing — name the fields you checked and their actual state. **Pasteboard:** `UIPasteboard.general` writes of sensitive values — target `.localOnly` + expiry via `setItems(_:options:)`. **Screen capture — iOS has no `FLAG_SECURE` equivalent, say so:** grade what the app does instead — `UIScreen.isCaptured` / `capturedDidChangeNotification` observation, `userDidTakeScreenshotNotification` handling, and snapshot privacy (blur/cover on `sceneWillResignActive` so balances/PII don't persist in the app-switcher snapshot). Refs: MASVS-PLATFORM-3 · [MASTG] |
-| CODE-1 | Up-to-date platform version | Xcode / base-SDK vs the **App Store minimum-SDK submission requirement + effective date — look it up at review time (protocol.md §13), don't assert from memory** (annual, typically late April; e.g. from 2026-04-28 uploads require Xcode 26 / the iOS 26 SDK); grade a toolchain below it as a **hard App Store submission gate** (dated finding), not merely "behind". Also note the `IPHONEOS_DEPLOYMENT_TARGET` spread. Feeds currency findings. Refs: MASVS-CODE-1 · [SUBMIT-REQS] |
+| CODE-1 | Up-to-date platform version | Xcode / base-SDK vs the **App Store minimum-SDK submission requirement + effective date — look it up at review time (protocol.md §13), don't assert from memory** (annual, typically late April); grade a toolchain below it as a **hard App Store submission gate** (dated finding), not merely "behind". Also note the `IPHONEOS_DEPLOYMENT_TARGET` spread. Feeds currency findings. Refs: MASVS-CODE-1 · [SUBMIT-REQS] |
 | CODE-2 | Enforced app updates / incident response | Force-update mechanism and a remote **feature kill-switch** (remote-config-gated) — for a regulated/fintech app treat absence as a graded finding, and check the mechanism is wired, not just declared. **There is no release rollback on the App Store** — a bad build can only be fixed forward through review, which raises the value of kill-switches and phased release; call this out as a distinct risk. A **certificate-pinning kill-switch** is a specific case (see NETWORK-2): it must be **signed/authenticated** (an unauthenticated toggle is a one-switch bypass) and fail back to default PKI trust, never to disabled TLS validation |
 | CODE-3 | No known-vulnerable components | Dependency versions vs known CVEs; SCA tooling in CI (Renovate/Dependabot cover SPM; osv-scanner reads `Package.resolved`); pairs with the dependency/currency review |
 | CODE-4 | Input validation | SQL built by string concatenation (raw SQLite / FMDB + interpolation); deep-link/URL parameter handling (pairs with PLATFORM-1); unsafe deserialisation — `NSKeyedUnarchiver` without `requiresSecureCoding` / `unarchivedObject(ofClasses:)`; JS evaluation of remote strings. **Memory-unsafe surface:** Swift is memory-safe by default — what remains is `withUnsafe*`/`UnsafeMutablePointer` use and C/ObjC bridge code (`strcpy`/`memcpy` in vendored C): enumerate and grade that residual surface rather than asserting blanket safety |
@@ -183,8 +186,8 @@ Pass/Fail/Partial/Unverified with `file:line` evidence.
 | PRIVACY-3 | Transparency | `PrivacyInfo.xcprivacy` present and truthful for the app **and** third-party SDKs (required-reason APIs declared with valid reason codes — enforcement dates move, verify protocol.md §13); nutrition-label consistency vs the SDKs actually found in the dependency inventory; `ITSAppUsesNonExemptEncryption` declared correctly. **Log hygiene:** `os_log`/`Logger` interpolations marked `privacy: .public` on sensitive values, and raw `print()`/`NSLog` of PII reaching Release builds. Refs: MASVS-PRIVACY-3 · [PRIVACY-MANIFEST] |
 | PRIVACY-4 | User data control | Deletion/opt-out paths for collected data; in-app **account deletion** where accounts can be created (an App Store review requirement) — verify the flow deletes server-side data, not just the local session |
 
-**OWASP Mobile Top 10 (2024) cross-map** (2024 is still the latest edition — as of mid-2026 there
-is no newer Mobile Top 10; it is the awareness list, MASVS is the verification standard). Emit as
+**OWASP Mobile Top 10 (2024) cross-map** (check owasp.org for a newer edition before citing it. The Top 10 is the
+awareness list, MASVS is the verification standard). Emit as
 a compact table pointing each M-risk at the MASVS rows above rather than re-checking:
 M1 Credentials→CRYPTO-2/AUTH-1 · M2 Supply Chain→CODE-3 · M3 Auth/Authz→AUTH-1/2/3 ·
 M4 Input/Output Validation→CODE-4 · M5 Insecure Communication→NETWORK-1/2 ·
@@ -215,6 +218,8 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
 | [FOOD-TRUCK] | https://github.com/apple/sample-food-truck — Apple sample app (SwiftUI app + widgets, shared model layer) |
 | [SWIFT-CONCURRENCY] | https://docs.swift.org/swift-book/documentation/the-swift-programming-language/concurrency/ — structured concurrency, actors, tasks (official language book) |
 | [SWIFT6-MIGRATION] | https://www.swift.org/migration/documentation/migrationguide/ — Swift 6 / strict-concurrency migration guide (staging, Sendable) |
+| [SE-0461] | https://github.com/swiftlang/swift-evolution/blob/main/proposals/0461-async-function-isolation.md — `NonisolatedNonsendingByDefault` and `@concurrent`, implemented in Swift 6.2 |
+| [SE-0466] | https://github.com/swiftlang/swift-evolution/blob/main/proposals/0466-control-default-actor-isolation.md — default actor isolation setting, implemented in Swift 6.2 |
 | [SPM] | https://www.swift.org/documentation/package-manager/ — Swift Package Manager documentation (products, dependency rules, Package.resolved) |
 | [XCODE-BUILD] | https://developer.apple.com/documentation/xcode/build-settings-reference — canonical build-settings reference (optimisation, stripping, sandboxing) |
 | [SWIFTLINT] | https://github.com/realm/SwiftLint — de-facto standard Swift linter |
@@ -233,7 +238,7 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
 | [LAUNCH-TIME] | https://developer.apple.com/documentation/xcode/reducing-your-app-s-launch-time — launch-time guidance (dyld/pre-main, measurement) |
 | [APP-SIZE] | https://developer.apple.com/documentation/xcode/reducing-your-app-s-size — app-size guidance (thinning, size report, download vs install) |
 | [MASVS] | https://mas.owasp.org/MASVS/ (v2.1.0) |
-| [MASTG] | https://mas.owasp.org/MASTG/ (v2.0.0, 2026-06-30) — cite iOS techniques/tests generically unless a specific iOS test ID is verified |
+| [MASTG] | https://mas.owasp.org/MASTG/ (cite the version shown on the site at review time) — cite iOS techniques/tests generically unless a specific iOS test ID is verified |
 | [PINNING] | https://cheatsheetseries.owasp.org/cheatsheets/Pinning_Cheat_Sheet.html — OWASP Pinning Cheat Sheet (public-key/SPKI pins, backup pins, expiration safety-valve, when NOT to pin) |
 | [TOP10-2024] | https://owasp.org/www-project-mobile-top-10/ |
 
@@ -244,6 +249,8 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
 [FOOD-TRUCK]: https://github.com/apple/sample-food-truck
 [SWIFT-CONCURRENCY]: https://docs.swift.org/swift-book/documentation/the-swift-programming-language/concurrency/
 [SWIFT6-MIGRATION]: https://www.swift.org/migration/documentation/migrationguide/
+[SE-0461]: https://github.com/swiftlang/swift-evolution/blob/main/proposals/0461-async-function-isolation.md
+[SE-0466]: https://github.com/swiftlang/swift-evolution/blob/main/proposals/0466-control-default-actor-isolation.md
 [SPM]: https://www.swift.org/documentation/package-manager/
 [XCODE-BUILD]: https://developer.apple.com/documentation/xcode/build-settings-reference
 [SWIFTLINT]: https://github.com/realm/SwiftLint

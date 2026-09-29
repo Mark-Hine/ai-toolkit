@@ -44,7 +44,7 @@ Personal or temporary notes go in `.local/agent-notes.md` (gitignored).
 
 ## Repo facts
 - Xcode `<26.x>` (CI: `<version>`), Swift `<toolchain>` in language mode `<5 | 6>`, strict concurrency `<minimal | targeted | complete>`,
-  deployment target iOS `<n>`, device family `<iPhone | iPhone+iPad>`. Dependencies: `<SwiftPM | CocoaPods | both>` (`<n>` pods, `<n>` packages).
+  deployment target iOS `<n>`, device family `<iPhone | iPhone+iPad>`. Dependencies: `<SwiftPM | CocoaPods | both>` (`<n>` pods, `<n>` of them with a Swift package, `<n>` packages).
 - Environments: `<Dev/SIT/UAT/Prod>` selected by `<scheme | xcconfig | Info.plist key>`; Firebase plist per environment under `<path>`.
 - Branches `<pattern, default <type>/<TICKET>-<slug>>` off `<default branch>`. Formal PR reviews: `/pr-review`.
 

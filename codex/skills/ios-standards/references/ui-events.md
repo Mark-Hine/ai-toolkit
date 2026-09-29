@@ -1,9 +1,14 @@
+---
+verified: 2026-09-29
+sources: inline
+---
+
 # One-shot model → UI events on iOS: house pattern and reference code
 
 Rule: `~/.codex/guidance/ios/ui-events.md`. This file holds the canonical code and the reasoning. Android twin:
 `android-standards` → `references/ui-events.md`; the two differ on purpose, see "Why this differs from Android".
 
-## Position (decided 2026-09-04, sources verified the same day)
+## Position
 - SwiftUI presentation is binding-driven and the framework clears the binding itself. `alert(_:isPresented:actions:)`:
   "When the user presses or taps one of the alert's actions, the system sets this value to `false` and dismisses."
   `sheet(item:)` / `navigationDestination(item:)` take "a binding to an optional source of truth"; `NavigationStack(path:)`
@@ -19,19 +24,29 @@ Rule: `~/.codex/guidance/ios/ui-events.md`. This file holds the canonical code a
   cancelled iteration resumes `nil`, so a re-appearing view needs a fresh stream and anything sent meanwhile must be buffered.
 - Residual, accepted: buffered effects die with the process; an effect sent after the view is removed for good is dropped with the model.
 
+## Why this differs from Android
+- Android sends navigation through a buffered Channel because Compose has no presentation modifier that clears its own trigger.
+- SwiftUI presentation modifiers write the binding back on dismiss, so navigation, sheets and alerts stay state and the sticky-trigger problem does not arise.
+- Both platforms keep toasts or snackbars app-scoped and use a single-consumer buffered stream for true one-shot effects.
+
 ## Model: state, routes, presentation, effects
 
 ```swift
 enum HomeState { case loading; case loaded(balance: Money, offers: [Offer]); case error(HomeError) }
 enum HomeRoute: Hashable { case details(Offer.ID); case content; case web(URL) }
-enum HomeAlert: Identifiable { case saveFailed; case sessionExpired; var id: Self { self } }
-enum HomeEffect { case haptic(UINotificationFeedbackGenerator.FeedbackType); case scrollToTop; case popScreen }
+enum HomeAlert: Identifiable {
+    case saveFailed, sessionExpired
+    var id: Self { self }
+    var title: String { switch self { case .saveFailed: "Could not save"; case .sessionExpired: "Session expired" } }
+    var message: String { switch self { case .saveFailed: "Check your connection and try again."; case .sessionExpired: "Sign in to continue." } }
+}
+enum HomeEffect { case paymentSucceeded; case scrollToTop; case popScreen }
 
 @MainActor @Observable
 final class HomeModel {
     private(set) var state: HomeState = .loading
     var path: [HomeRoute] = []          // NavigationStack(path:)
-    var alert: HomeAlert?               // .alert(item:)
+    var alert: HomeAlert?               // .alert(_:isPresented:presenting:actions:message:) via Binding(isPresent:)
     let effects = EventStream<HomeEffect>()
 
     private let repository: any OffersRepository   // protocol seam; main-safety lives in the repository
@@ -51,7 +66,7 @@ final class HomeModel {
     func onTermsTap(_ url: URL) { path.append(.web(url)) }
     func onSaveFailed() { alert = .saveFailed }
     func onCopied() { toasts.show(Toast(text: "Copied", style: .info)) }
-    func onPaid() { effects.send(.haptic(.success)); effects.send(.popScreen) }
+    func onPaid() { effects.send(.paymentSucceeded); effects.send(.popScreen) }
 }
 ```
 No loading in `init`: the screen's `.task` calls `load()` so the work is cancelled with the view. `state` is `private(set)`;
@@ -102,11 +117,13 @@ struct HomeScreen: View {
         NavigationStack(path: $model.path) {
             HomeContent(state: model.state, actions: model.actions)
                 .navigationDestination(for: HomeRoute.self) { route in HomeRouteView(route: route) }
-                .alert(item: $model.alert) { alert in
+                .alert(model.alert?.title ?? "", isPresented: Binding(isPresent: $model.alert), presenting: model.alert) { alert in
                     switch alert {
                     case .saveFailed: Button("Retry") { Task { await model.load() } }; Button("Cancel", role: .cancel) {}
                     case .sessionExpired: Button("Sign in") { model.onSignInTap() }
                     }
+                } message: { alert in
+                    Text(alert.message)
                 }
         }
         .task { await model.load() }
@@ -115,7 +132,7 @@ struct HomeScreen: View {
 
     private func handle(_ effect: HomeEffect) {       // exhaustive; the model never sees UIKit, dismiss or a scroll proxy
         switch effect {
-        case .haptic(let type): UINotificationFeedbackGenerator().notificationOccurred(type)
+        case .paymentSucceeded: UINotificationFeedbackGenerator().notificationOccurred(.success)   // the screen maps the fact to UIKit. On iOS 17 and later .sensoryFeedback(.success, trigger:) also works
         case .scrollToTop: scrollToTop()               // ScrollViewReader proxy or scrollPosition binding held by the screen
         case .popScreen: dismiss()
         }
@@ -199,6 +216,18 @@ struct HomeContent: View {                             // stateless; #Preview pa
 Never build the struct inside `body`; never put state, bindings or predicates in it; reusable components never take it.
 The alternative single sink `send: (Action) -> Void` (MVI/TCA style) is not the house pattern for new house code: it hides
 what a view can do behind an enum. Where a repo already uses a reducer-style store consistently, follow that repo.
+
+## Presenting an optional as an alert
+
+```swift
+extension Binding where Value == Bool {
+    /// True while `source` holds a value. The alert writes false on dismiss, which clears `source`.
+    init<Wrapped>(isPresent source: Binding<Wrapped?>) {
+        self.init(get: { source.wrappedValue != nil }, set: { if !$0 { source.wrappedValue = nil } })
+    }
+}
+```
+`alert(item:content:)` is deprecated, and `alert(_:isPresented:presenting:actions:message:)` needs both a Bool binding and the presented value. The helper derives the Bool from the optional so the model still owns one property. The title reads from the model, so keep it on the presented value.
 
 ## UIKit hosts (hybrid repos)
 

@@ -13,6 +13,7 @@ or web search). Do not answer deadline, deprecation or version questions from me
 | Question | Read |
 |---|---|
 | Layering, state, offline-first | `references/official-docs.md` §Architecture, then `references/nia.md` |
+| Navigation 2 or Navigation 3 | `references/official-docs.md` §Architecture, then the `navigation-3` skill |
 | One-shot ViewModel → UI events (navigation, snackbar) | `references/ui-events.md` (house pattern + why it differs from the official state-based guidance) |
 | Too many composable callbacks / parameters | `references/ui-events.md` §Actions holder |
 | What tests a change needs; journey (E2E) format | `references/testing.md` |

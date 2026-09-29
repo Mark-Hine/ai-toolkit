@@ -1,4 +1,8 @@
 ---
+verified: 2026-09-29
+sources:
+  - https://developer.apple.com/documentation/swiftui/view/alert(_:ispresented:presenting:actions:message:)
+  - https://developer.apple.com/documentation/swiftui/navigationpath
 paths:
   - "**/*ViewModel.swift"
   - "**/*Model.swift"
@@ -19,8 +23,8 @@ Canonical code and rationale: `$ios-standards` skill, `references/ui-events.md`.
 - **Screen state** is one `enum State` (`loading` / `loaded(...)` / `error(...)`, `error` with cases when kinds differ)
   on a `@MainActor @Observable` model, `private(set)`, updated directly after `await`; no `DispatchQueue.main.async`.
 - **Navigation, sheets and alerts are data, not events**: typed `enum Route: Hashable` in `path: [Route]` bound to
-  `NavigationStack(path:)` with `navigationDestination(for:)`; `sheet: Sheet?` and `alert: Alert?` bound to `sheet(item:)`
-  / `alert(item:)`. The system resets the binding on dismiss, so the model never clears presentation state by hand.
+  `NavigationStack(path:)` with `navigationDestination(for:)`; `sheet: Sheet?` bound to `sheet(item:)`, and `alert: XAlert?` bound to
+  `alert(_:isPresented:presenting:actions:message:)` through `Binding(isPresent: $model.alert)`. The system resets the binding on dismiss, so the model never clears presentation state by hand.
   The model never imports navigation or UIKit types; one `XRouteView` maps routes to views; deep links append the same routes.
 - **Toasts are app-scoped**: the model calls an injected `ToastPresenter` (`@Observable`, in the environment); the root view
   renders the queue once. No screen owns toast state; a toast is never an alert.

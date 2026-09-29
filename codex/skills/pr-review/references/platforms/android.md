@@ -36,7 +36,8 @@ source, don't assume:
   args** are typed. String routes / string-templated paths whose args come back via
   `NavBackStackEntry` with manual `toInt()`/`toBoolean()` casting are a graded finding; the current
   guidance is type-safe destinations — `@Serializable` route objects/data classes + `toRoute<T>()`
-  (stable since Navigation 2.8.0). This applies equally to a **home-grown route DSL**: grade whether
+  (stable since Navigation 2.8.0). Navigation 3 back stacks of typed route keys satisfy this directly, and Navigation 2
+  is not a finding by itself; migration is its own ticket ([NAV3]). This applies equally to a **home-grown route DSL**: grade whether
   *it* is typed and compile-time checked, not whether it uses the official API. Confirm the API's
   current state at review time (protocol.md §13).
 - **Model per layer (R, complex apps):** network/DAO models mapped to simpler layer-local models
@@ -62,10 +63,12 @@ source, don't assume:
 
 **UI-state exposure ([ARCH-RECS], [EUM-LOADING]):**
 - Single `uiState` property per screen, a `StateFlow` built with
-  `stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), initial)` (R). The 5000 ms stop
-  timeout aligns with the ANR window and survives config changes without refetch.
-- **No initial data loading in ViewModel `init {}` and none triggered from `LaunchedEffect`** —
-  both are graded findings; the fix is the cold-flow + `stateIn` pattern ([EUM-LOADING]).
+  `stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), initial)` (R). The stop timeout keeps
+  the upstream alive through a configuration change, so the screen does not refetch.
+- **No asynchronous work launched from ViewModel `init {}` or the constructor, and no non-idempotent load from
+  `LaunchedEffect` ([STATE-PRODUCTION], [EUM-LOADING], [HOUSE]).** Both are graded findings. The official alternatives are a cold flow
+  with `stateIn` or an idempotent `initialize()` the UI calls. A `LaunchedEffect` that calls a non-idempotent load runs
+  again when the composable re-enters composition. This is a house standard kept on purpose.
 - Collect with `collectAsStateWithLifecycle()`, not `collectAsState()` (SR).
 - **One-off VM→UI events — CONTESTED; do not grade the pattern itself as a violation.**
   [ARCH-RECS] badges "Do not send events from the ViewModel to the UI" **SR**, and that is worth
@@ -120,10 +123,11 @@ screen consumes it). Check:
   (`content: @Composable () -> Unit`) over boolean/enum flags; **state hoisting** (no un-hoisted internal
   state); a composable **emits content XOR returns a value**; consolidate 5+ styling params into one
   `@Immutable` **style class**.
-- **Component stability (method, not vibes — see [BANES-STABILITY], [COMPOSE-STABILITY]):** component `State`/param classes are
-  `@Immutable`/`@Stable`; unstable `List/Set/Map` params → `kotlinx.collections.immutable`; cross-module
-  State via a stability-config file or `compose-stable-marker`. Every component taking an unstable
-  `XxxState` is non-skippable — confirm against the compiler-metrics run.
+- **Component stability ([STRONG-SKIPPING], [STABILITY-FIX], [BANES-STABILITY]):** read the Kotlin version first. From
+  2.0.20, strong skipping is on by default, so an unstable parameter does not make a composable non-skippable and a
+  missing `@Immutable`, `@Stable` or immutable collection is not a finding by itself. Grade a measured problem, such as a
+  source that emits new but equal instances every update. Below 2.0.20, grade non-skippable components that take an
+  unstable state class, confirmed by compiler metrics.
 - **Preview safety:** components render in `@Preview`; network/image/IO guarded by `LocalInspectionMode`
   fallbacks; grade any component/preview catalog (e.g. Showkase) for *coverage*, not mere existence.
 - **Component-level accessibility (see Accessibility below):** components bake in correct semantics —
@@ -134,8 +138,8 @@ screen consumes it). Check:
 
 **Compose stability & recomposition ([BANES-STABILITY]):**
 - Method, not vibes: run Compose compiler metrics on a **release** build, filter
-  restartable-but-not-skippable composables; check `@Immutable`/`@Stable` on cross-module model
-  types and collection-holding wrappers; screen-local UI models rather than data-layer types in
+  restartable-but-not-skippable composables; look for parameters whose instances change on every
+  emission; screen-local UI models rather than data-layer types in
   composable signatures. Profile first (JankStats/Perfetto) — recomposition findings without a
   metric or quoted unstable parameter are `Unverified`.
 
@@ -167,7 +171,7 @@ optional). Feed test-coverage findings with these expectations.
 ## Security — MASVS v2.1.0 control map (+ Top 10 2024 cross-map)
 
 **Framework ([MASVS], [MASTG]):** OWASP MASVS v2.1.0 is the verification standard (8 groups, 24
-controls); MASTG v2.0.0 (stable 2026-06) supplies atomic tests (`MASTG-TEST-xxxx`) — cite test IDs
+controls); MASTG supplies atomic tests (`MASTG-TEST-xxxx`) — cite test IDs
 in Refs where known. **Declare the target MAS profile in the review**: L1 = baseline for all apps;
 **L2 = defense-in-depth for sensitive-data apps (finance/health — typically the right target
 here)**; R = resilience add-on where the threat model warrants it. Grade each control
@@ -200,8 +204,8 @@ Pass/Fail/Partial/Unverified with `file:line` evidence.
 | PRIVACY-3 | Transparency | Data-collection disclosure vs actual SDK behavior (analytics/marketing SDKs found in the dependency inventory) |
 | PRIVACY-4 | User data control | Deletion/opt-out paths for collected data |
 
-**OWASP Mobile Top 10 (2024) cross-map** (2024 is still the latest edition — as of mid-2026 there
-is no newer Mobile Top 10; it is the awareness list, MASVS is the verification standard). Emit as
+**OWASP Mobile Top 10 (2024) cross-map** (check owasp.org for a newer edition before citing it. The Top 10 is the
+awareness list, MASVS is the verification standard). Emit as
 a compact table pointing each M-risk at the MASVS rows above rather than re-checking:
 M1 Credentials→CRYPTO-2/AUTH-1 · M2 Supply Chain→CODE-3 · M3 Auth/Authz→AUTH-1/2/3 ·
 M4 Input/Output Validation→CODE-4 · M5 Insecure Communication→NETWORK-1/2 ·
@@ -238,7 +242,12 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
 | [COMPOSE-API] | https://github.com/androidx/androidx/blob/androidx-main/compose/docs/compose-api-guidelines.md |
 | [COMPOSE-STABILITY] | https://getstream.io/blog/jetpack-compose-stability/ + https://developer.android.com/develop/ui/compose/performance/stability |
 | [A11Y] | https://developer.android.com/develop/ui/compose/accessibility (+ /semantics, /testing) |
-| [EUM-LOADING] | https://proandroiddev.com/loading-initial-data-in-launchedeffect-vs-viewmodel-f1747c20ce62 |
+| [EUM-LOADING] | https://proandroiddev.com/loading-initial-data-in-launchedeffect-vs-viewmodel-f1747c20ce62 — community post, supports the cold-flow form as a preference |
+| [STATE-PRODUCTION] | https://developer.android.com/topic/architecture/ui-layer/state-production — official: do not launch asynchronous operations in the init block, use a cold flow with `stateIn` or an idempotent `initialize()` |
+| [HOUSE] | A deliberate house standard of this toolkit (see the `android-kit` standards references: `ui-events.md`, `jetsnack.md`, `nia.md`). Graded as a finding by design |
+| [STRONG-SKIPPING] | https://developer.android.com/develop/ui/compose/performance/stability/strongskipping — default from Kotlin 2.0.20 |
+| [STABILITY-FIX] | https://developer.android.com/develop/ui/compose/performance/stability/fix — "you shouldn't attempt to make every composable skippable" |
+| [NAV3] | https://developer.android.com/guide/navigation/navigation-3 · migration: https://developer.android.com/guide/navigation/navigation-3/migration-guide |
 | [UI-STANDARDS] | `~/.claude/rules/design-standards.md` (shared/guidance/design-standards.md in ai-toolkit), tiered rules with IDs. Sources per key in the design-kit standards skill, `references/sources.md` |
 | [M3-DESIGN] | https://m3.material.io — cite the page per finding (colour roles, grids and spacing, type scale, motion) |
 | [WCAG22] | https://www.w3.org/TR/WCAG22/ (W3C Recommendation, 2024-12-12), cite the success criterion per finding |
@@ -252,7 +261,7 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
 | [PLAY-INTEGRITY] | https://developer.android.com/google/play/integrity/overview — device/app/account integrity verdicts (replaces the decommissioned SafetyNet Attestation); enforce server-side |
 | [DATASTORE] | https://developer.android.com/topic/libraries/architecture/datastore — modern replacement for SharedPreferences; **no built-in encryption**, so pair with Android Keystore/Tink for secrets (STORAGE-1) |
 | [MASVS] | https://mas.owasp.org/MASVS/ (v2.1.0) |
-| [MASTG] | https://mas.owasp.org/MASTG/ (v2.0.0, 2026-06-30) — incl. MASTG-KNOW-0015 (cert pinning), MASTG-TEST-0244 (missing pinning, Android) |
+| [MASTG] | https://mas.owasp.org/MASTG/ (cite the version shown on the site at review time) — incl. MASTG-KNOW-0015 (cert pinning), MASTG-TEST-0244 (missing pinning, Android) |
 | [PINNING] | https://cheatsheetseries.owasp.org/cheatsheets/Pinning_Cheat_Sheet.html — OWASP Pinning Cheat Sheet (public-key/SPKI pins, backup pins, expiration safety-valve, when NOT to pin) |
 | [TOP10-2024] | https://owasp.org/www-project-mobile-top-10/ |
 | [GRADLE-DOCS] | https://docs.gradle.org/current/userguide/best_practices_general.html (+ version_catalogs.html, configuration_cache.html) |
@@ -275,6 +284,11 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
 [COMPOSE-STABILITY]: https://developer.android.com/develop/ui/compose/performance/stability
 [A11Y]: https://developer.android.com/develop/ui/compose/accessibility
 [EUM-LOADING]: https://proandroiddev.com/loading-initial-data-in-launchedeffect-vs-viewmodel-f1747c20ce62
+[STATE-PRODUCTION]: https://developer.android.com/topic/architecture/ui-layer/state-production
+[HOUSE]: https://github.com/Mark-Hine/ai-toolkit/tree/main/claude/plugins/android-kit/skills/standards/references
+[STRONG-SKIPPING]: https://developer.android.com/develop/ui/compose/performance/stability/strongskipping
+[STABILITY-FIX]: https://developer.android.com/develop/ui/compose/performance/stability/fix
+[NAV3]: https://developer.android.com/guide/navigation/navigation-3
 [UI-STANDARDS]: https://github.com/Mark-Hine/ai-toolkit/blob/main/shared/guidance/design-standards.md
 [M3-DESIGN]: https://m3.material.io
 [WCAG22]: https://www.w3.org/TR/WCAG22/
