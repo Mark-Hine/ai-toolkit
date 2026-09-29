@@ -12,7 +12,7 @@ Two layers. Plugins carry the shareable parts. The `home/` dotfiles layer carrie
 | `plugins/ios-kit/skills/` | `/ios-kit:feature`, `bugfix`, `uplift-deps`, `run-app`, `standards` (Apple docs index plus a per-repo `CLAUDE.md` template) | On invocation or when relevant |
 | `plugins/ios-kit/agents/` | `ios-reviewer` (opus, read-only), `ios-researcher` (sonnet, read-only, Apple docs only), `ios-verifier` (sonnet, runs tests and simulator smoke checks) | When delegated |
 | `plugins/ios-kit/hooks/` | SwiftFormat/SwiftLint after `.swift` edits, only in repos that opt in with a config file | On matching edits |
-| `plugins/pr-review/` | Formal written PR review with a standards-cited findings register, grading Android, iOS, Spring Boot, React/Next.js and generic repos | On "review this PR" or `/pr-review` |
+| `plugins/pr-review/skills/pr-review/` | Formal written PR review with a standards-cited findings register, grading Android, iOS, Spring Boot, React/Next.js and generic repos | On "review this PR" or `/pr-review:pr-review` |
 | `plugins/design-kit/skills/` | `/design-kit:standards` (interactive UI/UX design standards and anti-slop guidelines reference index) | On invocation or when relevant |
 | `plugins/design-kit/agents/` | `ui-reviewer` (opus, read-only, audits UI diffs/components against anti-slop, HIG/M3, spatial grid, and 5 states) | When delegated |
 | `home/CLAUDE.md` | Global preferences: subagent models, Android and iOS routing. Imports `~/.claude/machine.md` | Every session |

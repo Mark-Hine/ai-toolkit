@@ -1,5 +1,8 @@
 name: ci
-on: [push, pull_request]
+on:
+  push:
+    branches: [main]
+  pull_request:
 jobs:
   scrub:
     runs-on: ubuntu-latest
@@ -12,20 +15,41 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   validate-plugins:
     runs-on: ubuntu-latest
+    env:
+      CLAUDE_CODE_VERSION: '2.1.284'
+      DISABLE_AUTOUPDATER: '1'
+      CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: '1'
     steps:
       - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
       - name: Install Claude Code
-        run: npm install -g @anthropic-ai/claude-code
-      - name: Validate plugins
+        run: npm install -g "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}"
+      - name: Validate marketplace and plugins (strict)
         run: |
-          claude plugin validate claude/plugins/android-kit
-          claude plugin validate claude/plugins/pr-review
-          claude plugin validate claude/plugins/ios-kit
+          claude plugin validate . --strict
+          for p in claude/plugins/*/; do claude plugin validate "$p" --strict; done
       - name: Hook regression checks
         run: bash claude/plugins/android-kit/hooks/test-guards.sh
+      - name: Shell syntax
+        run: git ls-files 'claude/*.sh' 'claude/**/*.sh' | xargs -n1 bash -n
+  validate-shared:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Repo structure
+        run: python3 scripts/ci/check_repo.py
+      - name: Mirror parity
+        run: python3 scripts/ci/check_parity.py
+      - name: Plugin versions bumped
+        if: github.event_name == 'pull_request'
+        run: python3 scripts/ci/check_plugin_versions.py --base "origin/${GITHUB_BASE_REF}"
   validate-codex:
     runs-on: ubuntu-latest
     steps:
@@ -35,7 +59,7 @@ jobs:
           python-version: '3.11'
       - name: Validate Codex assets
         run: python3 codex/scripts/validate.py
-      - name: Test guards and installer
+      - name: Test guards, installer and validator
         run: python3 -m unittest discover -s codex/tests -v
       - name: Installer shell syntax
         run: bash -n codex/install.sh
@@ -52,4 +76,3 @@ jobs:
         run: python3 -m unittest discover -s antigravity/tests -v
       - name: Installer shell syntax
         run: bash -n antigravity/install.sh
-

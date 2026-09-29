@@ -4,6 +4,7 @@
     "name": "Mark Hine",
     "url": "https://github.com/Mark-Hine"
   },
+  "description": "Claude Code plugins for Android, iOS, UI design review and formal PR review.",
   "plugins": [
     {
       "name": "android-kit",

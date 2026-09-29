@@ -1,7 +1,21 @@
 {
   "name": "ios-kit",
+  "version": "1.0.0",
   "description": "iOS playbooks, Apple standards index, reviewer/researcher/verifier agents for Claude Code",
-  "author": { "name": "Mark Hine", "url": "https://github.com/Mark-Hine" },
+  "author": {
+    "name": "Mark Hine",
+    "url": "https://github.com/Mark-Hine"
+  },
+  "homepage": "https://github.com/Mark-Hine/ai-toolkit/tree/main/claude/plugins/ios-kit",
   "repository": "https://github.com/Mark-Hine/ai-toolkit",
-  "license": "MIT"
+  "license": "MIT",
+  "keywords": [
+    "ios",
+    "swift",
+    "swiftui",
+    "xcode"
+  ],
+  "dependencies": [
+    "design-kit"
+  ]
 }

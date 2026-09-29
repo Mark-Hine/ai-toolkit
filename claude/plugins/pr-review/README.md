@@ -75,23 +75,27 @@ is skipped, no paired repo means no twins table.
 
 ## Install
 
-See the repo root README — symlink recommended:
-
-```bash
-ln -s "$(pwd)/claude-skills/pr-review" ~/.claude/skills/pr-review
 ```
+/plugin marketplace add Mark-Hine/ai-toolkit
+/plugin install pr-review@ai-toolkit
+```
+
+The skill is namespaced `pr-review:pr-review` once installed.
 
 ## Structure
 
 ```
 pr-review/
-├── SKILL.md                  # phased protocol (0 setup/profile/mode · 1 manifest · 2 fan-out ·
+├── .claude-plugin/plugin.json
+├── README.md
+└── skills/pr-review/
+    ├── SKILL.md              # phased protocol (0 setup/profile/mode · 1 manifest · 2 fan-out ·
 │                             #  2a adversarial verification · 3 lead verification · 3.5 emit JSON ·
 │                             #  4 register · 5 twins · 6 render+deliver · R re-review)
-├── scripts/
-│   └── post_azdo.py          # findings.json → Azure DevOps PR threads + reviewer vote (stdlib-only)
-└── references/
-    ├── protocol.md           # §1–§12 rules of engagement (delta-only, severity vocabulary,
+    ├── scripts/
+    │   └── post_azdo.py      # findings.json → Azure DevOps PR threads + reviewer vote (stdlib-only)
+    └── references/
+        ├── protocol.md           # §1–§12 rules of engagement (delta-only, severity vocabulary,
     │                         #  verification discipline, churn honesty, re-review rules);
     │                         #  §13–§16 grading rules shared by every platform;
     │                         #  §17–§24 extensions (root cause, verification criteria, SHA
