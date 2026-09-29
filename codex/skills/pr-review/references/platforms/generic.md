@@ -1,4 +1,4 @@
-# Platform pack — generic
+# Platform pack: generic
 
 Load this pack when the repo is none of Android, iOS, Spring Boot or React/Next.js. There is no single authority to cite for
 "software in general", so the grading posture shifts: instead of measuring the change against an
@@ -6,18 +6,19 @@ external doctrine, measure it against **the standards the project has already ad
 the language/framework's own official documentation. A finding that says "this contradicts the
 convention used in the other 40 files" is stronger than one that cites a blog post.
 
-The platform-neutral review rules — volatile facts, `Unverified` grading, pragmatism guardrails,
-main-safety ownership — live in [`../protocol.md`](../protocol.md) §13–§16, and their extensions —
-root cause not symptom, verification criteria, SHA ancestry, debug-variant exclusion — in §17–§20.
+The platform-neutral review rules live in [`../protocol.md`](../protocol.md) §13 to §16. They cover
+volatile facts, `Unverified` grading, pragmatism guardrails and main-safety ownership. Their
+extensions live in §17 to §20 and cover root cause not symptom, verification criteria, SHA ancestry
+and debug-variant exclusion.
 
-> **PRAGMATISM GUARDRAILS — DO NOT FLAG:** with no ecosystem doctrine to anchor against, the risk
+> **PRAGMATISM GUARDRAILS, DO NOT FLAG:** with no ecosystem doctrine to anchor against, the risk
 > here is grading the repo against your own preferences. Unless the project has adopted a standard
 > that the change contradicts, do **not** raise findings for:
-> - the choice of architectural pattern, folder layout, or module boundaries;
+> - the choice of architectural pattern, folder layout, or module boundaries
 > - the absence of a DI container, an interface per class, a use-case layer, or a repository
->   abstraction;
-> - ORM vs query builder vs raw SQL; monorepo vs polyrepo; the test framework or assertion style;
-> - formatting and naming that the project's own formatter and linter accept;
+>   abstraction
+> - ORM vs query builder vs raw SQL, monorepo vs polyrepo, and the test framework or assertion style
+> - formatting and naming that the project's own formatter and linter accept
 > - the language or framework itself, or its version, absent a stated support or security reason.
 >
 > Flag *contradiction with the standard this repo has adopted*, not divergence from the one you
@@ -28,35 +29,35 @@ root cause not symptom, verification criteria, SHA ancestry, debug-variant exclu
 
 Before reviewing, spend a few minutes finding what this repo already commits to, and cite *that*:
 
-- **Linters and formatters** — config files (`.eslintrc`, `ruff.toml`, `.rubocop.yml`, `detekt.yml`,
-  `.editorconfig`, compiler strictness flags). A rule the project has enabled is a citable standard;
-  a config the tree visibly violates, with no CI enforcing it, is itself a finding.
-- **CI configuration** — what actually gates a merge. A test step that cannot fail (`|| true`,
+- **Linters and formatters:** config files (`.eslintrc`, `ruff.toml`, `.rubocop.yml`, `detekt.yml`,
+  `.editorconfig`, compiler strictness flags). A rule the project has enabled is a citable standard.
+  A config the tree visibly violates, with no CI enforcing it, is itself a finding.
+- **CI configuration:** what actually gates a merge. A test step that cannot fail (`|| true`,
   `continue-on-error`, a task name that matches nothing) is a blocker-class finding regardless of
   language, because it silently certifies everything else.
-- **Contributing/architecture docs** — `CONTRIBUTING.md`, ADRs, `docs/`. Written team decisions are
+- **Contributing/architecture docs:** `CONTRIBUTING.md`, ADRs, `docs/`. Written team decisions are
   the strongest possible citation.
-- **The language/framework's official guidance** — the canonical docs site for the stack in play.
+- **The language/framework's official guidance:** the canonical docs site for the stack in play.
   Prefer it over third-party opinion, and verify anything volatile at review time (protocol.md §13).
-- **Security** — OWASP ASVS for application-security requirements and the OWASP Top 10 for web
-  risks; for an API, add the OWASP API Security Top 10. Cite the specific control, not "OWASP".
+- **Security:** OWASP ASVS for application-security requirements and the OWASP Top 10 for web
+  risks. For an API, add the OWASP API Security Top 10. Cite the specific control, not "OWASP".
 
 Record whatever you settle on in the review's Standards basis section so every finding's citation
 resolves to something the reader can open.
 
 ### Which authority to cite, by stack
 
-The repo's own adopted config still outranks everything below — this table is what to reach for
+The repo's own adopted config still outranks everything below. This table is what to reach for
 *after* that, so a finding cites a canonical source rather than a blog post. Verify anything
-volatile at review time (protocol.md §13); prefer the version of the doc matching the version the
+volatile at review time (protocol.md §13). Prefer the version of the doc matching the version the
 repo pins.
 
 | Stack in play | Cite |
 |---|---|
-| JavaScript / TypeScript | MDN for language and web APIs; the runtime's own docs (Node/Deno/Bun); the framework's official docs; the TS handbook for type questions. A React or Next.js repo loads [`react-nextjs.md`](react-nextjs.md) instead of this pack |
-| Python | the relevant PEP (PEP 8/484/604…) plus the project's `ruff`/`mypy`/`pyproject` config; library docs for API use |
+| JavaScript / TypeScript | MDN for language and web APIs, the runtime's own docs (Node/Deno/Bun), the framework's official docs, and the TS handbook for type questions. A React or Next.js repo loads [`react-nextjs.md`](react-nextjs.md) instead of this pack |
+| Python | the relevant PEP (PEP 8/484/604…) plus the project's `ruff`/`mypy`/`pyproject` config, and library docs for API use |
 | Go | Effective Go, the Go style guide, and `go vet`/staticcheck rule IDs |
-| JVM (Java / Kotlin / Spring) | the framework reference docs; Kotlin coding conventions; the JDK API docs for concurrency and time. A Spring Boot service loads [`spring-boot.md`](spring-boot.md) instead of this pack |
+| JVM (Java / Kotlin / Spring) | the framework reference docs, Kotlin coding conventions, and the JDK API docs for concurrency and time. A Spring Boot service loads [`spring-boot.md`](spring-boot.md) instead of this pack |
 | .NET / C# | Microsoft Learn framework design guidelines and the .NET API docs |
 | Ruby / Rails | the Rails guides and the project's `.rubocop.yml` |
 | PHP / Laravel | PSR standards and the framework's own docs |
@@ -67,18 +68,18 @@ repo pins.
 | CI / build pipelines | the CI product's own docs for the step semantics you are relying on |
 
 Where the finding is a security control rather than a style or API question, cite the OWASP control
-above instead — ASVS for application requirements, the API Top 10 for endpoints — naming the
-specific control, not "OWASP".
+above instead, naming the specific control, not "OWASP". Use ASVS for application requirements and
+the API Top 10 for endpoints.
 
 ## What to grade
 
-These are the failure classes worth hunting in almost any change. They are lenses, not a checklist —
-depth belongs where the risk is.
+These are the failure classes worth hunting in almost any change. They are lenses, not a checklist.
+Depth belongs where the risk is.
 
 **Correctness at boundaries.** Error paths that swallow failures (empty `catch`, ignored return
-values, a failure branch that routes to a success screen); results collapsed into sentinels (`""`,
-`0`, `null`) that the caller must reinterpret; off-by-one and empty-collection edges in new parsing
-or pagination; time zones and locale in date/money formatting.
+values, a failure branch that routes to a success screen), results collapsed into sentinels (`""`,
+`0`, `null`) that the caller must reinterpret, off-by-one and empty-collection edges in new parsing
+or pagination, and time zones and locale in date/money formatting.
 
 **Contract changes.** Any change to a wire format, database schema, public API, queue message, or
 config key: is the other side deployed and compatible, and is the change backward-compatible for
@@ -88,29 +89,31 @@ assertions, unless you can verify the far side yourself.
 
 **Deploy and migration ordering.** A change can be backward-compatible and still break, because
 compatibility is a property of the *sequence*, not of the endpoint. For any schema or wire change,
-ask: is it staged expand-then-contract — add the new field or column, backfill, switch readers,
-and only drop the old one in a later release — or does one deploy do all of it at once? What
+ask whether it is staged expand-then-contract or whether one deploy does all of it at once.
+Expand-then-contract adds the new field or column, backfills, switches readers, and only drops the
+old one in a later release. What
 happens to rows and messages written by the old code while the rollout is in flight, and to rows
 written by the new code if it is rolled back? Is the migration reversible, and is there a down
 path that doesn't lose data? Where a service and its consumers both change, which side must ship
 first, and does anything enforce that order? For a live table, will the migration hold a lock or
-rewrite the table — the engine's own docs (see the table above) are the citation, not folklore.
+rewrite the table? The engine's own docs (see the table above) are the citation, not folklore.
 Same grading rule as the rest of this lens: **Q** for the author unless you can verify the far
 side or the deploy mechanism yourself.
 
-**State and data flow.** One owner per piece of state; no hidden writes behind read-shaped names (a
-`get*` that mutates a cache); persisted flags with several writers and no clear lifetime, especially
-where a stale value changes a later decision; caches whose invalidation is spread across callers.
+**State and data flow.** Check for one owner per piece of state and no hidden writes behind read-shaped
+names (a `get*` that mutates a cache). Watch for persisted flags with several writers and no clear
+lifetime, especially where a stale value changes a later decision, and for caches whose invalidation
+is spread across callers.
 
-**Security and privacy.** Secrets or credentials in code, config, or logs; PII in URLs, query
-strings, or log lines (the connection may be encrypted; the server's access log is not);
-authentication and authorisation checks enforced server-side, not merely in the client; injection
-surfaces (string-built SQL, shell, template); unsafe deserialisation; new dependencies and their
-provenance.
+**Security and privacy.** Look for secrets or credentials in code, config, or logs, and for PII in
+URLs, query strings, or log lines. The connection may be encrypted, but the server's access log is
+not. Check that authentication and authorisation checks are enforced server-side, not merely in the
+client. Look for injection surfaces (string-built SQL, shell, template), unsafe deserialisation, and
+new dependencies and their provenance.
 
-**Concurrency and resources.** Unbounded pools and unclosed resources; work launched without a
-cancellation story; shared mutable state without synchronisation; blocking calls on latency-critical
-paths. Note that swallowing a cancellation signal and reporting it as an error is a common, subtle
+**Concurrency and resources.** Unbounded pools and unclosed resources, work launched without a
+cancellation story, shared mutable state without synchronisation, and blocking calls on
+latency-critical paths. Note that swallowing a cancellation signal and reporting it as an error is a common, subtle
 regression.
 
 **Tests.** Does the riskiest code in the change have any? Tests that assert defaults rather than the
@@ -128,7 +131,7 @@ what makes it expensive later.
 
 ## Source registry
 
-Fill this in per review with what you actually cited — the project's own configs and docs first,
+Fill this in per review with what you actually cited, with the project's own configs and docs first,
 then the canonical references for the stack. A few that apply broadly:
 
 | Key | Source |

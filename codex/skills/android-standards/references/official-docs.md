@@ -5,7 +5,7 @@ sources: inline
 
 # Official documentation registry
 
-Canonical URLs. Prefer `android docs search "<term>"` first; use these for web browsing fallback and for citing.
+Canonical URLs. Prefer `android docs search "<term>"` first. Use these for web browsing fallback and for citing.
 
 ## Architecture
 - Guide to app architecture: https://developer.android.com/topic/architecture
@@ -15,7 +15,7 @@ Canonical URLs. Prefer `android docs search "<term>"` first; use these for web b
 - Modularization: https://developer.android.com/topic/modularization and /topic/modularization/patterns
 - Navigation 2 type-safe routes (`@Serializable` routes, `toRoute<T>()`): https://developer.android.com/guide/navigation/design/type-safety
 - Navigation 3, a Compose-only back stack the app owns, with scenes for adaptive layouts: https://developer.android.com/guide/navigation/navigation-3 · migration guide (one atomic change, compileSdk 36, composable destinations, typed routes): https://developer.android.com/guide/navigation/navigation-3/migration-guide · releases, check for the current stable: https://developer.android.com/jetpack/androidx/releases/navigation3
-- DataStore (no built-in encryption; pair with Keystore/Tink for secrets): https://developer.android.com/topic/libraries/architecture/datastore
+- DataStore (no built-in encryption, so pair with Keystore/Tink for secrets): https://developer.android.com/topic/libraries/architecture/datastore
 - Safer flow collection from UIs: https://medium.com/androiddevelopers/a-safer-way-to-collect-flows-from-android-uis-23080b1f8bda
 
 ## Compose

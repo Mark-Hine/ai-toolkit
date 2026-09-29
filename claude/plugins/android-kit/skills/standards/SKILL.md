@@ -15,7 +15,7 @@ or WebFetch). Do not answer deadline, deprecation or version questions from memo
 | Navigation 2 or Navigation 3 | `references/official-docs.md` §Architecture, then the `navigation-3` skill |
 | One-shot ViewModel → UI events (navigation, snackbar) | `references/ui-events.md` (house pattern + why it differs from the official state-based guidance) |
 | Too many composable callbacks / parameters | `references/ui-events.md` §Actions holder |
-| What tests a change needs; journey (E2E) format | `references/testing.md` |
+| What tests a change needs and the journey (E2E) format | `references/testing.md` |
 | Design system, theming, custom components | `references/jetsnack.md` |
 | Build, AGP, Gradle, catalogs, shrinking | `references/official-docs.md` §Build |
 | Security controls, pinning, storage | `references/official-docs.md` §Security |
@@ -23,8 +23,8 @@ or WebFetch). Do not answer deadline, deprecation or version questions from memo
 | Compose performance and API shape | `references/official-docs.md` §Compose |
 
 Guardrails when applying any reference to this repo:
-- target repos are often hybrid legacy apps (XML + Compose). Recommend the blueprint pattern for new code; do not propose rewriting working
+- target repos are often hybrid legacy apps (XML + Compose). Recommend the blueprint pattern for new code. Do not propose rewriting working
   XML/LiveData screens unless the ticket is a migration (`migrate-xml-views-to-jetpack-compose` skill).
-- Now in Android pragmatism (maintainers' discussion #1273): ViewModels may call repositories directly; use cases
-  need no interface each; a domain layer is optional; DI at module boundaries is enough.
+- Now in Android pragmatism (maintainers' discussion #1273): ViewModels may call repositories directly, use cases
+  need no interface each, a domain layer is optional and DI at module boundaries is enough.
 - A reference may be older than the toolchain. State the version the source targets.

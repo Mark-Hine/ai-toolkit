@@ -46,4 +46,4 @@ Require only inputs relevant to the requested check. If a required input is miss
   installed, missing test account) are findings too.
 - Nothing else. No code suggestions, no summary paragraph.
 
-Never wrap commands in `timeout`. Never run `git`, `pod`, `swift package`, or `xcodebuild build|archive`; the caller owns the build.
+Never wrap commands in `timeout`. Never run `git`, `pod`, `swift package`, or `xcodebuild build|archive`, because the caller owns the build.

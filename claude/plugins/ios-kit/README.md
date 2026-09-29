@@ -8,10 +8,10 @@ Claude Code plugin for iOS work. Install with `/plugin marketplace add Mark-Hine
 | `/ios-kit:bugfix PROJ-123 <symptom>` | Reproduce (test or simulator), root cause, minimal fix, regression test, review, commit |
 | `/ios-kit:uplift-deps PROJ-123 <what>` | Xcode/Swift/SwiftPM/CocoaPods uplift, one axis per commit, `Package.resolved`/`Podfile.lock` diffs (manual invocation only) |
 | `/ios-kit:run-app <simulator> <scheme>` | Build, install, launch and screenshot a debug scheme via `xcodebuild` and `xcrun simctl` (manual invocation only) |
-| `standards` skill | Index of Apple/Swift.org docs, Apple sample apps (Landmarks, Backyard Birds, Food Truck), house patterns, and a per-repo `CLAUDE.md` template; preloaded into the researcher |
+| `standards` skill | Index of Apple/Swift.org docs, Apple sample apps (Landmarks, Backyard Birds, Food Truck), house patterns, and a per-repo `CLAUDE.md` template, preloaded into the researcher |
 | `ios-reviewer` agent | Read-only diff review, runs the project's build and targeted tests, grades Blocker/Major/Nit, checks effective artefacts (built `Info.plist`, lock files) |
-| `ios-researcher` agent | Read-only research on Apple/Swift guidance; shell limited by guard-kit to read-only tooling queries |
-| `ios-verifier` agent | Runs `xcodebuild test`, summarises with `xcresulttool`, launches and screenshots on the simulator; shell limited by guard-kit to test, result and simulator evidence commands. Reports that interaction was not verified when no XCUITest covers a screen |
+| `ios-researcher` agent | Read-only research on Apple/Swift guidance. Its shell is limited by guard-kit to read-only tooling queries |
+| `ios-verifier` agent | Runs `xcodebuild test`, summarises with `xcresulttool`, launches and screenshots on the simulator. Its shell is limited by guard-kit to test, result and simulator evidence commands. Reports that interaction was not verified when no XCUITest covers a screen |
 | `hooks/swift_lint.py` | PostToolUse on `.swift` edits. Runs SwiftFormat `--lint` and SwiftLint only when the nearest `.swiftformat` or `.swiftlint.yml` opts in and the binary is installed. SwiftLint errors block, warnings come back as context. Shared with the Codex layer through `shared/hooks/` |
 
 Playbooks read repo facts (workspace, schemes, bundle id, design-system package, test framework) from the project's `CLAUDE.md`. Machine facts (default simulator) come from `~/.claude/machine.md`. Path-scoped Swift, SwiftUI, testing and UI-events rules install separately from `claude/home/rules/ios/`. Optional companions, documented in the standards index: Paul Hudson's `swiftui-agent-skill` for SwiftUI API detail, XcodeBuildMCP for simulator UI automation, Sosumi for Apple docs as Markdown.

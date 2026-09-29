@@ -18,7 +18,7 @@ class FakeAdo:
         self.calls.append(('create', content.split('\n', 1)[0], path, line))
 
     def reply(self, thread_id, content):
-        self.calls.append(('reply', thread_id, content.split(' at ')[0].split(' —')[0]))
+        self.calls.append(('reply', thread_id, content.split(' at ')[0].split('. ')[0]))
 
     def set_status(self, thread_id, status):
         self.calls.append(('status', thread_id, status))

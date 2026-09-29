@@ -41,6 +41,6 @@ The script symlinks the dotfiles and shared personal preferences, creates `~/.cl
 ## Design principles
 
 - Shared content is platform-scoped, never repo-scoped. Repo breakage is documented in that repo, not enforced here.
-- Rules carry only the rule; rationale and code samples live in `plugins/android-kit/skills/standards/references/`.
-- Subagents pin models. Research is cheap (sonnet); review needs judgement (opus). Never `inherit`.
+- Rules carry only the rule. Rationale and code samples live in `plugins/android-kit/skills/standards/references/`.
+- Subagents pin models. Research is cheap (sonnet), but review needs judgement (opus). Never `inherit`.
 - Guard hooks are deterministic and repo-agnostic. One Python module under `shared/hooks/` serves all three layers, and the plugin and Codex copies are kept identical by CI. Agent command limits come from the same module, keyed on the `agent_type` the hook input carries.

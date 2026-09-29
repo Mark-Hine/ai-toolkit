@@ -13,13 +13,13 @@ Repo facts (workspace, schemes, build/test commands, test framework, bundle id) 
 2. **Locate.** Research subagent: trace the path from symptom to code (view → view model → service/repository → API).
    Read the whole path, not the first suspicious line. `git log -S` for the change that introduced it.
 3. **Reproduce.** Prefer a failing unit test in the target that owns the defect. For UI or platform bugs reproduce on
-   simulator with `/ios-run-app` (an older runtime from `xcrun simctl list runtimes` for OS-specific issues); capture a
+   simulator with `/ios-run-app` (an older runtime from `xcrun simctl list runtimes` for OS-specific issues) and capture a
    screenshot and relevant `log show` excerpt. Quote the failing output.
 4. **Root cause.** One paragraph: what is wrong and why it produces the symptom. If a fix would only mask it (optional
    chaining that hides a nil, `DispatchQueue.main.async` to paper over isolation, a `try?`), say so and propose the real fix.
    Ask `ios-researcher` when an OS behaviour change or deprecation is suspected.
 5. **Fix** with minimal diff. Note refactor candidates as follow-ups instead of doing them.
-6. **Verify.** Failing test now green plus suite's other tests (`xcodebuild test … -only-testing:`); project's build
+6. **Verify.** Failing test now green plus suite's other tests (`xcodebuild test … -only-testing:`), and project's build
    command for every scheme it lists. Hand test rerun and, for UI bugs, simulator smoke check to `ios-verifier` and quote results.
 7. **Review.** `ios-reviewer` with symptom and root cause as the task statement.
 8. **Commit, only if asked.** Follow shared Git conventions. Do not push unless asked.

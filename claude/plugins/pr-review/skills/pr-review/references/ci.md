@@ -9,7 +9,7 @@ artifacts to the staging directory, and lets the pipeline post the findings JSON
 - **Trigger:** a PR-validation pipeline (branch policy build). The review runs against the PR's
   merge-base..head, exactly like a local run.
 - **Mode switch:** `PR_REVIEW_MODE=ci` in the environment.
-- **Inputs:** source/target from the CI system's PR variables; everything else Phase 0 infers,
+- **Inputs:** source/target from the CI system's PR variables. Phase 0 infers everything else,
   recording each inference in the JSON's `scope.inferences`.
 - **Outputs:** `pr-review-<PR#>-<YYYY-MM-DD>.json` and `pr-review-<PR#>-<YYYY-MM-DD>.md` in the
   artifact staging directory, published as build artifacts. The poster globs `pr-review-*.json`
@@ -103,7 +103,7 @@ Notes:
   above). It is not exposed by default.
 - The poster reads org/project/repo/PR from the predefined variables
   (`SYSTEM_COLLECTIONURI`, `SYSTEM_TEAMPROJECT`, `BUILD_REPOSITORY_NAME`,
-  `SYSTEM_PULLREQUEST_PULLREQUESTID`); flags override for local testing.
+  `SYSTEM_PULLREQUEST_PULLREQUESTID`). Flags override for local testing.
 - To warn instead of fail, drop `--fail-on-verdict` and emit
   `##vso[task.complete result=SucceededWithIssues]` when the poster prints a negative vote.
 - Re-runs on new pushes are the CI re-review: Phase R updates the findings JSON statuses, and the

@@ -1,10 +1,19 @@
 {
   "name": "guard-kit",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Repo-agnostic PreToolUse guard: blocks protected-branch and force pushes, destructive git, timeout wrappers, and edits to secrets, signing material and lock files. Limits the toolkit's researcher and verifier agents to their documented commands.",
-  "author": { "name": "Mark Hine", "url": "https://github.com/Mark-Hine" },
+  "author": {
+    "name": "Mark Hine",
+    "url": "https://github.com/Mark-Hine"
+  },
   "homepage": "https://github.com/Mark-Hine/ai-toolkit/tree/main/claude/plugins/guard-kit",
   "repository": "https://github.com/Mark-Hine/ai-toolkit",
   "license": "MIT",
-  "keywords": ["guard", "hooks", "git", "secrets", "safety"]
+  "keywords": [
+    "guard",
+    "hooks",
+    "git",
+    "secrets",
+    "safety"
+  ]
 }
