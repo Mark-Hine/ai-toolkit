@@ -1,6 +1,6 @@
 # Testing: expectations, tooling, journeys
 
-Rule: `claude-rules/android/testing.md`. This file holds the reasoning, the pyramid, and the journey template.
+Rule: `~/.claude/rules/android/testing.md`. This file holds the reasoning, the pyramid, and the journey template.
 
 ## Pyramid per change
 

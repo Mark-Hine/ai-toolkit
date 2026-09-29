@@ -12,7 +12,7 @@ paths:
   Bug fix → failing test first, then the fix, then green; quote both runs.
 - Stack for new tests: JUnit 5, Kotest assertions, MockK, `kotlinx-coroutines-test` (`runTest`, injected `TestDispatcher`).
   Fakes over mocks for repositories and data sources; MockK only at true boundaries (SDKs, Android framework).
-  No new Mockito/Hamcrest; no `Thread.sleep`; no `runBlocking`; tests share no static mutable state (parallel forks are on).
+  No new Mockito/Hamcrest; no `Thread.sleep`; no `runBlocking`; tests share no static mutable state, because Gradle may run test classes in parallel forks.
 - Never `@Ignore`, delete, or loosen an assertion to go green. A failing pre-existing test is reported as pre-existing, with the
   project CLAUDE.md's known-broken list as the reference; it is not fixed inside another ticket.
 - Run the narrowest test first (`./gradlew :<module>:test<Variant>UnitTest --tests '<FQCN>'`), then the module's unit tests.

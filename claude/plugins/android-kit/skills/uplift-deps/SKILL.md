@@ -10,7 +10,7 @@ argument-hint: "[ticket] [what to uplift, e.g. 'Compose BOM' or 'all AndroidX']"
 Repo facts (modules, compile/assemble commands, catalog vs Groovy scripts, deliberate opt-outs) come from the project's
 `CLAUDE.md` and its `gradle-deps` rule if present. Work in plan mode until step 4 is approved.
 
-1. **Baseline.** Clean `git status` on `feature/<ticket>-<slug>`. Run the project's compile checks and
+1. **Baseline.** Clean `git status` on `feat/<ticket>-<slug>` (or the project's documented branch convention). Run the project's compile checks and
    `./gradlew :app:dependencies --configuration <debugVariant>RuntimeClasspath > <scratchpad>/deps-before.txt`. Quote results.
 2. **Inventory.** List the in-scope entries with current versions (version catalog, or `build.gradle` files in Groovy repos).
    Note any `gradle.properties` opt-outs and convention plugins the uplift touches.

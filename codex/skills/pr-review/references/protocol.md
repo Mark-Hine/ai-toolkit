@@ -128,9 +128,9 @@ scoping statement it produces is a commercial artefact and shouldn't appear by a
 Triggered when a prior review deliverable exists for this PR and the head moved. Order of work:
 
 1. **Blockers first.** Re-verify every prior B at the new head before reading anything new —
-   "all blockers untouched" is the single most important sentence of a re-review.
+   "all blockers open" is the single most important sentence of a re-review.
 2. **Then every other open finding.** Re-verify each open Q and M against its `verify_fixed_when`
-   criterion (§18). Every status — `fixed`, `untouched`, `regressed`, `partial` — cites `file:line`
+   criterion (§18). Every status — `fixed`, `open`, `regressed`, `partial` — cites `file:line`
    evidence at the new head; a status without evidence is a claim, not a verification.
 3. Review only the added range (`OLD_HEAD..NEW_HEAD`) for new findings; verify claimed fixes in
    the added range actually fix (and don't regress a neighbouring path).

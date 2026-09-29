@@ -27,9 +27,15 @@ import urllib.request
 API = "7.1"
 MARKER = "[pr-review:{id}]"
 SEVERITY_LABEL = {"blocker": "**BLOCKER**", "question": "**QUESTION**",
-                  "major": "**MAJOR**", "minor": "**NIT**", "nit": "**NIT**"}
-# ADO thread statuses that mean a human considers the conversation settled.
-RESOLVED_STATUSES = {"fixed", "closed", "wontFix", "byDesign"}
+                  "major": "**MAJOR**", "nit": "**NIT**"}
+# Finding statuses that still count against the PR. A regressed or partial fix gates like an open one.
+GATING = {"open", "regressed", "partial"}
+STATUSES = GATING | {"fixed", "retracted"}
+# ADO thread statuses this poster sets itself.
+BOT_RESOLVED = {"fixed", "closed"}
+# ADO thread statuses only a human sets. The poster never reopens these.
+HUMAN_DISPOSITIONS = {"wontFix", "byDesign"}
+RESOLVED_STATUSES = BOT_RESOLVED | HUMAN_DISPOSITIONS
 VOTE = {"approve": 10, "approve_with_suggestions": 5, "none": 0,
         "waiting_for_author": -5, "reject": -10}
 
@@ -107,7 +113,7 @@ class Ado:
 
 
 def finding_body(f):
-    parts = [f"{SEVERITY_LABEL.get(f['severity'], f['severity'])} `{f['id']}` — {f.get('title', '')}".rstrip(" —"),
+    parts = [f"{SEVERITY_LABEL.get(f['severity'], f['severity'])} `{f['id']}`: {f.get('title', '')}".rstrip(": "),
              "", f["pr_comment"]]
     if f.get("verify_fixed_when"):
         parts += ["", f"**Verified fixed when:** {f['verify_fixed_when']}"]
@@ -117,16 +123,16 @@ def finding_body(f):
 
 def summary_body(doc):
     s = doc.get("scope", {})
-    blockers = [f for f in doc["findings"] if f["severity"] == "blocker" and f.get("status") == "open"]
-    lines = [f"**Verdict: {doc['verdict'].replace('_', ' ')}** — "
+    blockers = [f for f in doc["findings"] if f["severity"] == "blocker" and f.get("status", "open") in GATING]
+    lines = [f"**Verdict: {doc['verdict'].replace('_', ' ')}**, "
              f"`{s.get('merge_base', '?')[:12]}..{s.get('source_head', '?')[:12]}` "
              f"({s.get('commits', '?')} commits, {s.get('files', '?')} files).", ""]
     if blockers:
         lines.append(f"{len(blockers)} blocker(s):")
-        lines += [f"- `{f['id']}` {f.get('title', '')} — `{f['file']}:{f['line']}`" for f in blockers]
+        lines += [f"- `{f['id']}` [{f.get('status', 'open')}] {f.get('title', '')} at `{f['file']}:{f['line']}`" for f in blockers]
     else:
         lines.append("No open blockers.")
-    questions = [f for f in doc["findings"] if f["severity"] == "question" and f.get("status") == "open"]
+    questions = [f for f in doc["findings"] if f["severity"] == "question" and f.get("status", "open") in GATING]
     if questions:
         lines.append(f"{len(questions)} question(s) gate approval until answered "
                      f"(resolving a question's thread lifts the gate):")
@@ -147,21 +153,73 @@ def index_threads(threads):
     return out
 
 
+def validate(doc):
+    """Reject a document the poster cannot act on safely. Returns a list of problems."""
+    problems = []
+    for f in doc.get("findings", []):
+        if f.get("severity") not in SEVERITY_LABEL:
+            problems.append(f"{f.get('id', '?')}: unknown severity {f.get('severity')!r}")
+        if f.get("status", "open") not in STATUSES:
+            problems.append(f"{f.get('id', '?')}: unknown status {f.get('status')!r}")
+    gating_blockers = [f["id"] for f in doc.get("findings", [])
+                       if f.get("severity") == "blocker" and f.get("status", "open") in GATING]
+    if gating_blockers and doc.get("verdict") != "request_changes":
+        problems.append(f"verdict {doc.get('verdict')!r} but blockers still gate: {', '.join(gating_blockers)}")
+    return problems
+
+
+def thread_mentions(thread, text):
+    return any(text in (c.get("content") or "") for c in thread.get("comments", []))
+
+
 def compute_vote(doc, by_marker, reject):
     gating = False
+    suggestions = False
     for f in doc["findings"]:
-        if f.get("status") != "open":
+        status = f.get("status", "open")
+        if status not in GATING:
             continue
         if f["severity"] == "blocker":
-            gating = True
+            gating = True  # a human disposition on the thread never lifts a Blocker
         elif f["severity"] == "question":
             t = by_marker.get(f["id"])
-            if not (t and t.get("status") in RESOLVED_STATUSES):
-                gating = True  # unanswered Q gates approval, unless a human resolved its thread
+            answered = status == "open" and t is not None and t.get("status") in RESOLVED_STATUSES
+            gating = gating or not answered  # an unanswered Q gates, a human-resolved thread answers it
+        else:
+            suggestions = True
     if gating:
         return VOTE["reject"] if reject else VOTE["waiting_for_author"]
-    open_rest = [f for f in doc["findings"] if f.get("status") == "open"]
-    return VOTE["approve_with_suggestions"] if open_rest else VOTE["approve"]
+    return VOTE["approve_with_suggestions"] if suggestions else VOTE["approve"]
+
+
+def reconcile(ado, doc, by_marker):
+    """Create, reply to, resolve or reactivate one thread per finding. Idempotent across re-runs."""
+    head = (doc.get("scope") or {}).get("source_head", "")[:12]
+    for f in doc["findings"]:
+        t = by_marker.get(f["id"])
+        status = f.get("status", "open")
+        marker = MARKER.format(id=f["id"])
+        if t is None:
+            if status in GATING:
+                ado.create_thread(finding_body(f), f.get("file"), f.get("line"))
+            continue  # nothing to post for a fixed or retracted finding that never had a thread
+        tid, tstatus = t["id"], t.get("status")
+        if tstatus in HUMAN_DISPOSITIONS:
+            if status in ("regressed", "partial") and not thread_mentions(t, f"Marked {status}"):
+                ado.reply(tid, f"Marked {status} at `{head}`. Left as the reviewer disposed it. {marker}")
+            continue  # a human closed this conversation; never reopen it
+        if status == "open" and tstatus in BOT_RESOLVED and f["severity"] != "question":
+            ado.reply(tid, f"Still open at `{head}`, re-verified against its criterion. {marker}")
+            ado.set_status(tid, "active")
+        elif status in ("regressed", "partial") and tstatus in BOT_RESOLVED:
+            ado.reply(tid, f"{status.capitalize()} at `{head}`. The fix no longer holds. {marker}")
+            ado.set_status(tid, "active")
+        elif status == "fixed" and tstatus not in RESOLVED_STATUSES:
+            ado.reply(tid, f"Verified fixed at `{head}` (criterion met). {marker}")
+            ado.set_status(tid, "fixed")
+        elif status == "retracted" and tstatus not in RESOLVED_STATUSES:
+            ado.reply(tid, f"Retracted. This finding was wrong, see the review document for the correction. {marker}")
+            ado.set_status(tid, "closed")
 
 
 def main():
@@ -190,32 +248,15 @@ def main():
         doc = json.load(fh)
     if doc.get("schema") != "pr-review/v1":
         sys.exit(f"Unsupported schema: {doc.get('schema')!r} (want pr-review/v1)")
+    problems = validate(doc)
+    if problems:
+        sys.exit("findings.json rejected:\n  " + "\n  ".join(problems))
 
     ado = Ado(args.org_url or "https://dev.azure.com/ORG/", args.project or "PROJECT",
               args.repo or "REPO", args.pr or "0", token or "", args.dry_run)
     by_marker = index_threads(ado.threads())
 
-    head = (doc.get("scope") or {}).get("source_head", "")[:12]
-    for f in doc["findings"]:
-        t = by_marker.get(f["id"])
-        status = f.get("status", "open")
-        if t is None:
-            if status == "open":
-                ado.create_thread(finding_body(f), f.get("file"), f.get("line"))
-            continue  # nothing to post for a non-open finding that never had a thread
-        tid, tstatus = t["id"], t.get("status")
-        if status == "open" and tstatus in RESOLVED_STATUSES and f["severity"] != "question":
-            ado.reply(tid, f"Still open at `{head}` — re-verified against its criterion. {MARKER.format(id=f['id'])}")
-            ado.set_status(tid, "active")
-        elif status == "fixed" and tstatus not in RESOLVED_STATUSES:
-            ado.reply(tid, f"Verified fixed at `{head}` (criterion met). {MARKER.format(id=f['id'])}")
-            ado.set_status(tid, "fixed")
-        elif status == "regressed":
-            ado.reply(tid, f"Regressed at `{head}` — the fix no longer holds. {MARKER.format(id=f['id'])}")
-            ado.set_status(tid, "active")
-        elif status == "retracted" and tstatus not in RESOLVED_STATUSES:
-            ado.reply(tid, f"Retracted — this finding was wrong; see the review document for the correction. {MARKER.format(id=f['id'])}")
-            ado.set_status(tid, "closed")
+    reconcile(ado, doc, by_marker)
 
     summary = by_marker.get("summary")
     if summary is None:

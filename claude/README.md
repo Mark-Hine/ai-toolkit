@@ -21,7 +21,7 @@ Two layers. Plugins carry the shareable parts. The `home/` dotfiles layer carrie
 | `home/rules/writing-style.md` | Plain-prose rules: no em dashes, no colon-hinged sentences, no announcing, tables over paragraphs | Every session |
 | `home/rules/android/` | Kotlin style, Compose, testing, one-shot UI events. Path-scoped, load only when matching files are touched | On matching files |
 | `home/rules/ios/` | Swift style, SwiftUI state ownership and design-system use, testing (Swift Testing/XCTest), one-shot model → UI events. Path-scoped | On matching `.swift` files |
-| `home/settings.snippet.json` | Style reminder hook, hidden skills, permission allowlist, `includeCoAuthoredBy: false` | Merged into `~/.claude/settings.json` |
+| `home/settings.snippet.json` | Style reminder hook, permission allowlist, empty `attribution` so commits and PRs carry no AI trailer. Add your own `skillOverrides` in `~/.claude/settings.json` to hide skills you never use | Merged into `~/.claude/settings.json` |
 
 ## Install
 

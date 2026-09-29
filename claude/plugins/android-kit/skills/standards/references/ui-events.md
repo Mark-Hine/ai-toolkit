@@ -1,6 +1,6 @@
 # One-shot ViewModel → UI events: house pattern and reference code
 
-Rule: `claude-rules/android/ui-events.md`. This file holds the canonical code and the reasoning.
+Rule: `~/.claude/rules/android/ui-events.md`. This file holds the canonical code and the reasoning.
 
 ## Position (decided 2026-09-03)
 - Official guidance (developer.android.com/topic/architecture/ui-layer/events, updated 2026-05) says ViewModel events

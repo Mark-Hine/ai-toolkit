@@ -10,7 +10,7 @@ Read the project AGENTS.md and applicable global guidance first. Fall back to CL
 Repo facts (workspace, schemes, build/test commands, SwiftPM vs CocoaPods, deliberate pins) come from the project's
 `AGENTS.md`. State the plan before editing versions and proceed within the user-authorized scope.
 
-1. **Baseline.** Clean `git status` on `feature/<ticket>-<slug>`. Run the project's build and test commands and copy the
+1. **Baseline.** Clean `git status` on `feat/<ticket>-<slug>` (or the project's documented branch convention). Run the project's build and test commands and copy the
    lock files to the scratchpad: `Package.resolved` (workspace: `<ws>.xcworkspace/xcshareddata/swiftpm/Package.resolved`;
    packages: next to `Package.swift`) and `Podfile.lock` if present. Quote results.
 2. **Inventory.** List in-scope items with current versions and rules: SwiftPM references in `project.pbxproj`

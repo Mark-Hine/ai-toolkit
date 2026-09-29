@@ -1,13 +1,13 @@
 # Per-repo `AGENTS.md` template for iOS repos
 
 Copy to `<repo>/AGENTS.md`, replace every `<…>`, delete lines that do not apply. Keep it under ~60 lines with the hard
-rules in the first 40; repo facts only, no tutorials (the shared `ios-*` skills and `~/.codex/guidance/ios/` carry conventions).
+rules in the first 40; repo facts only, no tutorials (the shared `ios-*` skills and the ios-kit rules carry conventions).
 Personal or temporary notes go in `.local/agent-notes.md` (gitignored).
 
 ```markdown
 # <repo-name>
 
-<one-line product description>, bundle id `<com.example.app>`, Azure DevOps `<org>/<project>/<repo>`.
+<one-line product description>, bundle id `<com.example.app>`, `<git host>` repo `<org>/<repo>`.
 
 ## Never (hooks enforce the push, lock-file and secret-file rules)
 - Edit `GoogleService-Info.plist`, `*.entitlements`, `ExportOptions.plist`, `<Secrets file>` or signing settings in
@@ -46,7 +46,7 @@ Personal or temporary notes go in `.local/agent-notes.md` (gitignored).
 - Xcode `<26.x>` (CI: `<version>`), Swift `<toolchain>` in language mode `<5 | 6>`, strict concurrency `<minimal | targeted | complete>`,
   deployment target iOS `<n>`, device family `<iPhone | iPhone+iPad>`. Dependencies: `<SwiftPM | CocoaPods | both>` (`<n>` pods, `<n>` packages).
 - Environments: `<Dev/SIT/UAT/Prod>` selected by `<scheme | xcconfig | Info.plist key>`; Firebase plist per environment under `<path>`.
-- Branches `feature|fix|task/<TICKET>-<slug>` off `<develop>`. Formal PR reviews: `$pr-review`.
+- Branches `<pattern, default <type>/<TICKET>-<slug>>` off `<default branch>`. Formal PR reviews: `/pr-review`.
 
 ## Compaction
 Preserve: modified-file list, each xcodebuild/simctl command with pass/fail, open `ios-reviewer` findings, current ticket.

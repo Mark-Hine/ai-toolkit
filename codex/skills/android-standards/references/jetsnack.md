@@ -3,7 +3,7 @@
 Repo: https://github.com/android/compose-samples/tree/main/Jetsnack
 Companion doc: https://developer.android.com/develop/ui/compose/designsystems/custom
 
-## Shape to mirror in `views/shared/compose/theme`
+## Shape to mirror in the project's theme package
 - `JetsnackTheme` = `CompositionLocalProvider(LocalJetsnackColors provides colors) { MaterialTheme(...) }`; colours
   are an `@Immutable` class with `mutableStateOf` fields updated via `update()`, exposed through
   `JetsnackTheme.colors`. The project theme should follow this; keep new tokens there, not in composables.

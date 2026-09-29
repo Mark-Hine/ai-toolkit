@@ -1,6 +1,6 @@
 ---
 paths:
-  - "app/src/main/java/**/compose/**"
+  - "**/compose/**/*.kt"
   - "**/*Screen.kt"
   - "**/*Composable*.kt"
   - "**/*Content.kt"

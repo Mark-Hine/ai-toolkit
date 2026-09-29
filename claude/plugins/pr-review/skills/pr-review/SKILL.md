@@ -107,7 +107,7 @@ Then:
    files), quantify it now with `git diff -w` — it raises the evidence bar for every later claim
    (protocol.md §7).
 4. **Re-review check:** a prior deliverable for this PR already exists (glob `pr-review-*.md`
-   **and** the legacy `pr-review-*.md` at the repo root; in CI, a prior `findings.json`
+   at the repo root; in CI, a prior `findings.json`
    artifact or `[pr-review:` marker threads on the PR) and the head has moved ⇒ go to Phase R.
 5. If the working tree is dirty with changes you didn't make, note it and work from `origin/` refs.
 
@@ -191,7 +191,7 @@ Untouched findings get no row; the framing sentence in the template covers them.
 ## Phase 5 — Twin check *(when a paired repo was reviewed)*
 
 Look for a review of the equivalent change in the paired repo (`pr-review-*.md`, including the
-legacy `pr-review-*.md` name, at its root). If
+at its root). If
 found, mark shared defects in the Finding cells and emit the twins table so each gets one
 coordinated fix. If not found, skip silently — never characterise the other repo's status without
 having looked.
@@ -219,7 +219,7 @@ Then (local mode) tell the user the verdict, the blockers in one line each, the 
 
 1. Re-verify **every prior Blocker at the new head first** — their status is the headline.
 2. **Then every other open finding** against its `verify_fixed_when` criterion. Every status —
-   `fixed | untouched | regressed | partial` — cites `file:line` evidence at the new head
+   `fixed | open | regressed | partial` — cites `file:line` evidence at the new head
    (protocol.md §10, §18).
 3. Review only `OLD_HEAD..NEW_HEAD` (Phases 2–3.5 machinery, scaled down); verify that claimed
    fixes actually fix, and that they don't regress a neighbouring path.

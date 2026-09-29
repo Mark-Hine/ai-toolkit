@@ -10,7 +10,7 @@ argument-hint: "[ticket] [what to uplift, e.g. 'Firebase' or 'deployment target 
 Repo facts (workspace, schemes, build/test commands, SwiftPM vs CocoaPods, deliberate pins) come from the project's
 `CLAUDE.md`. Work in plan mode until step 4 is approved.
 
-1. **Baseline.** Clean `git status` on `feature/<ticket>-<slug>`. Run the project's build and test commands and copy the
+1. **Baseline.** Clean `git status` on `feat/<ticket>-<slug>` (or the project's documented branch convention). Run the project's build and test commands and copy the
    lock files to the scratchpad: `Package.resolved` (workspace: `<ws>.xcworkspace/xcshareddata/swiftpm/Package.resolved`;
    packages: next to `Package.swift`) and `Podfile.lock` if present. Quote results.
 2. **Inventory.** List in-scope items with current versions and rules: SwiftPM references in `project.pbxproj`

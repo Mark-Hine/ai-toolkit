@@ -5,6 +5,7 @@ The first path in each group is canonical. `--write` copies it over the others.
 """
 import argparse
 import filecmp
+import re
 import shutil
 import sys
 from pathlib import Path
@@ -27,11 +28,38 @@ PR_REVIEW_SHARED = [
     'references/platforms/react-nextjs.md',
     'scripts/post_azdo.py',
 ]
+# Files whose text must match outside `<!-- layer-specific:start/end -->` blocks. Never written by --write.
+PR_REVIEW_MARKED = ['references/ci.md']
+LAYER_BLOCK = re.compile(r'<!-- layer-specific:start -->.*?<!-- layer-specific:end -->\n?', re.S)
 
 
 def groups():
     for rel in PR_REVIEW_SHARED:
         yield [f'{base}/{rel}' for base in PR_REVIEW.values()]
+
+
+def marked_groups():
+    for rel in PR_REVIEW_MARKED:
+        yield [f'{base}/{rel}' for base in PR_REVIEW.values()]
+
+
+def shared_text(path):
+    return LAYER_BLOCK.sub('', path.read_text())
+
+
+def check_marked(errors):
+    for group in marked_groups():
+        canonical = ROOT / group[0]
+        if not canonical.exists():
+            errors.append(f'{group[0]}: canonical file missing')
+            continue
+        expected = shared_text(canonical)
+        for mirror in group[1:]:
+            target = ROOT / mirror
+            if not target.exists():
+                errors.append(f'{mirror}: missing (canonical {group[0]})')
+            elif shared_text(target) != expected:
+                errors.append(f'{mirror}: text outside layer-specific blocks differs from {group[0]}')
 
 
 def main():
@@ -55,11 +83,16 @@ def main():
                 errors.append(f'{mirror}: missing (canonical {group[0]})')
             elif not filecmp.cmp(canonical, target, shallow=False):
                 errors.append(f'{mirror}: differs from {group[0]} (run scripts/ci/check_parity.py --write)')
+    if not args.write:
+        check_marked(errors)
     for error in errors:
         print(f'::error::{error}')
     if errors:
         return 1
-    print(f'check_parity: {sum(1 for _ in groups())} mirrored groups identical' if not args.write else 'check_parity: mirrors written')
+    if args.write:
+        print('check_parity: mirrors written')
+    else:
+        print(f'check_parity: {sum(1 for _ in groups())} mirrored groups identical, {sum(1 for _ in marked_groups())} marked groups match')
     return 0
 
 

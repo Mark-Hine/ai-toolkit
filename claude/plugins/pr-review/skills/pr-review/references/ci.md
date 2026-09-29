@@ -1,85 +1,124 @@
 # CI/CD integration
 
-How to run this skill headless in a pipeline. The review itself is unchanged — same phases, same
-grading, same adversarial pass — but CI mode never asks anything (protocol.md §24), writes both
-artifacts to the staging directory, and lets the pipeline post `findings.json` to the PR.
+How to run this skill headless in a pipeline. The review itself is unchanged, with the same phases, the same
+grading and the same adversarial pass, but CI mode never asks anything (protocol.md §24), writes both
+artifacts to the staging directory, and lets the pipeline post the findings JSON to the PR.
 
 ## Contract
 
-- **Trigger:** a PR-validation pipeline (branch policy build) — the review runs against the PR's
+- **Trigger:** a PR-validation pipeline (branch policy build). The review runs against the PR's
   merge-base..head, exactly like a local run.
 - **Mode switch:** `PR_REVIEW_MODE=ci` in the environment.
 - **Inputs:** source/target from the CI system's PR variables; everything else Phase 0 infers,
   recording each inference in the JSON's `scope.inferences`.
-- **Outputs:** `findings.json` + the rendered markdown document in the artifact staging
-  directory, published as build artifacts.
-- **Posting:** the pipeline runs `scripts/post_azdo.py` — inline threads at `file:line`, a summary
-  thread, a reviewer vote. Idempotent across re-runs via `[pr-review:<ID>]` markers.
+- **Outputs:** `pr-review-<PR#>-<YYYY-MM-DD>.json` and `pr-review-<PR#>-<YYYY-MM-DD>.md` in the
+  artifact staging directory, published as build artifacts. The poster globs `pr-review-*.json`
+  and expects exactly one.
+- **Posting:** the pipeline runs `scripts/post_azdo.py` from the installed skill. It creates inline threads
+  at `file:line`, a summary thread, a reviewer vote. Idempotent across re-runs via
+  `[pr-review:<ID>]` markers. Findings whose status is `open`, `regressed` or `partial` gate the
+  vote. A thread a human resolved as Won't Fix or By Design is never reopened, and a resolved
+  Question thread lifts that Question's gate.
 - **Gating:** the poster's `--fail-on-verdict` exits 1 when the computed vote is negative, so a
   branch policy can require the step. Prefer gating on the vote (a human resolving a Question
   thread in the PR UI lifts the gate without a re-run) over gating on the JSON's verdict field.
-- **Secrets:** the token comes from the pipeline (`System.AccessToken` or a PAT variable). It is
-  never written into the JSON, the document, or the logs.
+- **Secrets:** the token comes from the pipeline (`System.AccessToken` mapped to
+  `SYSTEM_ACCESSTOKEN`, or a PAT variable). It is never written into the JSON, the document, or
+  the logs. Expose the model API key to the review step only.
+- **Pinning:** pin the agent CLI version and the ai-toolkit ref you tested. An unpinned install in
+  a merge gate changes behaviour without a commit.
 
 ## Azure DevOps
 
-The build identity needs **Contribute to pull requests** on the repo. Example:
+The build identity needs **Contribute to pull requests** on the repo. The example below is a
+template. Run it once on a scratch pipeline before wiring it as a branch policy.
 
+<!-- layer-specific:start -->
 ```yaml
-# azure-pipelines.yml — PR review stage (wire as the PR build via branch policy)
-trigger: none            # PR-triggered via branch policy, not CI trigger
+# azure-pipelines.yml, PR review stage (wire as the PR build via branch policy)
+trigger: none                        # PR-triggered via branch policy, not CI trigger
 
 pool:
   vmImage: ubuntu-latest
 
 variables:
-  PR_REVIEW_MODE: ci
+  CLAUDE_CODE_VERSION: '2.1.284'     # the CLI version you tested
+  AI_TOOLKIT_REF: 'main'             # pin to a tag such as pr-review--v1.1.0 in production
 
 steps:
   - checkout: self
-    fetchDepth: 0        # full history — the review needs the merge-base
+    fetchDepth: 0                    # full history, the review needs the merge-base
+
+  - task: NodeTool@0
+    inputs: { versionSpec: '22.x' }
 
   - bash: |
-      npm install -g @anthropic-ai/claude-code
-      claude -p "/pr-review ci: review PR $(System.PullRequest.PullRequestId), \
-        source $(System.PullRequest.SourceBranch) target $(System.PullRequest.TargetBranch). \
-        Write findings.json and the document to $(Build.ArtifactStagingDirectory)." \
-        --permission-mode acceptEdits
+      set -euo pipefail
+      npm install -g "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}"
+      claude plugin marketplace add "Mark-Hine/ai-toolkit#${AI_TOOLKIT_REF}"
+      claude plugin install pr-review@ai-toolkit --scope user
+      root="$(claude plugin list --json | jq -r '.[] | select(.id == "pr-review@ai-toolkit") | .installPath')"
+      test -f "$root/skills/pr-review/scripts/post_azdo.py"
+      echo "##vso[task.setvariable variable=PR_REVIEW_SKILL_DIR]$root/skills/pr-review"
+    displayName: Install Claude Code and pr-review
+    env:
+      DISABLE_AUTOUPDATER: '1'
+
+  - bash: |
+      set -euo pipefail
+      printf -v today '%(%Y-%m-%d)T' -1
+      pr="$SYSTEM_PULLREQUEST_PULLREQUESTID"
+      src="origin/${SYSTEM_PULLREQUEST_SOURCEBRANCH#refs/heads/}"
+      tgt="origin/${SYSTEM_PULLREQUEST_TARGETBRANCH#refs/heads/}"
+      claude -p "/pr-review:pr-review ci: review PR $pr, source $src, target $tgt. Write pr-review-$pr-$today.json and pr-review-$pr-$today.md to $REVIEW_ARTIFACT_DIR. Do not post." \
+        --add-dir "$REVIEW_ARTIFACT_DIR" --permission-mode dontAsk \
+        --allowedTools "Read,Grep,Glob,Write,Bash(git log *),Bash(git diff *),Bash(git show *),Bash(git rev-parse *),Bash(git merge-base *),Bash(git rev-list *),Bash(git ls-files *),Bash(git branch -r*),Bash(git cat-file *)"
     displayName: Run PR review
     env:
-      ANTHROPIC_API_KEY: $(ANTHROPIC_API_KEY)   # secret variable
+      ANTHROPIC_API_KEY: $(ANTHROPIC_API_KEY)   # secret, scoped to this step only
       PR_REVIEW_MODE: ci
+      REVIEW_ARTIFACT_DIR: $(Build.ArtifactStagingDirectory)
 
   - publish: $(Build.ArtifactStagingDirectory)
     artifact: pr-review
+    condition: succeededOrFailed()
     displayName: Publish review artifacts
 
   - bash: |
-      python3 "$(Build.SourcesDirectory)/scripts-path-to/post_azdo.py" \
-        "$(Build.ArtifactStagingDirectory)"/pr-review-*.json --fail-on-verdict
+      set -euo pipefail
+      shopt -s nullglob
+      files=("$REVIEW_ARTIFACT_DIR"/pr-review-*.json)
+      [ "${#files[@]}" -eq 1 ] || { echo "Expected one findings JSON, found ${#files[@]}"; exit 1; }
+      python3 "$PR_REVIEW_SKILL_DIR/scripts/post_azdo.py" "${files[0]}" --fail-on-verdict
     displayName: Post findings to PR
     env:
       SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+      REVIEW_ARTIFACT_DIR: $(Build.ArtifactStagingDirectory)
 ```
+<!-- layer-specific:end -->
 
 Notes:
 
-- `SystemAccessToken` must be mapped into the step's env explicitly (as above) — it is not exposed
-  by default.
+- `System.AccessToken` must be mapped into the step's env as `SYSTEM_ACCESSTOKEN` explicitly (as
+  above). It is not exposed by default.
 - The poster reads org/project/repo/PR from the predefined variables
   (`SYSTEM_COLLECTIONURI`, `SYSTEM_TEAMPROJECT`, `BUILD_REPOSITORY_NAME`,
   `SYSTEM_PULLREQUEST_PULLREQUESTID`); flags override for local testing.
 - To warn instead of fail, drop `--fail-on-verdict` and emit
   `##vso[task.complete result=SucceededWithIssues]` when the poster prints a negative vote.
-- Re-runs on new pushes are the CI re-review: Phase R updates `findings.json` statuses, and the
+- Re-runs on new pushes are the CI re-review: Phase R updates the findings JSON statuses, and the
   poster resolves threads whose `verify_fixed_when` now passes and reactivates regressions.
+- The poster rejects a findings file with an unknown severity or status, or with a gating Blocker
+  under a verdict other than `request_changes`, before it sends anything.
 
 ## Any other CI system
 
-The design is deliberately splittable: the skill produces `findings.json` (host-agnostic —
-`references/output.md`); only the poster is Azure DevOps-specific. For another host, publish the
-JSON as an artifact and gate on `verdict`, or write a small adapter against the same file — the
-poster's internals already separate the generic findings→actions core from the ADO REST calls.
+The design is deliberately splittable: the skill produces the findings JSON (host-agnostic, see
+`references/output.md`). Only the poster is Azure DevOps-specific. For another host, publish the
+JSON as an artifact and gate on `verdict`, or write a small adapter against the same file. The
+poster's internals already separate the generic findings-to-actions core from the ADO REST calls.
+<!-- layer-specific:start -->
 A GitHub Actions sketch: run the same `claude -p` step, then map findings to
-`gh pr review --request-changes` / review comments via the GitHub API; markers and idempotency
+`gh pr review --request-changes` or review comments via the GitHub API. Markers and idempotency
 carry over unchanged.
+<!-- layer-specific:end -->
