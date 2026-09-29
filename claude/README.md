@@ -18,7 +18,7 @@ Two layers. Plugins carry the shareable parts. The `home/` dotfiles layer carrie
 | `home/CLAUDE.md` | Global preferences: subagent models, Android and iOS routing. Imports `~/.claude/machine.md` | Every session |
 | `../shared/guidance/common.md` | Shared Git and work preferences, linked as `~/.claude/rules/common.md` | Every session |
 | `../shared/guidance/design-standards.md` | Shared UI/UX and anti-slop design standards, linked as `~/.claude/rules/design-standards.md` | Every session |
-| `home/rules/writing-style.md` | Plain-prose rules: no em dashes, no colon-hinged sentences, no announcing, tables over paragraphs | Every session |
+| `home/rules/writing-style.md` | Plain-prose rules with a source key per rule (GOV.UK, Google, Microsoft, plain-language guidelines, Anthropic). Rationale lives in `../shared/guidance/references/writing-style-rationale.md` | Every session |
 | `home/rules/android/` | Kotlin style, Compose, testing, one-shot UI events. Path-scoped, load only when matching files are touched | On matching files |
 | `home/rules/ios/` | Swift style, SwiftUI state ownership and design-system use, testing (Swift Testing/XCTest), one-shot model → UI events. Path-scoped | On matching `.swift` files |
 | `home/settings.snippet.json` | Style reminder hook, permission allowlist, empty `attribution` so commits and PRs carry no AI trailer. Add your own `skillOverrides` in `~/.claude/settings.json` to hide skills you never use | Merged into `~/.claude/settings.json` |
