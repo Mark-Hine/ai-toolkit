@@ -1,8 +1,15 @@
+---
+verified: 2026-09-29
+sources: house
+---
+
 # Now in Android as a blueprint
 
 Repo: https://github.com/android/nowinandroid
 Read first: `docs/ArchitectureLearningJourney.md`, `docs/ModularizationLearningJourney.md`.
 Pragmatism guardrails: https://github.com/android/nowinandroid/discussions/1273
+
+House standard. The choices below are the toolkit's own reading of NIA, kept deliberately. Reviewers grade drift from them as a finding.
 
 ## What to borrow for Android repos
 - **Unidirectional data flow**: `Repository` exposes `Flow`; ViewModel maps to a single `UiState` sealed interface

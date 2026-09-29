@@ -20,7 +20,7 @@ Repo facts (modules, build/test commands, design-system names, app id) come from
 4. **Plan.** Files to add or change, state model (`UiState` sealed interface, StateFlow), where data code goes,
    DI wiring, test list, device checks. For UI changes, consult `$design-standards` (tiered design rules, screen states, accessibility). Follow the project's architecture rules. Proceed within the user-authorized scope. Ask only about unresolved scope or consequential choices.
 5. **Implement** in small steps, running the project's compile check after each. New UI is Compose, Material3, following the design rules (AND-1 colour roles, AND-2 insets, A11Y-3 targets), inside the project's theme and components, split into stateless `XContent` and stateful `XScreen`. No orientation locks.
-6. **Tests.** ViewModel and use-case tests (JUnit5/Kotest/MockK, `runTest`). Run them with `--tests` and quote the summary.
+6. **Tests.** ViewModel and use-case tests (the module's JUnit version, Kotest assertions, MockK, `runTest`). Run them with `--tests` and quote the summary.
 7. **Device verification.** `$android-run-app` on the default phone AVD, navigate to the feature, `android screen`; repeat
    on the tablet AVD for any new or changed screen. Check insets (`edge-to-edge`) and large-screen layout (`adaptive`).
    Then hand off to the `android-verifier` agent with the test command, the journey file(s) for the touched screen, the

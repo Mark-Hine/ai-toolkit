@@ -1,3 +1,8 @@
+---
+verified: 2026-09-29
+sources: inline
+---
+
 # Official documentation registry
 
 Canonical URLs. Prefer `android docs search "<term>"` first; use these for web browsing fallback and for citing.
@@ -8,7 +13,8 @@ Canonical URLs. Prefer `android docs search "<term>"` first; use these for web b
 - UI layer events (state-based alternatives to event channels): https://developer.android.com/topic/architecture/ui-layer/events
 - Coroutines best practices (inject dispatchers, main-safe data layer): https://developer.android.com/kotlin/coroutines/coroutines-best-practices
 - Modularization: https://developer.android.com/topic/modularization and /topic/modularization/patterns
-- Type-safe navigation (`@Serializable` routes, Navigation 2.8+): https://developer.android.com/guide/navigation/design/type-safety
+- Navigation 2 type-safe routes (`@Serializable` routes, `toRoute<T>()`): https://developer.android.com/guide/navigation/design/type-safety
+- Navigation 3, a Compose-only back stack the app owns, with scenes for adaptive layouts: https://developer.android.com/guide/navigation/navigation-3 · migration guide (one atomic change, compileSdk 36, composable destinations, typed routes): https://developer.android.com/guide/navigation/navigation-3/migration-guide · releases, check for the current stable: https://developer.android.com/jetpack/androidx/releases/navigation3
 - DataStore (no built-in encryption; pair with Keystore/Tink for secrets): https://developer.android.com/topic/libraries/architecture/datastore
 - Safer flow collection from UIs: https://medium.com/androiddevelopers/a-safer-way-to-collect-flows-from-android-uis-23080b1f8bda
 
@@ -17,7 +23,9 @@ Canonical URLs. Prefer `android docs search "<term>"` first; use these for web b
 - Custom design systems: https://developer.android.com/develop/ui/compose/designsystems/custom
 - Accessibility: https://developer.android.com/develop/ui/compose/accessibility
 - Compose API guidelines: https://github.com/androidx/androidx/blob/androidx-main/compose/docs/compose-api-guidelines.md
-- Composable metrics (Chris Banes): https://chrisbanes.me/posts/composable-metrics/
+- Strong skipping (default from Kotlin 2.0.20, what it changes for unstable parameters and lambdas): https://developer.android.com/develop/ui/compose/performance/stability/strongskipping
+- Fixing stability, and when not to bother: https://developer.android.com/develop/ui/compose/performance/stability/fix
+- Composable metrics (Chris Banes, predates strong skipping): https://chrisbanes.me/posts/composable-metrics/
 - Compose BOM to library version mapping: https://developer.android.com/develop/ui/compose/bom/bom-mapping
 
 ## Build

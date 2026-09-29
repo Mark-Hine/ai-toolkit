@@ -1,9 +1,14 @@
+---
+verified: 2026-09-29
+sources: inline
+---
+
 # One-shot ViewModel → UI events: house pattern and reference code
 
-Rule: `~/.codex/guidance/android/ui-events.md`. This file holds the canonical code and the reasoning.
+Rule: `~/.codex/guidance/android/ui-events.md`. This file holds the canonical code and the reasoning. It is a house standard, kept deliberately where it departs from the official state-based guidance, and reviewers grade drift from it as a finding.
 
-## Position (decided 2026-09-03)
-- Official guidance (developer.android.com/topic/architecture/ui-layer/events, updated 2026-05) says ViewModel events
+## Position
+- Official guidance (developer.android.com/topic/architecture/ui-layer/events) says ViewModel events
   "should always result in a UI state update" and names Channels as not guaranteeing delivery. Graded Strongly Recommended,
   defined there as "unless it clashes fundamentally with your approach".
 - The single source behind it (manuelvivo.dev/viewmodel-events-antipatterns) calls itself opinionated and concedes the
@@ -43,7 +48,7 @@ timing is visible at the call site and controllable in tests with a `TestDispatc
 ```kotlin
 sealed interface HomeUiState {
     data object Loading : HomeUiState
-    data class Loaded(val balance: Money, val offers: ImmutableList<Offer>) : HomeUiState
+    data class Loaded(val balance: Money, val offers: List<Offer>) : HomeUiState
     sealed interface Error : HomeUiState {
         val message: String
         data class Auth(override val message: String) : Error
@@ -67,7 +72,7 @@ class HomeViewModel @Inject constructor(
     fun onSaveFailed() = snackbarPresenter.show(SnackbarMessage(R.string.save_failed))
 }
 ```
-Annotate UI state classes `@Immutable`/`@Stable` and use `kotlinx.collections.immutable` for lists (Compose stability).
+No stability annotations by default. Strong skipping, on from Kotlin 2.0.20, skips composables with unstable parameters and memoizes lambdas. Add `@Stable` or an immutable collection only when compiler metrics show a problem.
 Why two mechanisms and no marker interface: navigation belongs to the screen that raised it and dies with it; a snackbar
 must survive the navigation it often accompanies and is shown by the root Scaffold. Scope and consumer differentiate them.
 
@@ -164,8 +169,7 @@ scale where it becomes unwieldy" and recommend factoring callbacks into a stable
 lambdas by default; an `XActions` holder once a screen/section composable would exceed five callbacks.
 
 ```kotlin
-/** Function types only; a data class of function types is inferred stable. {} defaults keep previews one-liners. */
-@Immutable
+/** Function types only. Built once in the ViewModel, so its identity is stable. {} defaults keep previews one-liners. */
 data class HomeActions(
     val onRetry: () -> Unit = {},
     val onDetailsClick: () -> Unit = {},
@@ -173,7 +177,6 @@ data class HomeActions(
     val payments: PaymentActions = PaymentActions(),      // per-section slice when the screen grows
 )
 
-@Immutable
 data class PaymentActions(
     val onPayClick: (PaymentData) -> Unit = {},
     val onChangeDateClick: () -> Unit = {},

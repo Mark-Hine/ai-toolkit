@@ -1,4 +1,8 @@
 ---
+verified: 2026-09-29
+sources:
+  - https://developer.apple.com/documentation/swiftui/view/alert(_:ispresented:presenting:actions:message:)
+  - https://developer.apple.com/documentation/swiftui/model-data
 paths:
   - "**/*View.swift"
   - "**/*Screen.swift"
@@ -21,7 +25,7 @@ paths:
 - Side effects run in `.task {}` / `.task(id:)` so they cancel with the view; no `Task {}` in `onAppear`, no loading in a model's `init`.
 - One `enum State` per screen (`loading` / `empty` / `loaded(...)` / `error(...)`); no `isLoading` + empty array sentinels.
 - Presentation and navigation are data: `NavigationStack(path:)` with typed routes, `navigationDestination(item:)`,
-  `sheet(item:)`, `alert(item:)`; the modifier resets the binding on dismiss. Rule `ui-events.md` covers one-shot events.
+  `sheet(item:)`, and `alert(_:isPresented:presenting:actions:message:)` bound to an optional through a `Binding(isPresent:)` helper. The modifier resets the binding on dismiss. Rule `ui-events.md` covers one-shot events.
 - Lists: stable identity (`Identifiable` or an explicit stable `id`), never `id: \.self` on duplicable data or `UUID()` in `body`.
 - Callbacks: leaves and reusable components take individual closures. Above five callbacks on a screen/section view, group
   them in an `XActions` struct of closures built once by the model. Never build it inside `body`; never put state in it.

@@ -17,12 +17,12 @@ Repo facts (workspace, schemes, build/test commands, SwiftPM vs CocoaPods, delib
    (`XCRemoteSwiftPackageReference` → `requirement`) or `Package.swift`; `Podfile` entries; `.swift-version`,
    `SWIFT_VERSION`, `SWIFT_STRICT_CONCURRENCY`, `IPHONEOS_DEPLOYMENT_TARGET`; Xcode version in CI (`fastlane`, pipeline YAML).
 3. **Research.** Ask `ios-researcher` for latest stable of each item, its release notes, minimum Xcode/deployment target,
-   privacy-manifest status, and current App Store minimum Xcode/SDK requirement and date.
+   privacy-manifest status, and current App Store minimum Xcode/SDK requirement and date. For each pod, note whether the vendor also publishes a Swift package, and check trunk status on blog.cocoapods.org. Trunk accepts no new pods or versions from 2026-12-02, so a pod whose target version is not on trunk cannot be updated through CocoaPods.
 4. **Plan.** One commit per axis, ordered Xcode/SDK → deployment target → Swift toolchain/language mode → SwiftPM packages →
-   CocoaPods → third-party binaries. Name schemes you will build and tests you will run. Proceed within authorized scope; ask only about unresolved scope or consequential choices.
+   CocoaPods, only for versions already on trunk → third-party binaries. Moving a pod to SwiftPM is its own axis and usually its own ticket. Name schemes you will build and tests you will run. Proceed within authorized scope; ask only about unresolved scope or consequential choices.
 5. **Apply each axis.** Edit versions only where the project declares them. SwiftPM: change the rule, then
    `xcodebuild -resolvePackageDependencies -workspace <ws> -scheme "<scheme>"`; CocoaPods: `pod update <Pod>` (never a
-   bare `pod update`). Rebuild every scheme in `AGENTS.md`, plus one Release build
+   bare `pod update`). If the version is not on trunk, stop and report the SwiftPM migration as a follow-up. Rebuild every scheme in `AGENTS.md`, plus one Release build
    (`xcodebuild build -configuration Release -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO`) for toolchain
    or deployment-target axes. Run tests that passed at baseline. Diff lock files against baseline copies and
    list transitive changes. New or bumped SDKs on Apple's required-reason list must ship `PrivacyInfo.xcprivacy`.

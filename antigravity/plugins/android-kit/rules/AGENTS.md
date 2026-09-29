@@ -25,7 +25,7 @@ These rules apply when working with Android and Kotlin code in this repository.
 - Split screen-level composables into a stateful `XScreen(viewModel)` that collects state and a stateless `XContent(uiState, onEvent)` that renders. Previews target the stateless component using shared preview annotations.
 - State: `remember { mutableStateOf() }` only for UI-local state; hoist everything else to ViewModel `StateFlow` collected with `collectAsStateWithLifecycle()`.
 - Side effects in `LaunchedEffect`/`DisposableEffect` with real keys, never `Unit` to mask changing inputs.
-- Stability: `@Immutable`/`@Stable` on UI state classes; avoid raw `List` parameters where a `kotlinx.collections.immutable` type or a wrapper fits; remember lambdas passed to list items.
+- Stability: strong skipping is the default from Kotlin 2.0.20, so do not add `@Immutable`, `@Stable`, `kotlinx.collections.immutable` types or remembered lambdas by default. Fix stability only when compiler metrics or recomposition counts show a problem. `@Stable` still helps when a source emits new but equal instances.
 - Modifiers: a single `modifier: Modifier = Modifier` parameter first among optional params, applied to the root element once.
 - Callbacks: leaf composables take individual lambdas. Above five callbacks on a screen/section composable, bundle them in an `XActions` data class of function types (`{}` defaults) built once in the ViewModel, and pass single lambdas down. Never build `XActions` inside composition; never put state in it.
 - Parameters are values, not `State<T>`/`LiveData`; compute derived booleans in `UiState` within the ViewModel.
@@ -44,7 +44,7 @@ These rules apply when working with Android and Kotlin code in this repository.
 
 - Unit test ViewModel, use case, and repository changes in the same module. New or changed screens require Compose UI-behaviour tests or previews plus an emulator journey.
 - Bug fixes require a failing test first, then the fix, then verified green. Quote both runs.
-- Test stack: JUnit 5, Kotest assertions, MockK, `kotlinx-coroutines-test` (`runTest`, injected `TestDispatcher`). Fakes over mocks for repositories and data sources; MockK only at true boundaries. No `Thread.sleep` or `runBlocking`.
+- Test stack follows the module. Plain JVM unit tests use JUnit 5 where the module runs the JUnit Platform. Robolectric, Compose UI tests and instrumented tests run on JUnit 4. Kotest assertions, MockK and `kotlinx-coroutines-test` (`runTest`, injected `TestDispatcher`) work on either. Fakes over mocks for repositories and data sources; MockK only at true boundaries. No `Thread.sleep` or `runBlocking`.
 - Never `@Ignore`, delete, or loosen an assertion to pass. Report pre-existing failures listed in project `AGENTS.md`.
 - Run targeted tests first (`./gradlew :<module>:test<Variant>UnitTest --tests '<FQCN>'`).
 - End-to-end journeys live under `journeys/<feature>.xml`. Hand verification off to `android-verifier`.

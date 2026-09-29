@@ -1,6 +1,11 @@
+---
+verified: 2026-09-29
+sources: inline
+---
+
 # Apple sample apps as SwiftUI blueprints
 
-Apple ships no architecture guide; its samples are the closest thing to a reference implementation. Verified 2026-09-04.
+Apple ships no architecture guide; its samples are the closest thing to a reference implementation.
 
 | Sample | Source | Requires | Use it for |
 |---|---|---|---|
