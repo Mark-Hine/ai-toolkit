@@ -10,7 +10,7 @@ Paste this into the review's Standards basis section, then append the verificati
 
 ```markdown
 Findings are graded against the published React, Next.js and web-platform guidance, cited per finding:
-**[REACT-RULES]** Rules of React, https://react.dev/reference/rules · **[REACT-HOOKS-RULES]** https://react.dev/reference/rules/rules-of-hooks · **[REACT-NO-EFFECT]** You Might Not Need an Effect, https://react.dev/learn/you-might-not-need-an-effect · **[REACT-SYNC-EFFECTS]** https://react.dev/learn/synchronizing-with-effects · **[NEXT-STATIC]** Static exports, https://nextjs.org/docs/pages/guides/static-exports · **[NEXT-ENV]** https://nextjs.org/docs/pages/guides/environment-variables · **[NEXT-CSP]** https://nextjs.org/docs/app/guides/content-security-policy · **[REDUX-STYLE]** Redux Style Guide, https://redux.js.org/style-guide/ (Priority A/B/C) · **[UI-STANDARDS]** UI/UX anti-slop standards · **[TESTING-QUERIES]** https://testing-library.com/docs/queries/about/#priority · **[TS-STRICT]** https://www.typescriptlang.org/tsconfig/#strict · **WCAG 2.2 AA** · **OWASP ASVS 5.0.0** · **RFC 9700** OAuth 2.0 Security BCP.
+**[REACT-RULES]** Rules of React, https://react.dev/reference/rules · **[REACT-HOOKS-RULES]** https://react.dev/reference/rules/rules-of-hooks · **[REACT-NO-EFFECT]** You Might Not Need an Effect, https://react.dev/learn/you-might-not-need-an-effect · **[REACT-SYNC-EFFECTS]** https://react.dev/learn/synchronizing-with-effects · **[NEXT-STATIC]** Static exports, https://nextjs.org/docs/pages/guides/static-exports · **[NEXT-ENV]** https://nextjs.org/docs/pages/guides/environment-variables · **[NEXT-CSP]** https://nextjs.org/docs/app/guides/content-security-policy · **[REDUX-STYLE]** Redux Style Guide, https://redux.js.org/style-guide/ (Priority A/B/C) · **[UI-STANDARDS]** tiered UI design rules, T2 graded Nit · **[TESTING-QUERIES]** https://testing-library.com/docs/queries/about/#priority · **[TS-STRICT]** https://www.typescriptlang.org/tsconfig/#strict · **WCAG 2.2 AA** · **OWASP ASVS 5.0.0** · **RFC 9700** OAuth 2.0 Security BCP.
 ```
 
 ## Monorepo boundaries
@@ -35,14 +35,9 @@ Graded against [REACT-RULES] and [REACT-HOOKS-RULES]. These are correctness rule
 - **Keys ([REACT-KEYS]).** List keys are stable identifiers from the data. Array indexes as keys are a finding only when the list reorders, filters or inserts.
 - **Memoisation.** `useMemo`, `useCallback` and `React.memo` need a measured reason or a referential-equality dependency downstream. Their absence is not a finding (see guardrails).
 
-## UI/UX & Web Anti-Slop ([UI-STANDARDS])
+## UI design ([UI-STANDARDS], [WCAG22])
 
-- **Anti-slop tropes:** unmotivated purple/pink gradients, glow borders, floating pill badges, emoji bullets.
-- **Container soup:** redundant nested cards/divs with stacked borders/shadows instead of proximity grouping and whitespace.
-- **Spatial grid:** padding/margins/gaps follow the 8-point spatial scale (`8, 16, 24, 32, 48, 64 px`); no arbitrary padding (11px, 23px).
-- **The 5-State Completeness Law:** components must define Loading (geometry-matching skeleton loader), Populated, Empty (actionable CTA), Error (plain language + recovery), and Partial/Degraded states.
-- **Accessibility (WCAG 2.2 AA):** minimum 4.5:1 text contrast and 3:1 control contrast; keyboard focus rings visible on all interactive elements; semantic HTML5 tags (`<main>`, `<nav>`, `<button>`); decorative images have `aria-hidden="true"` or `alt=""`.
-- **Responsive & fluid:** container queries and fluid typography (`clamp()`) rather than brittle fixed-pixel widths.
+- Grade UI against the tiered design rules in `~/.claude/rules/design-standards.md` (the `design-kit` standards skill carries the sources, rationale and APIs). Cite the rule ID and source key in each finding. T1 breaches grade Blocker or Major by user impact, T2 breaches grade Nit unless the project opts the rule in. Web specifics are WEB-1 to WEB-4 (landmarks, `clamp()` with a relative maximum, tokens as custom properties, container queries for components) and A11Y-5 for the 24 px target floor, with keyboard focus rings visible on every interactive element (WCAG 2.4.7).
 
 ## State
 
@@ -152,6 +147,7 @@ pnpm why <package>
 | [TESTING-PRINCIPLES] | https://testing-library.com/docs/guiding-principles/ |
 | [TESTING-QUERIES] | https://testing-library.com/docs/queries/about/#priority |
 | [TS-STRICT] | https://www.typescriptlang.org/tsconfig/#strict |
+| [UI-STANDARDS] | `~/.claude/rules/design-standards.md` (shared/guidance/design-standards.md in ai-toolkit), tiered rules with IDs. Sources per key in the design-kit standards skill, `references/sources.md` |
 | [WCAG22] | https://www.w3.org/TR/WCAG22/ (W3C Recommendation, 2024-12-12) |
 | [ARIA-APG] | https://www.w3.org/WAI/ARIA/apg/ |
 | [ASVS5] | https://github.com/OWASP/ASVS/tree/v5.0.0/5.0 (OWASP ASVS 5.0.0, May 2025) |
@@ -184,6 +180,7 @@ pnpm why <package>
 [TESTING-PRINCIPLES]: https://testing-library.com/docs/guiding-principles/
 [TESTING-QUERIES]: https://testing-library.com/docs/queries/about/#priority
 [TS-STRICT]: https://www.typescriptlang.org/tsconfig/#strict
+[UI-STANDARDS]: https://github.com/Mark-Hine/ai-toolkit/blob/main/shared/guidance/design-standards.md
 [WCAG22]: https://www.w3.org/TR/WCAG22/
 [ARIA-APG]: https://www.w3.org/WAI/ARIA/apg/
 [ASVS5]: https://github.com/OWASP/ASVS/tree/v5.0.0/5.0

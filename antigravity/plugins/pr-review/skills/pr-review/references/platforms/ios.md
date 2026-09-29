@@ -18,7 +18,7 @@ Paste this into the review's Standards basis section, then append the verificati
 (template.md):
 
 ```markdown
-Findings are graded against published guidance, cited per finding: **[SWIFTUI-DATAFLOW]** Apple's SwiftUI model-data documentation (state ownership, single source of truth) — https://developer.apple.com/documentation/swiftui/model-data · **[SWIFT-CONCURRENCY]** the Swift book's concurrency chapter — https://docs.swift.org/swift-book/documentation/the-swift-programming-language/concurrency/ · **[HIG]** Human Interface Guidelines (44 pt targets, alerts, dark mode, typography) — https://developer.apple.com/design/human-interface-guidelines · **[UI-STANDARDS]** UI/UX anti-slop standards · **[A11Y]** Apple accessibility documentation — https://developer.apple.com/documentation/accessibility · **[SWIFTLINT]** https://github.com/realm/SwiftLint · **OWASP MASVS** v2.1.0 · WCAG 2.1 AA. Apple publishes no official architecture doctrine, so architecture items are graded as *consensus* — where the only authority is consensus, we grade the code against **its own patterns in the same PR** rather than doctrine, and severity is capped accordingly.
+Findings are graded against published guidance, cited per finding: **[SWIFTUI-DATAFLOW]** Apple's SwiftUI model-data documentation (state ownership, single source of truth) — https://developer.apple.com/documentation/swiftui/model-data · **[SWIFT-CONCURRENCY]** the Swift book's concurrency chapter — https://docs.swift.org/swift-book/documentation/the-swift-programming-language/concurrency/ · **[HIG]** Human Interface Guidelines (44 pt targets, alerts, dark mode, typography) — https://developer.apple.com/design/human-interface-guidelines · **[UI-STANDARDS]** tiered UI design rules, T2 graded Nit · **[A11Y]** Apple accessibility documentation — https://developer.apple.com/documentation/accessibility · **[SWIFTLINT]** https://github.com/realm/SwiftLint · **OWASP MASVS** v2.1.0 · **[WCAG22]** WCAG 2.2 AA. Apple publishes no official architecture doctrine, so architecture items are graded as *consensus* — where the only authority is consensus, we grade the code against **its own patterns in the same PR** rather than doctrine, and severity is capped accordingly.
 ```
 
 ## Architecture — synthesised (no official Apple equivalent)
@@ -105,13 +105,8 @@ screen consumes it). Check:
 - **Per-component accessibility (see Accessibility below):** labels/traits baked into interactive components —
   a11y is won or lost in the design system.
 
-**UI/UX & Anti-Slop ([HIG], [UI-STANDARDS]):**
-- Anti-slop tropes: unmotivated purple/pink gradients, glow borders, floating pill badges, emoji bullets.
-- Container soup: redundant nested cards/containers with stacked borders/shadows instead of proximity grouping and whitespace.
-- Spatial grid: padding/margins/gaps follow the 8pt spatial scale (`8, 16, 24, 32, 48, 64 pt`); no arbitrary padding (11pt, 23pt).
-- The 5-State Completeness Law: screen must define Loading (geometry-matching skeleton loader), Populated, Empty (actionable CTA), Error (plain language + recovery), and Partial/Degraded states.
-- Ergonomics & Accessibility: minimum 44×44 pt interactive touch targets; WCAG 2.1 AA 4.5:1 text / 3:1 control contrast; Dynamic Type scaling up to 200% without clipping or layout breakage; decorative images have `.accessibilityHidden(true)`.
-- HIG Fidelity: semantic system colors (`Color(.systemBackground)`, `.secondarySystemBackground`, `Color(.label)`), materials (`.ultraThinMaterial`), Safe Area insets (`SafeAreaInsets`), native haptics on primary actions, typed navigation data models (`NavigationStack(path:)`, sheets, alerts).
+**UI design ([UI-STANDARDS], [HIG], [WCAG22]):**
+- Grade UI against the tiered design rules in `~/.claude/rules/design-standards.md` (the `design-kit` standards skill carries the sources, rationale and APIs). Cite the rule ID and source key in each finding. T1 breaches grade Blocker or Major by user impact, T2 breaches grade Nit unless the project opts the rule in. iOS specifics are IOS-1 to IOS-4 (semantic colours, Liquid Glass out of the content layer, safe area, haptics used sparingly), with A11Y-4 for the 44 pt hit region and 28 pt HIG minimum, TYP-1 for Dynamic Type and A11Y-7 for the largest accessibility text size.
 
 **SwiftUI update performance & identity ([SWIFTUI-DATAFLOW]):**
 - Prefer `@Observable` (field-level access tracking) over `ObservableObject` whole-object
@@ -200,7 +195,7 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
 
 - **Accessibility ([A11Y], [HIG]) — also per-component in the design-system audit above.** A
   static pass can't replace VoiceOver, but grade these against the code (a regulated/finance app
-  faces WCAG-grade expectations): **touch targets** ≥ 44×44 pt (HIG minimum — flag icon-only
+  faces WCAG-grade expectations): **touch targets** of 44×44 pt on buttons, with 28 pt the HIG minimum for any control (flag icon-only
   buttons below it); **labels** — `accessibilityLabel`/`Value`/`Hint` on interactive elements,
   images/icons labelled or explicitly hidden (quote the ratio + offenders); **traits** —
   `.isHeader`/`.isButton` etc. so structure and role are announced; **Dynamic Type** —
@@ -223,7 +218,9 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
 | [SPM] | https://www.swift.org/documentation/package-manager/ — Swift Package Manager documentation (products, dependency rules, Package.resolved) |
 | [XCODE-BUILD] | https://developer.apple.com/documentation/xcode/build-settings-reference — canonical build-settings reference (optimisation, stripping, sandboxing) |
 | [SWIFTLINT] | https://github.com/realm/SwiftLint — de-facto standard Swift linter |
-| [HIG] | https://developer.apple.com/design/human-interface-guidelines — Apple Human Interface Guidelines (incl. 44 pt targets, platform conventions) |
+| [HIG] | https://developer.apple.com/design/human-interface-guidelines — Apple Human Interface Guidelines (incl. 44 pt default and 28 pt minimum targets, platform conventions) |
+| [UI-STANDARDS] | `~/.claude/rules/design-standards.md` (shared/guidance/design-standards.md in ai-toolkit), tiered rules with IDs. Sources per key in the design-kit standards skill, `references/sources.md` |
+| [WCAG22] | https://www.w3.org/TR/WCAG22/ (W3C Recommendation, 2024-12-12), cite the success criterion per finding |
 | [A11Y] | https://developer.apple.com/documentation/accessibility — Apple accessibility documentation (labels/traits, Dynamic Type, audits) |
 | [KEYCHAIN] | https://developer.apple.com/documentation/security/keychain-services — Keychain Services (accessibility classes, SecAccessControl) |
 | [CRYPTOKIT] | https://developer.apple.com/documentation/cryptokit — CryptoKit (modern primitives, Secure Enclave key types) |
@@ -251,6 +248,8 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
 [XCODE-BUILD]: https://developer.apple.com/documentation/xcode/build-settings-reference
 [SWIFTLINT]: https://github.com/realm/SwiftLint
 [HIG]: https://developer.apple.com/design/human-interface-guidelines
+[UI-STANDARDS]: https://github.com/Mark-Hine/ai-toolkit/blob/main/shared/guidance/design-standards.md
+[WCAG22]: https://www.w3.org/TR/WCAG22/
 [A11Y]: https://developer.apple.com/documentation/accessibility
 [KEYCHAIN]: https://developer.apple.com/documentation/security/keychain-services
 [CRYPTOKIT]: https://developer.apple.com/documentation/cryptokit
