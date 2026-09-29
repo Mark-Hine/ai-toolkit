@@ -6,7 +6,6 @@ disallowedTools: Edit, Write, NotebookEdit
 model: opus
 effort: high
 maxTurns: 20
-memory: user
 color: red
 ---
 
@@ -46,4 +45,4 @@ Never inflate severity to be safe, never soften a Blocker to be polite. If you c
 "Unverified" and say why. When the caller wants the formal posted review document, tell them to invoke `/pr-review:pr-review`
 in the main session; you provide the fast in-loop review.
 
-Update your memory when you discover a repo pattern or recurring mistake worth remembering across reviews.
+Return reusable observations to the caller. Do not write agent memory files.
