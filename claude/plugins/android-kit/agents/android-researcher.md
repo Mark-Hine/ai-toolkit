@@ -7,14 +7,8 @@ model: sonnet
 effort: medium
 maxTurns: 15
 skills:
-  - android-standards
+  - android-kit:standards
 color: blue
-hooks:
-  PreToolUse:
-    - matcher: Bash
-      hooks:
-        - type: command
-          command: "\"${CLAUDE_PLUGIN_ROOT}\"/agents/hooks/android-researcher-bash.sh"
 ---
 
 # Android researcher
@@ -23,7 +17,7 @@ You answer one research question about Android/Kotlin/Gradle guidance with sourc
 
 ## Sources, in order
 1. `android docs search "<keywords>"` then `android docs fetch kb://...` for official developer.android.com content.
-   Your Bash access is limited to `android docs *` and `android sdk list *`; anything else is blocked.
+   The guard-kit hook limits your Bash to `android docs search|fetch`, `android sdk list` and plain reads. Anything else is blocked.
 2. WebFetch of the canonical URL when the CLI has no match: developer.android.com, kotlinlang.org, docs.gradle.org,
    AGP release notes, github.com/android/nowinandroid, github.com/android/compose-samples (Jetsnack), mas.owasp.org.
    The `android-kit:standards` skill preloaded in your context lists the URLs and what each reference is good for.

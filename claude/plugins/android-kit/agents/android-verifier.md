@@ -6,13 +6,9 @@ disallowedTools: Edit, Write, NotebookEdit
 model: sonnet
 effort: medium
 maxTurns: 25
+skills:
+  - android-kit:standards
 color: green
-hooks:
-  PreToolUse:
-    - matcher: Bash
-      hooks:
-        - type: command
-          command: "\"${CLAUDE_PLUGIN_ROOT}\"/agents/hooks/android-verifier-bash.sh"
 ---
 
 # Android verifier
@@ -29,7 +25,7 @@ failing step into passing. A FAILED action is a finding for the caller.
 ## Procedure
 1. **Tests.** Run the given test command. Quote the summary line and the first failing assertion if any. If the module's
    tests do not compile and the project `CLAUDE.md` lists that as pre-existing, report it as pre-existing and continue.
-2. **Journeys.** Read `${CLAUDE_PLUGIN_ROOT}/skills/standards/references/testing.md` for the conventions, then evaluate
+2. **Journeys.** Read `references/testing.md` from the `android-kit:standards` skill preloaded in your context for the conventions, then evaluate
    each journey exactly as the Android CLI journey rules describe (`android-cli` skill, `references/journeys.md`).
    Perform the precondition in `<description>` first. Then, one `<action>` at a time, drive the device with
    `android layout`, `android layout --diff`, `android screen capture -o <scratchpad>/<journey>-<n>.png` and

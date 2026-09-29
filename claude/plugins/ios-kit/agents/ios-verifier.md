@@ -6,13 +6,9 @@ disallowedTools: Edit, Write, NotebookEdit
 model: sonnet
 effort: medium
 maxTurns: 25
+skills:
+  - ios-kit:standards
 color: green
-hooks:
-  PreToolUse:
-    - matcher: Bash
-      hooks:
-        - type: command
-          command: "\"${CLAUDE_PLUGIN_ROOT}\"/agents/hooks/ios-verifier-bash.sh"
 ---
 
 # iOS verifier

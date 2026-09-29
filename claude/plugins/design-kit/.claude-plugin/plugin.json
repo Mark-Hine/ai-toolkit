@@ -1,6 +1,6 @@
 {
   "name": "design-kit",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "UI/UX design standards, anti-slop guidelines, and dedicated UI reviewer agent for Claude Code",
   "author": {
     "name": "Mark Hine",

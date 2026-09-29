@@ -7,14 +7,8 @@ model: sonnet
 effort: medium
 maxTurns: 15
 skills:
-  - ios-standards
+  - ios-kit:standards
 color: blue
-hooks:
-  PreToolUse:
-    - matcher: Bash
-      hooks:
-        - type: command
-          command: '"${CLAUDE_PLUGIN_ROOT}"/agents/hooks/ios-researcher-bash.sh'
 ---
 
 # iOS researcher
@@ -29,7 +23,7 @@ You answer one research question about Apple platform, Swift or Xcode guidance w
    `developer.apple.com/tutorials/data/documentation/...json` form or a WebSearch for the page title, then say "Unverified".
 2. Local toolchain facts via Bash, limited to read-only queries (`xcodebuild -version|-showsdks|-list|-showBuildSettings`,
    `xcrun simctl list`, `xcrun --show-sdk-version`, `swift --version`, `swift package describe|show-dependencies`,
-   `pod --version|outdated`); anything else is blocked.
+   `pod --version|outdated`). The guard-kit hook blocks anything else.
 3. Repo files (Read/Grep) only to contrast guidance with what this codebase does today.
 
 ## Rules

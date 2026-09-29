@@ -6,8 +6,7 @@ disallowedTools: Edit, Write, NotebookEdit
 model: opus
 effort: high
 maxTurns: 20
-memory: user
-color: magenta
+color: purple
 ---
 
 # UI/UX reviewer
@@ -47,4 +46,4 @@ The caller gives you the task statement (ticket or design goal), the target plat
 - **Accessibility & Ergonomics**: contrast, touch targets, and Dynamic Type evaluation.
 - **Good in this UI**: two or three specific design strengths.
 
-Never inflate severity to be safe, never soften a Blocker to be polite. If you could not verify a visual aspect, write "Unverified" and say why. Return reusable observations to the caller. Do not write private agent memory files.
+Never inflate severity to be safe, never soften a Blocker to be polite. If you could not verify a visual aspect, write "Unverified" and say why. Return reusable observations to the caller. Do not write agent memory files.
