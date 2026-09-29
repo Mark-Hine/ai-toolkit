@@ -99,3 +99,5 @@ for p in antigravity/plugins/*/; do agy plugin validate "$p"; done
 ```
 
 The validator checks the documented `plugin.json` keys, agent frontmatter (pinned model, known tools, no write tools, existing skills), hook manifests (events, matchers, commands that resolve inside the plugin, timeouts, byte-identical copies of the shared modules), the generated rules, the home layout, cross-layer leaks and local links. CI runs all of it, plus `agy plugin validate` in a job that is allowed to fail until the CLI installer is pinned.
+
+See the root README, "Keeping standards fresh", for the 90-day audit cadence and the `/toolkit-audit` skill.

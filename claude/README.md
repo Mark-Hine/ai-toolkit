@@ -15,6 +15,7 @@ Two layers. Plugins carry the shareable parts. The `home/` dotfiles layer carrie
 | `plugins/pr-review/skills/pr-review/` | Formal written PR review with a standards-cited findings register, grading Android, iOS, Spring Boot, React/Next.js and generic repos | On "review this PR" or `/pr-review:pr-review` |
 | `plugins/design-kit/skills/` | `/design-kit:standards` (sources, rationale and platform APIs for the tiered design rules) | On invocation or when relevant |
 | `plugins/design-kit/agents/` | `ui-reviewer` (opus, read-only, grades UI diffs against the tiered design rules, citing rule ID and source) | When delegated |
+| `plugins/toolkit/skills/` | `/toolkit:audit` (re-checks the standards against their sources and writes a findings register, invoked by hand) | On invocation |
 | `home/CLAUDE.md` | Global preferences: subagent models, Android and iOS routing. Imports `~/.claude/machine.md` | Every session |
 | `../shared/guidance/common.md` | Shared Git and work preferences, linked as `~/.claude/rules/common.md` | Every session |
 | `../shared/guidance/design-standards.md` | Tiered design rules with IDs and source keys (T1 official, T2 house), linked as `~/.claude/rules/design-standards.md` | Every session |
@@ -30,7 +31,7 @@ git clone https://github.com/Mark-Hine/ai-toolkit.git ~/ai-toolkit
 ~/ai-toolkit/claude/install.sh
 ```
 
-The script symlinks the dotfiles and shared personal preferences, creates `~/.claude/machine.md` from `home/machine.md.example` if missing, merges the settings snippet without overwriting your own keys (backups are written beside the file), adds the marketplace and installs the five plugins. Re-run it after `git pull`. Requires `claude`, `git`, `jq`.
+The script symlinks the dotfiles and shared personal preferences, creates `~/.claude/machine.md` from `home/machine.md.example` if missing, merges the settings snippet without overwriting your own keys (backups are written beside the file), adds the marketplace and installs the six plugins. Re-run it after `git pull`. Requires `claude`, `git`, `jq`.
 
 ## Customise
 
@@ -44,3 +45,5 @@ The script symlinks the dotfiles and shared personal preferences, creates `~/.cl
 - Rules carry only the rule. Rationale and code samples live in `plugins/android-kit/skills/standards/references/`.
 - Subagents pin models. Research is cheap (sonnet), but review needs judgement (opus). Never `inherit`.
 - Guard hooks are deterministic and repo-agnostic. One Python module under `shared/hooks/` serves all three layers, and the plugin and Codex copies are kept identical by CI. Agent command limits come from the same module, keyed on the `agent_type` the hook input carries.
+
+See the root README, "Keeping standards fresh", for the 90-day audit cadence and the `/toolkit:audit` skill.

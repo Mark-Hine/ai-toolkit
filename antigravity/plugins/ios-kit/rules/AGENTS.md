@@ -34,7 +34,7 @@ These rules apply while this plugin is enabled. The Claude layer scopes each sec
 - Logging via `os.Logger` with `privacy: .private` for anything user-specific, with no `print` in production paths.
 - Match the existing file's style over these rules when editing a legacy UIKit file. Do not reformat unrelated lines.
 
-Scope: `https://github.com/swiftlang/swift-evolution/blob/main/proposals/0461-async-function-isolation.md`, `https://github.com/swiftlang/swift-evolution/blob/main/proposals/0466-control-default-actor-isolation.md`, `https://www.swift.org/blog/swift-6.2-released/`, `https://docs.swift.org/swift-book/documentation/the-swift-programming-language/concurrency/`, `**/*.swift`.
+Scope: `**/*.swift`.
 
 ## SwiftUI (iOS repos)
 
@@ -59,7 +59,7 @@ Scope: `https://github.com/swiftlang/swift-evolution/blob/main/proposals/0461-as
 - Layout adapts to size classes, with no fixed device-size frames and no orientation assumptions. Check iPad when the target supports it.
 - Follow the design-kit rules (`~/.gemini/config/guidance/design-standards.md`) for design rules and their tiers. Screens design loading, loaded, empty and error, plus partial only where they show cached or offline data. Text uses Dynamic Type styles. Delegate UI diff reviews to `ui-reviewer`.
 
-Scope: `https://developer.apple.com/documentation/swiftui/view/alert(_:ispresented:presenting:actions:message:)`, `https://developer.apple.com/documentation/swiftui/model-data`, `**/*View.swift`, `**/*Screen.swift`, `**/*Content.swift`, `**/Views/**/*.swift`, `**/DesignSystem/**/*.swift`.
+Scope: `**/*View.swift`, `**/*Screen.swift`, `**/*Content.swift`, `**/Views/**/*.swift`, `**/DesignSystem/**/*.swift`.
 
 ## One-shot model → UI events
 
@@ -82,7 +82,7 @@ Canonical code and rationale: `ios-standards` skill, `references/ui-events.md`.
   `NavigationLink(destination:)` for deep-linkable screens, and `UINavigationController` or `dismiss` reached from a model.
 - Below iOS 17 (project `AGENTS.md` (or `GEMINI.md`)): same shape with `ObservableObject` + `@Published` and `@StateObject`.
 
-Scope: `https://developer.apple.com/documentation/swiftui/view/alert(_:ispresented:presenting:actions:message:)`, `https://developer.apple.com/documentation/swiftui/navigationpath`, `**/*ViewModel.swift`, `**/*Model.swift`, `**/*Screen.swift`, `**/*Route.swift`, `**/*Routes.swift`, `**/*Effect.swift`, `**/*Effects.swift`, `**/*State.swift`, `**/*Router.swift`, `**/*Coordinator.swift`.
+Scope: `**/*ViewModel.swift`, `**/*Model.swift`, `**/*Screen.swift`, `**/*Route.swift`, `**/*Routes.swift`, `**/*Effect.swift`, `**/*Effects.swift`, `**/*State.swift`, `**/*Router.swift`, `**/*Coordinator.swift`.
 
 ## Tests
 

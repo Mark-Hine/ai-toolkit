@@ -106,3 +106,5 @@ The guard and Swift lint tests live in `shared/tests` and run in CI for all laye
 - [Hooks and required trust review](https://learn.chatgpt.com/docs/hooks)
 - [Command rules](https://learn.chatgpt.com/docs/agent-configuration/rules)
 - [Non-interactive Codex](https://learn.chatgpt.com/docs/non-interactive-mode)
+
+See the root README, "Keeping standards fresh", for the 90-day audit cadence and the `$toolkit-audit` skill.

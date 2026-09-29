@@ -1,3 +1,8 @@
+---
+verified: 2026-09-29
+sources: house
+---
+
 # Review-document template
 
 The section contract for the rendered document. **`findings.json` is the source of truth**

@@ -1,0 +1,19 @@
+# Pairs allowed to drift below the default threshold. Each needs a reason and an `until` date.
+# An expired exception fails the check. Paths are the Claude-layer path of the pair.
+[[exceptions]]
+path = "claude/plugins/android-kit/agents/android-reviewer.md"
+threshold = 0.70
+reason = "Claude reviewers run builds themselves. Codex and Antigravity reviewers ask the verifier for evidence, by design."
+until = "2027-03-31"
+
+[[exceptions]]
+path = "claude/plugins/ios-kit/agents/ios-reviewer.md"
+threshold = 0.70
+reason = "Same intentional split as the Android reviewer."
+until = "2027-03-31"
+
+[[exceptions]]
+path = "claude/plugins/android-kit/agents/android-researcher.md"
+threshold = 0.80
+reason = "The Claude copy explains the guard-kit command limits. Antigravity has no guard role limits and states the same restriction as an instruction under commandExecutionPolicy off."
+until = "2027-03-31"

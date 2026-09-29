@@ -1,3 +1,8 @@
+---
+verified: 2026-09-29
+sources: house
+---
+
 # CI/CD integration
 
 How to run this skill headless in a pipeline. The review itself is unchanged, with the same phases, the same

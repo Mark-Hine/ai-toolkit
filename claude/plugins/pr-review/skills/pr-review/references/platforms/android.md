@@ -1,3 +1,8 @@
+---
+verified: 2026-09-29
+sources: inline
+---
+
 # Platform pack: Android
 
 Grading criteria for reviewing an Android/Kotlin change. Load this pack when the repo is Android.
@@ -263,7 +268,7 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
 | [MASVS] | https://mas.owasp.org/MASVS/ (v2.1.0) |
 | [MASTG] | https://mas.owasp.org/MASTG/ (cite the version shown on the site at review time), incl. MASTG-KNOW-0015 (cert pinning), MASTG-TEST-0244 (missing pinning, Android) |
 | [PINNING] | https://cheatsheetseries.owasp.org/cheatsheets/Pinning_Cheat_Sheet.html, OWASP Pinning Cheat Sheet (public-key/SPKI pins, backup pins, expiration safety-valve, when NOT to pin) |
-| [TOP10-2024] | https://owasp.org/www-project-mobile-top-10/ |
+| [TOP10-2024] | https://owasp.org/projects/mobile-top-10 |
 | [GRADLE-DOCS] | https://docs.gradle.org/current/userguide/best_practices_general.html (+ version_catalogs.html, configuration_cache.html) |
 | [AGP-BUILD] | https://developer.android.com/build/optimize-your-build (+ /migrate-to-catalogs, /shrink-code) |
 | [BASELINE-PROF] | https://developer.android.com/topic/performance/baselineprofiles/overview |
@@ -304,7 +309,7 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
 [MASVS]: https://mas.owasp.org/MASVS/
 [MASTG]: https://mas.owasp.org/MASTG/
 [PINNING]: https://cheatsheetseries.owasp.org/cheatsheets/Pinning_Cheat_Sheet.html
-[TOP10-2024]: https://owasp.org/www-project-mobile-top-10/
+[TOP10-2024]: https://owasp.org/projects/mobile-top-10
 [GRADLE-DOCS]: https://docs.gradle.org/current/userguide/best_practices_general.html
 [AGP-BUILD]: https://developer.android.com/build/optimize-your-build
 [BASELINE-PROF]: https://developer.android.com/topic/performance/baselineprofiles/overview

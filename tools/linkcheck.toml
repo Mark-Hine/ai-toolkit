@@ -1,0 +1,50 @@
+# Link liveness policy. Hosts not listed use the default policy.
+timeout = 20
+workers = 8
+retries = 3
+
+# Files whose URLs are checked (sources lists plus body text).
+include = [
+  "claude/home/rules/**/*.md",
+  "shared/guidance/*.md",
+  "shared/guidance/references/*.md",
+  "claude/plugins/*/skills/*/references/*.md",
+  "claude/plugins/pr-review/skills/pr-review/references/*.md",
+  "claude/plugins/pr-review/skills/pr-review/references/platforms/*.md",
+  "claude/plugins/toolkit/skills/audit/references/*.md",
+]
+skip_url_substrings = ["example.com", "localhost", "<", ">", "${", "$("]
+
+# Per-host policy. concurrency limits parallel requests to that host, delay is seconds between them.
+# blocked_status lists codes that mean "bot blocked" and count as a warning, not a failure.
+[hosts."developer.apple.com"]
+concurrency = 2
+# The HTML shell always returns 200. The JSON form returns 404 for a page that does not exist.
+apple_json = true
+
+[hosts."m3.material.io"]
+concurrency = 2
+sitemap = "https://m3.material.io/sitemap.xml"
+
+[hosts."github.com"]
+concurrency = 2
+delay = 1.0
+token_env = "GITHUB_TOKEN"
+
+[hosts."raw.githubusercontent.com"]
+concurrency = 2
+delay = 1.0
+token_env = "GITHUB_TOKEN"
+
+[hosts."medium.com"]
+blocked_status = [403]
+
+[hosts."proandroiddev.com"]
+blocked_status = [403]
+
+[hosts."www.linkedin.com"]
+blocked_status = [403, 999]
+
+[hosts."support.google.com"]
+# Serves 404 to non-browser user agents. A browser gets the page, so treat 404 as a bot block.
+blocked_status = [404]

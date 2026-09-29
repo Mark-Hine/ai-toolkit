@@ -1,3 +1,8 @@
+---
+verified: 2026-09-29
+sources: house
+---
+
 # Shared personal defaults
 
 ## Git

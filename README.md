@@ -42,7 +42,18 @@ Plugins only, without the dotfiles layer:
 /plugin install ios-kit@ai-toolkit
 /plugin install pr-review@ai-toolkit
 /plugin install design-kit@ai-toolkit
+/plugin install toolkit@ai-toolkit
 ```
+
+## Keeping standards fresh
+
+Every rule file, standards reference and pr-review pack carries a `verified:` date and a `sources:` list. Three mechanisms keep them honest.
+
+- `tools/freshness.py` runs in CI on every push and warns at 90 days, fails at 180. The monthly `scheduled` workflow opens or updates a `freshness` issue when anything is due.
+- `tools/linkcheck.py` runs monthly over every cited URL, with per-host rules for pages that render client-side or block bots, and opens a `linkcheck` issue when a source is gone.
+- `/toolkit:audit` (`$toolkit-audit` in Codex, `/toolkit-audit` in Antigravity) re-reads each source, classifies every rule, writes `docs/audits/<date>-audit.md` with proposed diffs, and refreshes stamps only for files that pass and only after you confirm.
+
+Cadence. When the freshness job warns, run the audit from this checkout, land the fixes as small mirrored PRs, then let the skill refresh the stamps. `tools/mirror_parity.py` runs in CI and fails when the three layers drift apart between audits.
 
 ## Contributing
 

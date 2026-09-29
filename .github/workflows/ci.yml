@@ -51,6 +51,12 @@ jobs:
         run: python3 scripts/ci/check_style.py
       - name: Shared tests
         run: python3 -m unittest discover -s shared/tests -v
+      - name: Tools tests
+        run: python3 -m unittest discover -s tools/tests -v
+      - name: Freshness of verified stamps
+        run: python3 tools/freshness.py
+      - name: Mirror parity across layers
+        run: python3 tools/mirror_parity.py
       - name: Plugin versions bumped
         if: github.event_name == 'pull_request'
         run: python3 scripts/ci/check_plugin_versions.py --base "origin/${GITHUB_BASE_REF}"

@@ -78,7 +78,8 @@ def paths_of(text):
     if not text.startswith('---\n'):
         return []
     block = text[4:text.find('\n---\n', 4)]
-    return re.findall(r'^\s+-\s+"?([^"\n]+)"?\s*$', block, re.M) if 'paths:' in block else []
+    match = re.search(r'^paths:\s*\n((?:\s+-\s+.*\n?)+)', block + '\n', re.M)
+    return re.findall(r'^\s+-\s+"?([^"\n]+)"?\s*$', match.group(1), re.M) if match else []
 
 
 def adapt(text):

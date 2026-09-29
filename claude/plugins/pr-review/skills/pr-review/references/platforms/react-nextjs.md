@@ -1,3 +1,8 @@
+---
+verified: 2026-09-29
+sources: inline
+---
+
 # React and Next.js platform pack
 
 Grading criteria for reviewing a React or Next.js change, including pnpm/Turborepo monorepos that hold several apps and shared packages. Load this pack when a `package.json` in the delta's workspace depends on `react` or `next` and the app is not React Native. It supplies the standards vocabulary that findings cite and the recipes that turn a suspicion into evidence. The platform-neutral review rules live in [`../protocol.md`](../protocol.md) §13 to §16 (volatile facts, `Unverified` grading, pragmatism guardrails, main-safety ownership), and their extensions in §17 to §20 (root cause, verification criteria, SHA ancestry, debug-variant exclusion). All of them apply here.
@@ -154,8 +159,8 @@ pnpm why <package>
 | [OWASP-XSS] | https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html |
 | [OWASP-HTML5] | https://cheatsheetseries.owasp.org/cheatsheets/HTML5_Security_Cheat_Sheet.html ("Do not store session identifiers in local storage") |
 | [OWASP-CLICKJACK] | https://cheatsheetseries.owasp.org/cheatsheets/Clickjacking_Defense_Cheat_Sheet.html |
-| [MDN-XFO] | https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options (a header carrying `ALLOW-FROM` is ignored) |
-| [MDN-FRAME-ANCESTORS] | https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/frame-ancestors (not supported in `<meta>`) |
+| [MDN-XFO] | https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Frame-Options (a header carrying `ALLOW-FROM` is ignored) |
+| [MDN-FRAME-ANCESTORS] | https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/frame-ancestors (not supported in `<meta>`) |
 | [MDN-POSTMESSAGE] | https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage |
 | [OAUTH-BROWSER-BCP] | https://datatracker.ietf.org/doc/html/draft-ietf-oauth-browser-based-apps (Internet-Draft, check the current revision at review time) |
 | [RFC8252] | https://datatracker.ietf.org/doc/html/rfc8252 (OAuth 2.0 for Native Apps) |
@@ -187,8 +192,8 @@ pnpm why <package>
 [OWASP-XSS]: https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html
 [OWASP-HTML5]: https://cheatsheetseries.owasp.org/cheatsheets/HTML5_Security_Cheat_Sheet.html
 [OWASP-CLICKJACK]: https://cheatsheetseries.owasp.org/cheatsheets/Clickjacking_Defense_Cheat_Sheet.html
-[MDN-XFO]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
-[MDN-FRAME-ANCESTORS]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/frame-ancestors
+[MDN-XFO]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/X-Frame-Options
+[MDN-FRAME-ANCESTORS]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy/frame-ancestors
 [MDN-POSTMESSAGE]: https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage
 [OAUTH-BROWSER-BCP]: https://datatracker.ietf.org/doc/html/draft-ietf-oauth-browser-based-apps
 [RFC8252]: https://datatracker.ietf.org/doc/html/rfc8252

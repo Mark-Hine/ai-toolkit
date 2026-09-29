@@ -1,4 +1,9 @@
 ---
+verified: 2026-09-29
+sources:
+  - https://developer.apple.com/documentation/testing
+  - https://developer.apple.com/documentation/testing/migratingfromxctest
+  - https://developer.apple.com/documentation/xcuiautomation/xcuiapplication/performaccessibilityaudit(for:_:)
 paths:
   - "**/*Tests/**"
   - "**/*Tests.swift"

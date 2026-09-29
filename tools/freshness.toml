@@ -1,0 +1,15 @@
+# Files whose `verified:` stamp the freshness job checks. Globs are relative to the repo root.
+warn_days = 90
+fail_days = 180
+include = [
+  "claude/home/rules/**/*.md",
+  "shared/guidance/*.md",
+  "shared/guidance/references/*.md",
+  "claude/plugins/*/skills/*/references/*.md",
+  "claude/plugins/pr-review/skills/pr-review/references/*.md",
+  "claude/plugins/pr-review/skills/pr-review/references/platforms/*.md",
+]
+exclude = [
+  "**/*template*.md",
+  "claude/plugins/toolkit/skills/audit/references/register-template.md",
+]

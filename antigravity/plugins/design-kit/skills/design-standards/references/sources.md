@@ -66,11 +66,11 @@ W3C Recommendation, current edition dated 2024-12-12. Verified 2026-09-29. One k
 
 | Key | URL | Verified |
 | --- | --- | --- |
-| MDN-LANDMARKS | https://developer.mozilla.org/en-US/docs/Web/HTML/Element#content_sectioning | to fetch |
-| MDN-REDUCED-MOTION | https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion | to fetch |
-| MDN-CLAMP | https://developer.mozilla.org/en-US/docs/Web/CSS/clamp | 2026-09-29 |
-| MDN-CONTAINER | https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_containment/Container_queries | to fetch |
-| MDN-CUSTOM-PROPS | https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties | to fetch |
+| MDN-LANDMARKS | https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements#content_sectioning | to fetch |
+| MDN-REDUCED-MOTION | https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion | to fetch |
+| MDN-CLAMP | https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/clamp | 2026-09-29 |
+| MDN-CONTAINER | https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Containment/Container_queries | to fetch |
+| MDN-CUSTOM-PROPS | https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascading_variables/Using_custom_properties | to fetch |
 
 ## Tier 2 origins
 

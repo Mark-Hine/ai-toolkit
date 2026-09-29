@@ -1,0 +1,101 @@
+# Files mirrored across the three layers, compared after normalising each layer's wording.
+# A pair fails when the normalised similarity ratio drops below `threshold` (default below).
+threshold = 0.85
+
+# Tokens that mean the same thing in each layer. Applied to every file before comparison.
+[[substitutions]]
+neutral = "{PROJECT_FILE}"
+claude = ["`CLAUDE.md`", "CLAUDE.md"]
+codex = ["`AGENTS.md`", "AGENTS.md"]
+antigravity = ["`AGENTS.md` (or `GEMINI.md`)", "`AGENTS.md`", "AGENTS.md"]
+
+[[substitutions]]
+neutral = "{HOME}/"
+claude = ["~/.claude/"]
+codex = ["~/.codex/"]
+antigravity = ["~/.gemini/config/"]
+
+[[substitutions]]
+neutral = "{RULES}"
+claude = ["rules/"]
+codex = ["guidance/"]
+antigravity = ["guidance/"]
+
+[[substitutions]]
+neutral = "{SKILL:standards}"
+claude = ["android-kit:standards", "ios-kit:standards", "design-kit:standards"]
+codex = ["$android-standards", "$ios-standards", "$design-standards", "android-standards", "ios-standards", "design-standards"]
+antigravity = ["/android-standards", "/ios-standards", "/design-standards", "android-standards", "ios-standards", "design-standards"]
+
+[[substitutions]]
+neutral = "{INVOKE}"
+claude = ["/android-kit:", "/ios-kit:", "/design-kit:", "/pr-review:pr-review", "/toolkit:audit"]
+codex = ["$android-", "$ios-", "$design-", "$pr-review", "$toolkit-audit"]
+antigravity = ["/android-", "/ios-", "/design-", "/pr-review", "/toolkit-audit"]
+
+[[substitutions]]
+neutral = "{FETCH}"
+claude = ["WebFetch", "WebSearch"]
+codex = ["Web fetch", "Web browsing", "Web search", "web fetch", "web browsing", "web search"]
+antigravity = ["Web fetch", "Web browsing", "Web search", "web fetch", "web browsing", "web search", "read_url_content", "search_web"]
+
+# Pair groups. `layers` maps a layer to a path template. `{s}` is the skill directory name in the
+# Claude layer, `{p}` the platform prefix (android, ios, design), `{a}` the agent name.
+[[groups]]
+name = "rules"
+claude = "claude/home/rules/{p}/{f}.md"
+codex = "codex/home/guidance/{p}/{f}.md"
+items = [["android", "compose"], ["android", "kotlin-style"], ["android", "testing"], ["android", "ui-events"],
+         ["ios", "swift-style"], ["ios", "swiftui"], ["ios", "testing"], ["ios", "ui-events"]]
+
+[[groups]]
+name = "playbooks"
+claude = "claude/plugins/{p}-kit/skills/{s}/SKILL.md"
+codex = "codex/skills/{p}-{s}/SKILL.md"
+antigravity = "antigravity/plugins/{p}-kit/skills/{p}-{s}/SKILL.md"
+items = [["android", "feature"], ["android", "bugfix"], ["android", "run-app"], ["android", "uplift-deps"], ["android", "standards"],
+         ["ios", "feature"], ["ios", "bugfix"], ["ios", "run-app"], ["ios", "uplift-deps"], ["ios", "standards"]]
+
+[[groups]]
+name = "standards-references"
+claude = "claude/plugins/{p}-kit/skills/standards/references/{f}.md"
+codex = "codex/skills/{p}-standards/references/{f}.md"
+antigravity = "antigravity/plugins/{p}-kit/skills/{p}-standards/references/{f}.md"
+items = [["android", "ui-events"], ["android", "official-docs"], ["android", "jetsnack"], ["android", "nia"], ["android", "testing"],
+         ["ios", "ui-events"], ["ios", "official-docs"], ["ios", "apple-samples"]]
+
+[[groups]]
+name = "ios-template"
+claude = "claude/plugins/ios-kit/skills/standards/references/project-claude-md-template.md"
+codex = "codex/skills/ios-standards/references/project-agents-md-template.md"
+antigravity = "antigravity/plugins/ios-kit/skills/ios-standards/references/project-agents-md-template.md"
+items = [[]]
+
+[[groups]]
+name = "design-skill"
+claude = "claude/plugins/design-kit/skills/standards/SKILL.md"
+codex = "codex/skills/design-standards/SKILL.md"
+antigravity = "antigravity/plugins/design-kit/skills/design-standards/SKILL.md"
+items = [[]]
+
+[[groups]]
+name = "pr-review-skill"
+claude = "claude/plugins/pr-review/skills/pr-review/SKILL.md"
+codex = "codex/skills/pr-review/SKILL.md"
+antigravity = "antigravity/plugins/pr-review/skills/pr-review/SKILL.md"
+items = [[]]
+
+[[groups]]
+name = "audit-skill"
+claude = "claude/plugins/toolkit/skills/audit/SKILL.md"
+codex = "codex/skills/toolkit-audit/SKILL.md"
+antigravity = "antigravity/plugins/toolkit/skills/toolkit-audit/SKILL.md"
+items = [[]]
+
+[[groups]]
+name = "agents"
+claude = "claude/plugins/{p}/agents/{a}.md"
+codex = "codex/agents/{a}.toml"
+antigravity = "antigravity/plugins/{p}/agents/{a}.md"
+items = [["android-kit", "android-researcher"], ["android-kit", "android-reviewer"], ["android-kit", "android-verifier"],
+         ["ios-kit", "ios-researcher"], ["ios-kit", "ios-reviewer"], ["ios-kit", "ios-verifier"], ["design-kit", "ui-reviewer"]]

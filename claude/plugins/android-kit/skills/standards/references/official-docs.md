@@ -33,7 +33,7 @@ Canonical URLs. Prefer `android docs search "<term>"` first. Use these for WebFe
 - AGP and Gradle/JDK compatibility table: https://developer.android.com/build/releases/gradle-plugin#compatibility
 - Optimize your build: https://developer.android.com/build/optimize-your-build
 - Migrate to version catalogs: https://developer.android.com/build/migrate-to-catalogs
-- Shrink, obfuscate, optimize (R8): https://developer.android.com/build/shrink-code
+- Shrink, obfuscate, optimize (R8): https://developer.android.com/topic/performance/app-optimization/enable-app-optimization
 - Gradle best practices: https://docs.gradle.org/current/userguide/best_practices_general.html
 - Gradle version catalogs: https://docs.gradle.org/current/userguide/version_catalogs.html
 - KSP overview and Kotlin compatibility: https://kotlinlang.org/docs/ksp-overview.html
@@ -44,7 +44,7 @@ Canonical URLs. Prefer `android docs search "<term>"` first. Use these for WebFe
 - OWASP MASVS v2.1.0: https://mas.owasp.org/MASVS/
 - OWASP MASTG (cert pinning MASTG-KNOW-0015, missing pinning MASTG-TEST-0244): https://mas.owasp.org/MASTG/
 - OWASP Pinning Cheat Sheet: https://cheatsheetseries.owasp.org/cheatsheets/Pinning_Cheat_Sheet.html
-- OWASP Mobile Top 10 2024: https://owasp.org/www-project-mobile-top-10/
+- OWASP Mobile Top 10 2024: https://owasp.org/projects/mobile-top-10
 - Network security config: https://developer.android.com/privacy-and-security/security-config
 - Intent security: https://developer.android.com/privacy-and-security/risks/intent-redirection
 - OSV vulnerability database (purl batch query): https://osv.dev
@@ -54,5 +54,5 @@ Canonical URLs. Prefer `android docs search "<term>"` first. Use these for WebFe
 - Behaviour changes by release (check the page for the current target): https://developer.android.com/about/versions
 - Play Integrity: https://developer.android.com/google/play/integrity/overview
 - Play User Data policy (account deletion): https://support.google.com/googleplay/android-developer/answer/13327111
-- App vitals: https://developer.android.com/topic/performance/vitals
+- App vitals: https://developer.android.com/google/play/vitals
 - 16 KB page size support: https://developer.android.com/guide/practices/page-sizes

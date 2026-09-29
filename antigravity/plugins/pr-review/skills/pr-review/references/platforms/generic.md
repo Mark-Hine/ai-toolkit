@@ -1,3 +1,8 @@
+---
+verified: 2026-09-29
+sources: inline
+---
+
 # Platform pack: generic
 
 Load this pack when the repo is none of Android, iOS, Spring Boot or React/Next.js. There is no single authority to cite for
@@ -136,17 +141,17 @@ then the canonical references for the stack. A few that apply broadly:
 
 | Key | Source |
 |---|---|
-| [ASVS] | https://owasp.org/www-project-application-security-verification-standard/ |
-| [TOP10] | https://owasp.org/www-project-top-ten/ |
-| [API-TOP10] | https://owasp.org/www-project-api-security/ |
+| [ASVS] | https://owasp.org/projects/asvs |
+| [TOP10] | https://owasp.org/projects/top-ten |
+| [API-TOP10] | https://owasp.org/projects/api-security-project |
 | [CHEATSHEETS] | https://cheatsheetseries.owasp.org/ |
 | [SEMVER] | https://semver.org/ |
 | [CIS] | https://www.cisecurity.org/cis-benchmarks |
 
 <!-- Source links -->
 [CIS]: https://www.cisecurity.org/cis-benchmarks
-[API-TOP10]: https://owasp.org/www-project-api-security/
-[ASVS]: https://owasp.org/www-project-application-security-verification-standard/
+[API-TOP10]: https://owasp.org/projects/api-security-project
+[ASVS]: https://owasp.org/projects/asvs
 [CHEATSHEETS]: https://cheatsheetseries.owasp.org/
 [SEMVER]: https://semver.org/
-[TOP10]: https://owasp.org/www-project-top-ten/
+[TOP10]: https://owasp.org/projects/top-ten

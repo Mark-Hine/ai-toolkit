@@ -41,6 +41,12 @@ DESIGN_REFERENCES = {
     'antigravity': 'antigravity/plugins/design-kit/skills/design-standards/references',
 }
 DESIGN_REFERENCE_FILES = ['sources.md', 'rationale.md', 'platform-apis.md']
+AUDIT_REFERENCES = {
+    'claude': 'claude/plugins/toolkit/skills/audit/references',
+    'codex': 'codex/skills/toolkit-audit/references',
+    'antigravity': 'antigravity/plugins/toolkit/skills/toolkit-audit/references',
+}
+AUDIT_REFERENCE_FILES = ['sources.md', 'rubric.md', 'register-template.md']
 # Files whose text must match outside `<!-- layer-specific:start/end -->` blocks. Never written by --write.
 PR_REVIEW_MARKED = ['references/ci.md']
 LAYER_BLOCK = re.compile(r'<!-- layer-specific:start -->.*?<!-- layer-specific:end -->\n?', re.S)
@@ -52,6 +58,8 @@ def groups():
     yield from HOOK_GROUPS
     for rel in DESIGN_REFERENCE_FILES:
         yield [f'{base}/{rel}' for base in DESIGN_REFERENCES.values()]
+    for rel in AUDIT_REFERENCE_FILES:
+        yield [f'{base}/{rel}' for base in AUDIT_REFERENCES.values()]
 
 
 def marked_groups():
