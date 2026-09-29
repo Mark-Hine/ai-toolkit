@@ -151,8 +151,8 @@ class Installer:
                                    (ROOT / 'home/AGENTS.md').read_text())
         hook_file = cfg / 'hooks.json'
         old_hooks = json.loads(hook_file.read_text()) if hook_file.exists() else {}
-        command = shlex.join([sys.executable, str(ROOT / 'hooks/guard.py')])
-        lint_command = shlex.join([sys.executable, str(ROOT / 'hooks/swift_lint.py')])
+        command = shlex.join([sys.executable, str(ROOT / 'hooks/guard.py'), '--agent', 'codex'])
+        lint_command = shlex.join([sys.executable, str(ROOT / 'hooks/swift_lint.py'), '--agent', 'codex'])
         hooks = merged_hooks(old_hooks, command, lint_command)
         # Parse all input before changing any destination.
         agents = []

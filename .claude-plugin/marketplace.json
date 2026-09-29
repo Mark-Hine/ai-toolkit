@@ -55,6 +55,18 @@
         "material3",
         "swiftui"
       ]
+    },
+    {
+      "name": "guard-kit",
+      "source": "./claude/plugins/guard-kit",
+      "description": "Repo-agnostic PreToolUse guard: blocks protected-branch and force pushes, destructive git, timeout wrappers, and edits to secrets, signing material and lock files. Limits the toolkit researcher and verifier agents to their documented commands.",
+      "keywords": [
+        "guard",
+        "hooks",
+        "git",
+        "secrets",
+        "safety"
+      ]
     }
   ]
 }

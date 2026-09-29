@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Edit|Write|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "timeout": 10,
+            "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/hooks/guard.py\" --agent claude || { echo 'ai-toolkit guard could not run (python3 3.8+ required). Tool call blocked.' >&2; exit 2; }"
+          }
+        ]
+      }
+    ]
+  }
+}

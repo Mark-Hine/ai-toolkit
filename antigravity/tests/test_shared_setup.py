@@ -21,7 +21,8 @@ class SharedSetupTests(unittest.TestCase):
         claude_plugins = {p.name for p in (ROOT / 'claude/plugins').iterdir() if p.is_dir()}
         agy_plugins = {p.name for p in (ROOT / 'antigravity/plugins').iterdir() if p.is_dir()}
         self.assertEqual({'android-kit', 'ios-kit', 'pr-review', 'design-kit'}, agy_plugins)
-        self.assertEqual(claude_plugins, agy_plugins)
+        # guard-kit is Claude-only. Antigravity registers the same guard inside each kit's hooks.json.
+        self.assertEqual(claude_plugins - {'guard-kit'}, agy_plugins)
 
     def test_antigravity_home_symlinks(self):
         common_link = ROOT / 'antigravity/home/guidance/common.md'

@@ -1,10 +1,12 @@
-"""Behavioral checks for the advisory guards; no tested shell command is executed."""
+"""Behavioral checks for the shared guard. No tested shell command is executed."""
 import importlib.util
+import io
 import json
 from pathlib import Path
 import subprocess
 import sys
 import unittest
+import unittest.mock
 
 
 GUARD = Path(__file__).resolve().parents[1] / 'hooks' / 'guard.py'
@@ -18,7 +20,8 @@ class GuardTests(unittest.TestCase):
         return guard.check({'tool_name': 'exec_command', 'tool_input': {'cmd': command}}, role)
 
     def test_destructive_git_with_ordinary_separators(self):
-        for command in ('git reset --hard', 'git checkout -- .', 'git restore .', 'git clean -fd'):
+        for command in ('git reset --hard', 'git checkout -- .', 'git checkout .', 'git checkout :/',
+                        'git restore .', 'git restore --staged --worktree .', 'git clean -fd', 'git clean -xdf'):
             for suffix in ('', '; git status', '&&git status', '\ngit status', '| cat'):
                 with self.subTest(command=command, suffix=suffix):
                     self.assertIsNotNone(self.shell(command + suffix))
@@ -31,19 +34,26 @@ class GuardTests(unittest.TestCase):
                 self.assertIsNotNone(self.shell(command))
 
     def test_protected_pushes(self):
-        for ref in ('main', 'master', 'develop', 'release/1.0', 'HEAD:main',
-                    'HEAD:refs/heads/main', '+HEAD:feature/example'):
+        for ref in ('main', 'master', 'develop', 'release/1.0', 'HEAD:main', '"main"',
+                    'HEAD:refs/heads/main', 'refs/heads/main', '+HEAD:feature/example'):
             with self.subTest(ref=ref):
                 self.assertIsNotNone(self.shell('git push origin ' + ref))
         for command in ('git push', 'git push origin', 'git push --all origin',
                         'git push origin feature/a --force-with-lease',
-                        'git push origin feature/a -f', 'git push --mirror origin'):
+                        'git push origin feature/a -f', 'git push --mirror origin',
+                        'git push origin HEAD', 'git push -u origin @',
+                        'git push origin --delete feature/old', 'git push -d origin feature/old',
+                        'git push origin :feature/old', 'git push origin --tags feature/x',
+                        'FOO=1 git push origin main', 'bash -c "git push origin main"',
+                        'eval "git push origin main"', 'git push origin main; echo done'):
             with self.subTest(command=command):
                 self.assertIsNotNone(self.shell(command))
 
     def test_safe_git_and_feature_pushes(self):
         for command in ('git status', 'git diff --stat', 'git reset --soft HEAD~1',
-                        'git push origin HEAD:feature/example',
+                        'git push origin HEAD:feature/example', 'git push -u origin feat/MBS-1-slug',
+                        'git restore --staged .', 'git restore -S .', 'git checkout -b feat/x',
+                        'git branch --list', 'grep -n main README.md', 'git log origin/main..HEAD',
                         'git push origin feature/example && git status',
                         'git push origin feature/example; git status',
                         'git push origin feature/example\ngit status'):
@@ -112,23 +122,29 @@ class GuardTests(unittest.TestCase):
                 self.assertIsNotNone(self.shell(command, 'ios-verifier'))
 
     def test_timeout_wrappers(self):
-        for command in ('timeout 30 ./gradlew test', 'sudo timeout 30 ./gradlew test',
-                        "sh -c 'timeout 30 ./gradlew test'",
-                        'timeout', '/usr/bin/timeout 30 task',
-                        'env FLAG=1 timeout 30 task', 'sudo -u example timeout 30 task',
-                        'command timeout 30 task', 'exec timeout 30 task',
-                        'true && timeout 30 task', 'true\ntimeout 30 task',
-                        '(timeout 30 task)', 'if true; then timeout 30 task; fi',
-                        'echo $(timeout 30 task)', 'echo "$(timeout 30 task)"',
-                        'echo "`timeout 30 task`"', '/bin/zsh -lc "timeout 30 task"'):
+        wrapper = 'timeout'
+        for command in (f'{wrapper} 30 ./gradlew test', f'sudo {wrapper} 30 ./gradlew test',
+                        f'time {wrapper} 5 ls', f'xargs {wrapper} 5 ls', f'xargs -n 1 {wrapper} 5 ls',
+                        f'nice -n 5 {wrapper} 5 ls', f'caffeinate -t 60 {wrapper} 5 ls',
+                        f'eval {wrapper} 5 ls', f'FOO=1 {wrapper} 5 ls',
+                        f"sh -c '{wrapper} 30 ./gradlew test'",
+                        wrapper, f'/usr/bin/{wrapper} 30 task',
+                        f'env FLAG=1 {wrapper} 30 task', f'sudo -u example {wrapper} 30 task',
+                        f'command {wrapper} 30 task', f'exec {wrapper} 30 task',
+                        f'true && {wrapper} 30 task', f'true\n{wrapper} 30 task',
+                        f'({wrapper} 30 task)', f'if true; then {wrapper} 30 task; fi',
+                        f'echo $({wrapper} 30 task)', f'echo "$({wrapper} 30 task)"',
+                        f'echo "`{wrapper} 30 task`"', f'/bin/zsh -lc "{wrapper} 30 task"'):
             with self.subTest(command=command):
                 self.assertIsNotNone(self.shell(command))
 
     def test_timeout_in_arguments_and_comments_is_data(self):
-        for command in ('echo "A bridge heartbeat timeout expires the lease"',
-                        'printf "%s" "timeout 30 task"', 'rg timeout docs',
-                        'cat timeout', '# timeout 30 task\necho ready',
-                        "echo 'git reset --hard'", "python3 -c 'print(\"timeout example\")'"):
+        wrapper = 'timeout'
+        for command in (f'echo "A bridge heartbeat {wrapper} expires the lease"',
+                        f'printf "%s" "{wrapper} 30 task"', f'rg {wrapper} docs',
+                        f'cat {wrapper}', f'# {wrapper} 30 task\necho ready',
+                        "echo 'git reset --hard'", f"python3 -c 'print(\"{wrapper} example\")'",
+                        'adb shell am start --timeout 1000 com.x/.Main'):
             with self.subTest(command=command):
                 self.assertIsNone(self.shell(command))
 
@@ -229,7 +245,8 @@ class GuardTests(unittest.TestCase):
 
     def test_protected_patch_operations(self):
         for operation in ('Add File', 'Update File', 'Delete File', 'Move to'):
-            for path in ('.env', '.env.local', 'local.properties', 'google-services.json',
+            for path in ('.env', '.env.local', '.envrc', 'local.properties', 'keystore.properties',
+                         'google-services.json', 'AuthKey_ABC123.p8', '.git/config', '.git/hooks/pre-commit',
                          'signing/private.pem', 'app/libs/vendor.aar',
                          'gradle/wrapper/gradle-wrapper.jar',
                          'App/App.entitlements', 'ExportOptions.plist',
@@ -241,6 +258,69 @@ class GuardTests(unittest.TestCase):
                     with self.subTest(operation=operation, path=path, tool_input=tool_input):
                         self.assertIsNotNone(guard.check({'tool_name': 'apply_patch', 'tool_input': tool_input}))
 
+    def test_env_templates_and_source_files_are_editable(self):
+        for tool, key in (('Edit', 'file_path'), ('Write', 'file_path'), ('NotebookEdit', 'notebook_path'),
+                          ('write_to_file', 'TargetFile'), ('multi_replace_file_content', 'TargetFile')):
+            for path in ('.env.example', '.env.sample', 'app/src/main/Main.kt', 'App/Foo.swift', 'notes.ipynb'):
+                with self.subTest(tool=tool, path=path):
+                    event = {'tool_name': tool, 'tool_input': {key: path}}
+                    if key == 'TargetFile':
+                        event = {'toolCall': {'name': tool, 'args': {key: path}}}
+                    self.assertIsNone(guard.check(event))
+
+    def test_protected_paths_through_every_tool_shape(self):
+        for tool, key in (('Edit', 'file_path'), ('Write', 'file_path'), ('NotebookEdit', 'notebook_path')):
+            self.assertIsNotNone(guard.check({'tool_name': tool, 'tool_input': {key: 'app/release.jks'}}))
+        for tool in ('write_to_file', 'replace_file_content', 'multi_replace_file_content'):
+            self.assertIsNotNone(guard.check({'toolCall': {'name': tool, 'args': {'TargetFile': 'ios/Podfile.lock'}}}))
+
+    def test_ci_definitions_ask_on_claude_and_deny_elsewhere(self):
+        for path in ('.github/workflows/ci.yml', 'azure-pipelines.yml', 'ci/azure-pipelines-review.yaml'):
+            event = {'tool_name': 'Edit', 'tool_input': {'file_path': path}}
+            with self.subTest(path=path):
+                self.assertEqual('ask', guard.evaluate(event)[0])
+                self.assertIn('"ask"', guard.render('claude', guard.evaluate(event)))
+                self.assertIn('"deny"', guard.render('codex', guard.evaluate(event)))
+                self.assertIn('"deny"', guard.render('antigravity', guard.evaluate(event)))
+
+    def test_role_comes_from_argv_then_agent_type(self):
+        self.assertEqual('android-researcher', guard.resolve_role({}, 'android-researcher'))
+        self.assertEqual('android-researcher', guard.resolve_role({'agent_type': 'android-kit:android-researcher'}))
+        self.assertEqual('ios-verifier', guard.resolve_role({'agent_type': 'ios-kit:ios-verifier'}, ''))
+        self.assertEqual('ui-reviewer', guard.resolve_role({'agent_type': 'ui-reviewer'}))
+        self.assertEqual('', guard.resolve_role({'agent_type': 'Explore'}))
+        self.assertEqual('', guard.resolve_role({'agent_type': 'general-purpose'}))
+        self.assertEqual('android-verifier', guard.resolve_role({'agent_type': 'ios-kit:ios-verifier'}, 'android-verifier'))
+        self.assertEqual('android-verifier', guard.resolve_role({'role': 'android-verifier'}))
+
+    def test_role_from_agent_type_limits_a_subagent(self):
+        event = {'tool_name': 'Bash', 'tool_input': {'command': './gradlew installDebug'},
+                 'agent_type': 'android-kit:android-verifier'}
+        self.assertIsNotNone(guard.check(event, guard.resolve_role(event)))
+        event['agent_type'] = 'Explore'
+        self.assertIsNone(guard.check(event, guard.resolve_role(event)))
+
+    def test_render_per_host(self):
+        self.assertEqual('', guard.render('claude', None))
+        self.assertEqual('', guard.render('codex', None))
+        self.assertEqual({}, json.loads(guard.render('antigravity', None)))
+        self.assertEqual({'decision': 'deny', 'reason': 'x'}, json.loads(guard.render('antigravity', ('deny', 'x'))))
+        claude = json.loads(guard.render('claude', ('deny', 'x')))['hookSpecificOutput']
+        self.assertEqual(('PreToolUse', 'deny', 'x'),
+                         (claude['hookEventName'], claude['permissionDecision'], claude['permissionDecisionReason']))
+
+    def test_main_denies_on_invalid_input_and_never_raises(self):
+        for agent in ('claude', 'codex', 'antigravity'):
+            out = io.StringIO()
+            with unittest.mock.patch('sys.stdout', out):
+                self.assertEqual(0, guard.main(['--agent', agent], stdin=io.StringIO('not json')))
+            self.assertIn('deny', out.getvalue())
+            out = io.StringIO()
+            with unittest.mock.patch('sys.stdout', out):
+                payload = json.dumps({'tool_name': 'Bash', 'tool_input': {'command': 'git status'}})
+                guard.main(['--agent', agent], stdin=io.StringIO(payload))
+            self.assertNotIn('deny', out.getvalue())
+
     def test_patch_role_boundaries(self):
         event = {'tool_name': 'apply_patch', 'tool_input':
                  '*** Begin Patch\n*** Add File: app/src/main/Main.kt\n+package app\n*** End Patch'}
@@ -250,7 +330,7 @@ class GuardTests(unittest.TestCase):
             self.assertIsNotNone(guard.check(event, role))
 
     def test_hook_wire_response(self):
-        denied = subprocess.run([sys.executable, str(GUARD)], text=True, capture_output=True,
+        denied = subprocess.run([sys.executable, str(GUARD), '--agent', 'codex'], text=True, capture_output=True,
                                 input=json.dumps({'tool_name': 'exec_command',
                                                   'tool_input': {'cmd': 'git reset --hard; git status'}}),
                                 check=True)
@@ -261,6 +341,14 @@ class GuardTests(unittest.TestCase):
                                  input=json.dumps({'tool_name': 'exec_command',
                                                    'tool_input': {'cmd': 'git status'}}), check=True)
         self.assertEqual('', allowed.stdout)
+        antigravity = subprocess.run([sys.executable, str(GUARD), '--agent', 'antigravity'], text=True,
+                                     capture_output=True, check=True,
+                                     input=json.dumps({'toolCall': {'name': 'run_command', 'args': {'CommandLine': 'git status'}}}))
+        self.assertEqual({}, json.loads(antigravity.stdout))
+        antigravity = subprocess.run([sys.executable, str(GUARD), '--agent', 'antigravity'], text=True,
+                                     capture_output=True, check=True,
+                                     input=json.dumps({'toolCall': {'name': 'run_command', 'args': {'CommandLine': 'git push origin main'}}}))
+        self.assertEqual('deny', json.loads(antigravity.stdout)['decision'])
 
 
 if __name__ == '__main__':

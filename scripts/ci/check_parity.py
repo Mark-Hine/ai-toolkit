@@ -28,6 +28,11 @@ PR_REVIEW_SHARED = [
     'references/platforms/react-nextjs.md',
     'scripts/post_azdo.py',
 ]
+# Hook modules. shared/hooks is canonical; the plugin and Codex copies must be byte-identical.
+HOOK_GROUPS = [
+    ['shared/hooks/guard.py', 'claude/plugins/guard-kit/hooks/guard.py', 'codex/hooks/guard.py'],
+    ['shared/hooks/swift_lint.py', 'claude/plugins/ios-kit/hooks/swift_lint.py', 'codex/hooks/swift_lint.py'],
+]
 # Files whose text must match outside `<!-- layer-specific:start/end -->` blocks. Never written by --write.
 PR_REVIEW_MARKED = ['references/ci.md']
 LAYER_BLOCK = re.compile(r'<!-- layer-specific:start -->.*?<!-- layer-specific:end -->\n?', re.S)
@@ -36,6 +41,7 @@ LAYER_BLOCK = re.compile(r'<!-- layer-specific:start -->.*?<!-- layer-specific:e
 def groups():
     for rel in PR_REVIEW_SHARED:
         yield [f'{base}/{rel}' for base in PR_REVIEW.values()]
+    yield from HOOK_GROUPS
 
 
 def marked_groups():
