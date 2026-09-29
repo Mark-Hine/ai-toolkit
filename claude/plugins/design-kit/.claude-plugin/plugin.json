@@ -1,7 +1,21 @@
 {
   "name": "design-kit",
+  "version": "1.0.0",
   "description": "UI/UX design standards, anti-slop guidelines, and dedicated UI reviewer agent for Claude Code",
-  "author": { "name": "Mark Hine", "url": "https://github.com/Mark-Hine" },
+  "author": {
+    "name": "Mark Hine",
+    "url": "https://github.com/Mark-Hine"
+  },
+  "homepage": "https://github.com/Mark-Hine/ai-toolkit/tree/main/claude/plugins/design-kit",
   "repository": "https://github.com/Mark-Hine/ai-toolkit",
-  "license": "MIT"
+  "license": "MIT",
+  "keywords": [
+    "design",
+    "ui",
+    "ux",
+    "anti-slop",
+    "accessibility",
+    "material3",
+    "swiftui"
+  ]
 }
