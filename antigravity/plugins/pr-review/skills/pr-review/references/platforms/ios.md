@@ -109,7 +109,7 @@ screen consumes it). Check:
   A11y is won or lost in the design system.
 
 **UI design ([UI-STANDARDS], [HIG], [WCAG22]):**
-- Grade UI against the tiered design rules in `~/.claude/rules/design-standards.md` (the `design-kit` standards skill carries the sources, rationale and APIs). Cite the rule ID and source key in each finding. T1 breaches grade Blocker or Major by user impact, T2 breaches grade Nit unless the project opts the rule in. iOS specifics are IOS-1 to IOS-4 (semantic colours, Liquid Glass out of the content layer, safe area, haptics used sparingly), with A11Y-4 for the 44 pt hit region and 28 pt HIG minimum, TYP-1 for Dynamic Type and A11Y-7 for the largest accessibility text size.
+- Grade UI against the tiered design rules, the `design-standards.md` file the toolkit installs (`~/.claude/rules/` on Claude Code, `guidance/` on Codex and Antigravity). The `design-standards` skill carries the sources, rationale and APIs. Cite the rule ID and source key in each finding. T1 breaches grade Blocker or Major by user impact, T2 breaches grade Nit unless the project opts the rule in. iOS specifics are IOS-1 to IOS-4 (semantic colours, Liquid Glass out of the content layer, safe area, haptics used sparingly), with A11Y-4 for the 44 pt hit region and 28 pt HIG minimum, TYP-1 for Dynamic Type and A11Y-7 for the largest accessibility text size.
 
 **SwiftUI update performance & identity ([SWIFTUI-DATAFLOW]):**
 - Prefer `@Observable` (field-level access tracking) over `ObservableObject` whole-object
@@ -225,7 +225,7 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
 | [XCODE-BUILD] | https://developer.apple.com/documentation/xcode/build-settings-reference, canonical build-settings reference (optimisation, stripping, sandboxing) |
 | [SWIFTLINT] | https://github.com/realm/SwiftLint, de-facto standard Swift linter |
 | [HIG] | https://developer.apple.com/design/human-interface-guidelines, Apple Human Interface Guidelines (incl. 44 pt default and 28 pt minimum targets, platform conventions) |
-| [UI-STANDARDS] | `~/.claude/rules/design-standards.md` (shared/guidance/design-standards.md in ai-toolkit), tiered rules with IDs. Sources per key in the design-kit standards skill, `references/sources.md` |
+| [UI-STANDARDS] | The toolkit's `design-standards.md` rule file (shared/guidance/design-standards.md in ai-toolkit), tiered rules with IDs. Sources per key in the design-standards skill, `references/sources.md` |
 | [WCAG22] | https://www.w3.org/TR/WCAG22/ (W3C Recommendation, 2024-12-12), cite the success criterion per finding |
 | [A11Y] | https://developer.apple.com/documentation/accessibility, Apple accessibility documentation (labels/traits, Dynamic Type, audits) |
 | [KEYCHAIN] | https://developer.apple.com/documentation/security/keychain-services, Keychain Services (accessibility classes, SecAccessControl) |

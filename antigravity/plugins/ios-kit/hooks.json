@@ -1,16 +1,25 @@
 {
+  "ios-kit-guard": {
+    "PreToolUse": [
+      {
+        "matcher": "run_command|write_to_file|replace_file_content|multi_replace_file_content",
+        "hooks": [
+          { "type": "command", "command": "python3 hooks/guard.py --agent antigravity", "timeout": 10 }
+        ]
+      }
+    ]
+  },
   "ios-kit-swift-lint": {
     "PostToolUse": [
       {
-        "matcher": "write_to_file|replace_file_content",
+        "matcher": "write_to_file|replace_file_content|multi_replace_file_content",
         "hooks": [
-          {
-            "type": "command",
-            "command": "python3 ../../hooks/swift_lint.py",
-            "timeout": 60
-          }
+          { "type": "command", "command": "python3 hooks/swift_lint.py --agent antigravity --mode post", "timeout": 60 }
         ]
       }
+    ],
+    "PreInvocation": [
+      { "type": "command", "command": "python3 hooks/swift_lint.py --agent antigravity --mode inject", "timeout": 5 }
     ]
   }
 }

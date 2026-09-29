@@ -37,7 +37,7 @@ Graded against [REACT-RULES] and [REACT-HOOKS-RULES]. These are correctness rule
 
 ## UI design ([UI-STANDARDS], [WCAG22])
 
-- Grade UI against the tiered design rules in `~/.claude/rules/design-standards.md` (the `design-kit` standards skill carries the sources, rationale and APIs). Cite the rule ID and source key in each finding. T1 breaches grade Blocker or Major by user impact, T2 breaches grade Nit unless the project opts the rule in. Web specifics are WEB-1 to WEB-4 (landmarks, `clamp()` with a relative maximum, tokens as custom properties, container queries for components) and A11Y-5 for the 24 px target floor, with keyboard focus rings visible on every interactive element (WCAG 2.4.7).
+- Grade UI against the tiered design rules, the `design-standards.md` file the toolkit installs (`~/.claude/rules/` on Claude Code, `guidance/` on Codex and Antigravity). The `design-standards` skill carries the sources, rationale and APIs. Cite the rule ID and source key in each finding. T1 breaches grade Blocker or Major by user impact, T2 breaches grade Nit unless the project opts the rule in. Web specifics are WEB-1 to WEB-4 (landmarks, `clamp()` with a relative maximum, tokens as custom properties, container queries for components) and A11Y-5 for the 24 px target floor, with keyboard focus rings visible on every interactive element (WCAG 2.4.7).
 
 ## State
 
@@ -147,7 +147,7 @@ pnpm why <package>
 | [TESTING-PRINCIPLES] | https://testing-library.com/docs/guiding-principles/ |
 | [TESTING-QUERIES] | https://testing-library.com/docs/queries/about/#priority |
 | [TS-STRICT] | https://www.typescriptlang.org/tsconfig/#strict |
-| [UI-STANDARDS] | `~/.claude/rules/design-standards.md` (shared/guidance/design-standards.md in ai-toolkit), tiered rules with IDs. Sources per key in the design-kit standards skill, `references/sources.md` |
+| [UI-STANDARDS] | The toolkit's `design-standards.md` rule file (shared/guidance/design-standards.md in ai-toolkit), tiered rules with IDs. Sources per key in the design-standards skill, `references/sources.md` |
 | [WCAG22] | https://www.w3.org/TR/WCAG22/ (W3C Recommendation, 2024-12-12) |
 | [ARIA-APG] | https://www.w3.org/WAI/ARIA/apg/ |
 | [ASVS5] | https://github.com/OWASP/ASVS/tree/v5.0.0/5.0 (OWASP ASVS 5.0.0, May 2025) |

@@ -8,7 +8,7 @@ Read the project AGENTS.md (or GEMINI.md) and applicable guidance first. Fall ba
 # Dependency uplift: the user request
 
 Repo facts (modules, compile/assemble commands, catalog vs Groovy scripts, deliberate opt-outs) come from the project's
-`AGENTS.md`. Write the step 4 plan before editing dependency versions. Existing authorization to perform the uplift is sufficient.
+`AGENTS.md` and its `gradle-deps` rule if present. Write the step 4 plan before editing dependency versions. Existing authorization to perform the uplift is sufficient.
 
 1. **Baseline.** Clean `git status` on `feat/<ticket>-<slug>` (or the project's documented branch convention). Run the project's compile checks and
    `./gradlew :app:dependencies --configuration <debugVariant>RuntimeClasspath > <scratchpad>/deps-before.txt`. Quote results.

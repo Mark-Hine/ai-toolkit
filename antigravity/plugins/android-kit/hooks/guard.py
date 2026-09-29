@@ -1,10 +1,35 @@
 #!/usr/bin/env python3
-"""Antigravity PreToolUse guards. Advisory command and path parsing."""
+"""PreToolUse guard shared by the Claude Code, Codex and Antigravity layers of ai-toolkit.
+
+Canonical source: shared/hooks/guard.py. The copies inside the plugins and under codex/hooks are
+kept byte-identical by scripts/ci/check_parity.py. Advisory command parsing is not a shell sandbox.
+
+Usage: guard.py [--agent claude|codex|antigravity] [role]
+  stdin   the hook event as JSON
+  role    a toolkit agent name; when absent it is read from the event's agent_type or role
+  stdout  the host's decision object, or nothing when there is no objection
+The guard never exits non-zero on a valid run. Any crash is reported as a deny, so a guard that
+cannot run still blocks the call.
+"""
+import argparse
 import json
 from pathlib import PurePosixPath
 import re
 import shlex
 import sys
+
+TOOLKIT_ROLES = {'android-researcher', 'android-reviewer', 'android-verifier',
+                 'ios-researcher', 'ios-reviewer', 'ios-verifier', 'ui-reviewer'}
+SHELL_TOOLS = {'Bash', 'shell', 'shell_command', 'exec_command', 'run_command'}
+EDIT_TOOLS = {'apply_patch', 'Edit', 'Write', 'NotebookEdit',
+              'write_to_file', 'replace_file_content', 'multi_replace_file_content'}
+SHELLS = {'sh', 'bash', 'zsh', 'dash', 'ksh'}
+# Wrappers that run another command. The value is the set of options that take an argument.
+WRAPPERS = {'sudo': {'-u', '-g', '-h', '-p', '-C', '-T', '--user', '--group', '--host', '--prompt', '--chdir', '--unset'},
+            'env': {'-u', '-C', '-S', '--unset', '--chdir', '--split-string'},
+            'command': set(), 'exec': {'-a'}, 'nohup': set(), 'time': set(),
+            'xargs': {'-n', '-I', '-P', '-L', '-s', '-E', '-d', '-a'},
+            'nice': {'-n'}, 'caffeinate': {'-t', '-w'}}
 
 
 def shell_source(command):
@@ -55,11 +80,13 @@ def timeout_command(tokens):
     command_start = True
     redirect_target = False
     wrapper_option = False
+    wrapper_options = set()
     for token in tokens:
         if re.fullmatch(r'[;&|()\n]+', token):
             command_start = True
             redirect_target = False
             wrapper_option = False
+            wrapper_options = set()
             continue
         if re.fullmatch(r'[<>]+', token):
             redirect_target = True
@@ -79,26 +106,37 @@ def timeout_command(tokens):
         executable = token.rsplit('/', 1)[-1]
         if executable == 'timeout':
             return True
-        if executable in {'sudo', 'env', 'command', 'exec', 'nohup'}:
+        if executable in WRAPPERS:
+            wrapper_options = WRAPPERS[executable]
             continue
         if token.startswith('-'):
-            wrapper_option = token in {'-u', '-g', '-h', '-p', '-C', '-T', '--user',
-                                       '--group', '--host', '--prompt', '--chdir', '--unset'}
+            wrapper_option = token in wrapper_options
             continue
         command_start = False
     return False
 
 
+ENV_TEMPLATES = {'.env.example', '.env.sample', '.env.template', '.env.dist'}
+
+
 def protected(path):
+    """Secrets, signing material, generated binaries and lock files. Never edited by an agent."""
     p = PurePosixPath(path)
     return (p.name in {'google-services.json', 'GoogleService-Info.plist', 'secrets.properties',
-                       'local.properties', 'network_security_config.xml', '.env',
-                       'ExportOptions.plist', 'Podfile.lock', 'Package.resolved'}
-            or p.name.startswith('.env.')
-            or p.suffix in {'.jks', '.keystore', '.p12', '.pem', '.key', '.mobileprovision', '.cer', '.entitlements'}
+                       'keystore.properties', 'local.properties', 'network_security_config.xml',
+                       '.env', '.envrc', 'ExportOptions.plist', 'Podfile.lock', 'Package.resolved'}
+            or (p.name.startswith('.env.') and p.name not in ENV_TEMPLATES)
+            or p.suffix in {'.jks', '.keystore', '.p12', '.p8', '.pem', '.key', '.mobileprovision', '.cer', '.entitlements'}
+            or '.git' in p.parts
             or re.search(r'[Ss]ecrets(?:\.swift|\.plist|[^/]*\.xcconfig)$', p.name) is not None
             or (p.suffix in {'.aar', '.jar'} and '/app/libs/' in '/' + str(p))
             or str(p).endswith('gradle/wrapper/gradle-wrapper.jar'))
+
+
+def needs_approval(path):
+    """CI definitions. Editing one is legitimate but changes what runs with credentials, so a person confirms it."""
+    p = PurePosixPath(path)
+    return ('.github' in p.parts and 'workflows' in p.parts) or re.fullmatch(r'azure-pipelines.*\.ya?ml', p.name) is not None
 
 
 def shell_reason(command):
@@ -133,27 +171,48 @@ def shell_reason(command):
                 return 'Force pushes and mirror pushes are blocked.'
             if any(re.search(r'(^|:)(refs/heads/)?(main|master|develop|release/[^\s]*)$', x) for x in rest):
                 return 'Push a feature branch and open a PR. Protected branch pushes are blocked.'
+            if any(x in {'--all', '--branches', '--tags', '--delete', '-d', '--prune'} for x in rest):
+                return 'Branch deletion and bulk pushes are blocked. Delete or prune branches from the host UI.'
             # Require an explicit remote and feature ref. Implicit pushes depend on local git config.
             positional = [x for x in rest if not x.startswith('-')]
-            if len(positional) != 2 or any(x in {'--all', '--branches', '--delete', '--prune'} for x in rest):
+            if len(positional) != 2:
                 return 'Push with an explicit remote and feature refspec so the destination can be checked.'
-            if any(c in positional[-1] for c in '$`*;|&'):
+            refspec = positional[-1]
+            if any(c in refspec for c in '$`*;|&'):
                 return 'Use a literal feature refspec so the destination can be checked.'
+            if refspec.startswith(':'):
+                return 'Branch deletion pushes are blocked. Delete branches from the host UI.'
+            destination = refspec.rsplit(':', 1)[-1]
+            if destination in {'HEAD', '@'}:
+                return 'Name the destination branch explicitly instead of HEAD so the guard can check it.'
         if op == 'reset' and '--hard' in rest:
             return 'Destructive git reset is blocked.'
         if op == 'clean' and any(x == '--force' or (x.startswith('-') and 'f' in x[1:]) for x in rest):
             return 'Destructive git clean is blocked.'
-        if op == 'checkout' and '--' in rest and '.' in rest:
+        if op == 'checkout' and ('.' in rest or ':/' in rest):
             return 'Discarding the working tree is blocked.'
         if op == 'restore' and ('.' in rest or ':/' in rest):
-            return 'Discarding the working tree is blocked.'
+            staged_only = ('--staged' in rest or '-S' in rest) and not ('--worktree' in rest or '-W' in rest)
+            if not staged_only:
+                return 'Discarding the working tree is blocked.'
     # Only shell command arguments contain nested shell source.
     for i, token in enumerate(tokens):
         for substitution in re.finditer(r'\$\(([^()]*)\)|`([^`]*)`', token):
             reason = shell_reason(substitution.group(1) or substitution.group(2) or '')
             if reason:
                 return reason
-        if token.rsplit('/', 1)[-1] not in {'sh', 'bash', 'zsh', 'dash', 'ksh'}:
+        executable = token.rsplit('/', 1)[-1]
+        if executable == 'eval':
+            nested = []
+            for arg in tokens[i + 1:]:
+                if re.fullmatch(r'[;&|()<>\n]+', arg):
+                    break
+                nested.append(arg)
+            reason = shell_reason(' '.join(nested))
+            if reason:
+                return reason
+            continue
+        if executable not in SHELLS:
             continue
         for j in range(i + 1, len(tokens) - 1):
             option = tokens[j]
@@ -168,18 +227,20 @@ def shell_reason(command):
 
 
 def read_command(tokens):
-    """The shell equivalents of read-only tools."""
+    """The shell equivalents of Claude's Read/Grep/Glob tools."""
     if not tokens:
         return False
     if tokens[0] in {'cat', 'ls', 'pwd'}:
         return True
     if tokens[0] == 'rg':
+        # These ripgrep flags execute an external command, unlike normal searches.
         return not any(arg == flag or arg.startswith(flag + '=')
                        for arg in tokens[1:] for flag in {'--pre', '--hostname-bin'})
     if tokens[0] == 'sed':
         args = tokens[1:]
         while args and args[0] in {'-n', '-E', '-e'}:
             args = args[1:]
+        # Permit only printing an optional line range; never sed's write/execute commands.
         return bool(len(args) >= 2
                     and re.fullmatch(r'(?:\d+(?:,(?:\d+|\$))?|\$)?p', args[0])
                     and not any(arg.startswith('-') for arg in args[1:]))
@@ -211,6 +272,7 @@ def gradle_reason(args):
 
 
 def xcodebuild_allowed(args, research=False):
+    """Allow documented query/test options, excluding unrelated build actions."""
     value_flags = {'-workspace', '-project', '-scheme', '-configuration', '-sdk', '-destination'}
     toggles = {'-quiet', '-json'}
     operations = {'-version', '-showsdks', '-list', '-showBuildSettings', '-showdestinations'} if research else {
@@ -233,7 +295,7 @@ def xcodebuild_allowed(args, research=False):
         elif arg in toggles:
             pass
         elif not research and (re.fullmatch(r'-(?:only|skip)-testing:.+', arg)
-                                or arg == 'CODE_SIGNING_ALLOWED=NO'):
+                               or arg == 'CODE_SIGNING_ALLOWED=NO'):
             pass
         else:
             return False
@@ -322,53 +384,98 @@ def role_reason(role, command):
     return None
 
 
-def check(event, role=''):
-    tool_call = event.get('toolCall') if isinstance(event, dict) else None
-    if tool_call and isinstance(tool_call, dict):
-        name = tool_call.get('name', '')
-        args = tool_call.get('args', {})
-    else:
-        name = event.get('tool_name', '')
-        args = event.get('tool_input', {})
+def tool_call(event):
+    """Normalise the three hosts' event shapes to (tool name, argument dict)."""
+    call = event.get('toolCall') if isinstance(event, dict) else None
+    if isinstance(call, dict):  # Antigravity
+        name, args = call.get('name', ''), call.get('args', {})
+    else:  # Claude Code and Codex
+        name, args = event.get('tool_name', ''), event.get('tool_input', {})
     if not isinstance(args, dict):
         args = {'command': args} if isinstance(args, str) else {}
+    return name, args
+
+
+def resolve_role(event, explicit=''):
+    """A toolkit agent name from argv, else from the event. Anything else means no role."""
+    candidates = [explicit]
+    if isinstance(event, dict):
+        candidates += [event.get('agent_type', ''), event.get('role', '')]
+    for candidate in candidates:
+        if not isinstance(candidate, str) or not candidate:
+            continue
+        name = candidate.rsplit(':', 1)[-1]  # plugin-scoped names such as android-kit:android-researcher
+        if name in TOOLKIT_ROLES:
+            return name
+    return ''
+
+
+def evaluate(event, role=''):
+    """Return ('deny' | 'ask', reason) or None when there is no objection."""
+    name, args = tool_call(event)
     command = args.get('CommandLine', args.get('command', args.get('cmd', '')))
     if isinstance(command, list):
         command = shlex.join(command)
-    if name in {'run_command', 'Bash', 'shell', 'shell_command', 'exec_command'}:
-        return shell_reason(command) or role_reason(role, command)
-    if name in {'write_to_file', 'replace_file_content', 'apply_patch', 'Edit', 'Write', 'NotebookEdit'}:
+    if name in SHELL_TOOLS:
+        reason = shell_reason(command) or role_reason(role, command)
+        return ('deny', reason) if reason else None
+    if name in EDIT_TOOLS:
         if role:
-            return 'Specialist agents do not edit source, tests or journeys.'
+            return ('deny', 'Specialist agents do not edit source, tests or journeys.')
         paths = [args.get('TargetFile', ''), args.get('file_path', ''), args.get('notebook_path', '')]
         patch = args.get('patch', args.get('CodeContent', args.get('ReplacementContent', command)))
         if isinstance(patch, str):
             paths += re.findall(r'^\*\*\* (?:Add File|Update File|Delete File|Move to): (.+)$', patch, re.M)
-        if any(protected(p) for p in paths if p):
-            return 'Editing secrets, signing/network configuration or generated binaries is blocked.'
+        paths = [p for p in paths if isinstance(p, str) and p]
+        if any(protected(p) for p in paths):
+            return ('deny', 'Editing secrets, signing/network configuration or generated binaries is blocked.')
+        if any(needs_approval(p) for p in paths):
+            return ('ask', 'This edits a CI definition. Confirm it before it runs with pipeline credentials.')
     return None
 
 
-if __name__ == '__main__':
-    event = {}
-    is_antigravity = True
-    try:
-        raw_input = sys.stdin.read()
-        if raw_input.strip():
-            event = json.loads(raw_input)
-            if 'tool_name' in event and 'toolCall' not in event:
-                is_antigravity = False
-        role = sys.argv[1] if len(sys.argv) > 1 else event.get('role', '')
-        reason = check(event, role)
-    except (ValueError, TypeError, AttributeError) as exc:
-        reason = 'Guard could not validate the tool input: ' + type(exc).__name__
+def check(event, role=''):
+    """The reason an event is not plainly allowed, or None. Kept for tests and callers that only need a yes or no."""
+    verdict = evaluate(event, role)
+    return verdict[1] if verdict else None
 
-    if is_antigravity:
-        if reason:
-            print(json.dumps({'decision': 'deny', 'reason': reason}))
-        else:
-            print(json.dumps({'decision': 'allow'}))
-    else:
-        if reason:
-            print(json.dumps({'hookSpecificOutput': {'hookEventName': 'PreToolUse',
-                  'permissionDecision': 'deny', 'permissionDecisionReason': reason}}))
+
+def render(agent, verdict):
+    """The host-specific stdout for a verdict. An empty string means no objection."""
+    if agent == 'antigravity':
+        # `decision` is required. `ask` keeps the normal permission prompt and its Always Allow cache.
+        # An empty object is treated as a denial, and `allow` would skip the prompt entirely.
+        if verdict is None:
+            return json.dumps({'decision': 'ask'})
+        return json.dumps({'decision': verdict[0] if verdict[0] in ('deny', 'ask') else 'deny', 'reason': verdict[1]})
+    if verdict is None:
+        return ''
+    decision, reason = verdict
+    if decision == 'ask' and agent == 'codex':
+        decision = 'deny'  # Codex hooks cannot prompt
+    return json.dumps({'hookSpecificOutput': {'hookEventName': 'PreToolUse',
+                       'permissionDecision': decision, 'permissionDecisionReason': reason}})
+
+
+def main(argv=None, stdin=None):
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument('--agent', choices=['claude', 'codex', 'antigravity'], default='codex')
+    parser.add_argument('role', nargs='?', default='')
+    try:
+        opts = parser.parse_args(argv)
+    except SystemExit:
+        opts = argparse.Namespace(agent='codex', role='')
+    try:
+        raw = (stdin or sys.stdin).read()
+        event = json.loads(raw) if raw.strip() else {}
+        verdict = evaluate(event, resolve_role(event, opts.role))
+    except BaseException as exc:  # noqa: BLE001 - a guard that cannot run must block, not fail open
+        verdict = ('deny', 'Guard could not validate the tool input: ' + type(exc).__name__)
+    output = render(opts.agent, verdict)
+    if output:
+        print(output)
+    return 0
+
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv[1:]))

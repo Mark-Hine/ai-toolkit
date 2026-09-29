@@ -1,3 +1,5 @@
 {
-  "name": "design-kit"
+  "name": "design-kit",
+  "description": "Tiered UI design rules (HIG, Material 3, WCAG 2.2, house) with sources, rationale and platform APIs, and a UI reviewer agent.",
+  "version": "1.0.0"
 }

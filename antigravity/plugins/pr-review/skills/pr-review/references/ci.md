@@ -42,33 +42,29 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  CODEX_VERSION: '<tested version>'  # the CLI version you tested
   AI_TOOLKIT_REF: 'main'             # pin to a tag in production
 
 steps:
   - checkout: self
     fetchDepth: 0                    # full history, the review needs the merge-base
 
-  - task: NodeTool@0
-    inputs: { versionSpec: '22.x' }
-
   - bash: |
       set -euo pipefail
-      npm install -g "@openai/codex@${CODEX_VERSION}"
+      curl -fsSL https://antigravity.google/cli/install.sh | bash   # pin once a versioned installer exists
       git clone --depth 1 --branch "$AI_TOOLKIT_REF" https://github.com/Mark-Hine/ai-toolkit.git "$AGENT_TEMPDIRECTORY/ai-toolkit"
-      mkdir -p ~/.agents/skills
-      cp -R "$AGENT_TEMPDIRECTORY/ai-toolkit/codex/skills/pr-review" ~/.agents/skills/pr-review
-      echo "##vso[task.setvariable variable=PR_REVIEW_SKILL_DIR]$HOME/.agents/skills/pr-review"
-    displayName: Install Codex and pr-review
+      mkdir -p ~/.gemini/config/plugins
+      ln -sfn "$AGENT_TEMPDIRECTORY/ai-toolkit/antigravity/plugins/pr-review" ~/.gemini/config/plugins/pr-review
+      echo "##vso[task.setvariable variable=PR_REVIEW_SKILL_DIR]$AGENT_TEMPDIRECTORY/ai-toolkit/antigravity/plugins/pr-review/skills/pr-review"
+    displayName: Install Antigravity CLI and pr-review
 
   - bash: |
       set -euo pipefail
-      codex exec --ephemeral --sandbox workspace-write \
+      ~/.local/bin/agy --sandbox --dangerously-skip-permissions --print-timeout 45m \
         --add-dir "$REVIEW_ARTIFACT_DIR" \
-        'Use $pr-review in CI mode. Review the PR named by the SYSTEM_PULLREQUEST_* variables. Write pr-review-<PR#>-<YYYY-MM-DD>.json and .md to REVIEW_ARTIFACT_DIR. Do not post findings.'
-    displayName: Run Codex PR review
+        -p 'Use the pr-review skill in CI mode. Review the PR named by the SYSTEM_PULLREQUEST_* variables. Write pr-review-<PR#>-<YYYY-MM-DD>.json and .md to REVIEW_ARTIFACT_DIR. Do not post findings.'
+    displayName: Run Antigravity PR review
     env:
-      CODEX_API_KEY: $(CODEX_API_KEY)  # secret, scoped to this step only
+      GEMINI_API_KEY: $(GEMINI_API_KEY)   # secret, scoped to this step only
       PR_REVIEW_MODE: ci
       REVIEW_ARTIFACT_DIR: $(Build.ArtifactStagingDirectory)
 
@@ -111,11 +107,9 @@ The design is deliberately splittable: the skill produces the findings JSON (hos
 JSON as an artifact and gate on `verdict`, or write a small adapter against the same file. The
 poster's internals already separate the generic findings-to-actions core from the ADO REST calls.
 <!-- layer-specific:start -->
-For GitHub Actions use the official `openai/codex-action` with its authenticated proxy, then map findings to
-`gh pr review --request-changes` or review comments via the GitHub API. Markers and idempotency
-carry over unchanged.
+For GitHub Actions no official Antigravity action is documented. Run the same CLI steps with `GEMINI_API_KEY` as a repository secret, then map findings to `gh pr review --request-changes` or review comments via the GitHub API. Markers and idempotency carry over unchanged.
 
 ## Runner setup
 
-Install the Codex CLI with `npm install -g @openai/codex@<version>` in a provisioning step, before exposing any API credential. Codex executes CI reviews with [`codex exec`](https://learn.chatgpt.com/docs/non-interactive-mode). Keep the review credential scoped to the review invocation. On GitHub Actions, prefer the official [Codex action](https://developers.openai.com/codex/github-action) and its authenticated proxy. No credentials are installed by the local toolkit installer.
+Install the CLI with the official installer in a provisioning step, before exposing any API credential, and pin the toolkit ref you tested. The review runs headless with `agy --print` (`-p`), `--sandbox` keeps terminal restrictions on, and `--dangerously-skip-permissions` is what lets a headless run proceed past permission prompts, so give the pipeline identity no more than it needs. This example is a template. It has not been run against an Azure pipeline. Authentication in CI uses `GEMINI_API_KEY`, per the Antigravity CLI install page.
 <!-- layer-specific:end -->

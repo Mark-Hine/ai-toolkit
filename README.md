@@ -4,7 +4,7 @@ My portable setup for AI coding agents. One folder per agent, with shared person
 
 | Folder | Agent | Status |
 | --- | --- | --- |
-| [`antigravity/`](antigravity/README.md) | Google Antigravity | Twelve skills, Android/iOS/UI specialist agents, four plugins (`android-kit`, `ios-kit`, `pr-review`, `design-kit`), lifecycle hooks (`PreToolUse`, `PostToolUse`), scoped guidance, repeatable installer |
+| [`antigravity/`](antigravity/README.md) | Google Antigravity | Four plugins (`android-kit`, `ios-kit`, `pr-review`, `design-kit`) carrying twelve skills, seven specialist agents, rules generated from the Claude rules, and the shared guard and Swift lint hooks. Symlink installer |
 | [`claude/`](claude/README.md) | Claude Code | Android, iOS, and UI/UX design playbooks, standards indexes, reviewer/researcher/verifier agents, guard hooks, writing-style rules, global `CLAUDE.md`, one-command installer |
 | [`codex/`](codex/README.md) | OpenAI Codex | Twelve skills, Android/iOS/UI specialist agents, global settings, scoped guidance, guard hooks, repeatable installer |
 
@@ -16,7 +16,7 @@ My portable setup for AI coding agents. One folder per agent, with shared person
 ./antigravity/install.sh
 ```
 
-Inspect the installed configuration in `~/.gemini/antigravity-cli/` and review registered hooks in `hooks.json`. See [Antigravity setup](antigravity/README.md) for details on plugins, skills, hooks, and verification.
+The installer links the plugins into `~/.gemini/config/plugins/` and the shared guidance into `~/.gemini/config/guidance/`, and adds a managed block to `~/.gemini/config/AGENTS.md`. Hooks ship inside each plugin, nothing is registered globally. Restart Antigravity, then check with `agy agents`. See [Antigravity setup](antigravity/README.md).
 
 ## Install (Codex)
 
@@ -50,7 +50,7 @@ Branch, PR, green CI. The rules for changes to this repo are in `AGENTS.md` (Cod
 
 ## Privacy
 
-Machine-specific facts (AVD names, CLI paths, ticket prefix, default branch) live in `~/.claude/machine.md`. The installer creates it from `claude/home/machine.md.example` and never commits it. Codex machine facts live in `~/.codex/machine.md`. Antigravity machine facts live in `~/.gemini/antigravity-cli/machine.md`. Repo-specific facts belong in that repo's own `AGENTS.md`, `CLAUDE.md`, or `GEMINI.md`, and the playbooks read them from there rather than hardcoding them. CI runs gitleaks on every push to catch credentials.
+Machine-specific facts (AVD names, CLI paths, ticket prefix, default branch) live in `~/.claude/machine.md`. The installer creates it from `claude/home/machine.md.example` and never commits it. Codex machine facts live in `~/.codex/machine.md`. Antigravity machine facts live in `~/.gemini/config/machine.md`. Repo-specific facts belong in that repo's own `AGENTS.md`, `CLAUDE.md`, or `GEMINI.md`, and the playbooks read them from there rather than hardcoding them. CI runs gitleaks on every push to catch credentials.
 
 ## Licence
 

@@ -5,7 +5,7 @@ sources: inline
 
 # One-shot ViewModel → UI events: house pattern and reference code
 
-Rule: `guidance/android/ui-events.md`. This file holds the canonical code and the reasoning. It is a house standard, kept deliberately where it departs from the official state-based guidance, and reviewers grade drift from it as a finding.
+Rule: the android-kit rules, section "One-shot ViewModel to UI events" (loaded with the plugin). This file holds the canonical code and the reasoning. It is a house standard, kept deliberately where it departs from the official state-based guidance, and reviewers grade drift from it as a finding.
 
 ## Position
 - Official guidance (developer.android.com/topic/architecture/ui-layer/events) says ViewModel events

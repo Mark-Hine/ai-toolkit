@@ -5,7 +5,7 @@ sources: inline
 
 # One-shot model → UI events on iOS: house pattern and reference code
 
-Rule: `guidance/ios/ui-events.md`. This file holds the canonical code and the reasoning. Android twin:
+Rule: the ios-kit rules, section "One-shot model to UI events" (loaded with the plugin). This file holds the canonical code and the reasoning. Android twin:
 `android-standards` → `references/ui-events.md`. The two differ on purpose, see "Why this differs from Android".
 
 ## Position

@@ -7,4 +7,4 @@ This file is private and is never committed. Populate facts from installed tools
 - Discover available AVDs with the installed emulator's `-list-avds` command. Select phone, tablet, minimum SDK and 16 KB devices based on the task and actual installed images.
 - Discover Xcode with `xcodebuild -version` and available simulators with `xcrun simctl list devices available`. Read workspaces, schemes, bundle IDs, deployment targets and test commands from the project. No simulator or Xcode version is assumed.
 - Read ticket prefixes, default branches, variants, application IDs and build tasks from the target repository. No global project default is assumed.
-- Antigravity lifecycle hooks execute automatically from `~/.gemini/config/hooks.json` or active plugins.
+- The guard and Swift lint hooks run from the enabled android-kit and ios-kit plugins. A block is final, do not work around it.

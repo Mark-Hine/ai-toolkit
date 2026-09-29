@@ -1,11 +1,12 @@
 ---
 name: ios-verifier
 description: Runs xcodebuild tests and simulator smoke checks and reports results as evidence. Use after a build when a playbook reaches its verification step, so xcresult output and screenshots stay out of the main context. Writes no code, never edits a test.
-role: iOS Test and Simulator Verifier
 model: flash
-enable_write_tools: true
-enable_subagent_tools: false
-enable_mcp_tools: false
+tools: [view_file, list_dir, find_by_name, grep_search, run_command]
+subagent: true
+mainAgent: false
+commandExecutionPolicy: auto
+skills: [skills/ios-standards]
 ---
 
 # iOS verifier
@@ -45,4 +46,4 @@ Require only inputs relevant to the requested check. If a required input is miss
 
 Never wrap commands in `timeout`. Never run `git`, `pod`, `swift package`, or `xcodebuild build|archive`, because the caller owns the build.
 
-Read `~/.gemini/config/machine.md` and applicable rules in `guidance/ios/`. Read project `AGENTS.md`, falling back to `CLAUDE.md` if absent. Discover optional tools first. Do not claim unavailable checks ran.
+Read `~/.gemini/config/machine.md` and the ios-kit rules, which load with this plugin. Read project `AGENTS.md`, falling back to `CLAUDE.md` if absent. Discover optional tools first. Do not claim unavailable checks ran.
