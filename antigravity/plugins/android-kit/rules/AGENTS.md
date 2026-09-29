@@ -54,7 +54,7 @@ Scope: `**/*.kt`, `**/*.kts`.
 - Reference shape for a design system and theming: JetSnack (`android-standards` skill, `references/jetsnack.md`).
 - Follow the design-kit rules (`~/.gemini/config/guidance/design-standards.md`) for design rules and their tiers. Screens design loading, loaded, empty and error, plus partial only where they show cached or offline data. Touch targets are at least 48 by 48 dp. Delegate UI diff reviews to `ui-reviewer`.
 
-Scope: `https://developer.android.com/develop/ui/compose/performance/stability/strongskipping`, `https://developer.android.com/develop/ui/compose/performance/stability/fix`, `https://developer.android.com/guide/navigation/navigation-3`, `https://developer.android.com/guide/navigation/navigation-3/migration-guide`, `https://developer.android.com/develop/ui/compose/state-hoisting`, `https://developer.android.com/about/versions/16/behavior-changes-16`, `**/compose/**/*.kt`, `**/*Screen.kt`, `**/*Composable*.kt`, `**/*Content.kt`.
+Scope: `**/compose/**/*.kt`, `**/*Screen.kt`, `**/*Composable*.kt`, `**/*Content.kt`.
 
 ## One-shot ViewModel → UI events
 
@@ -98,4 +98,4 @@ Scope: `**/*ViewModel.kt`, `**/*Screen.kt`, `**/*Event.kt`, `**/*Events.kt`, `**
   `android screen` and paste the JSON per-action result. A FAILED action is a finding to report, not something to nudge into
   passing. A ticket that adds a screen adds a journey. Template and example: `android-standards` → `references/testing.md`.
 
-Scope: `https://developer.android.com/training/testing/local-tests`, `https://developer.android.com/training/testing/local-tests/robolectric`, `https://developer.android.com/develop/ui/compose/testing`, `**/src/test/**`, `**/src/androidTest/**`, `**/journeys/**`.
+Scope: `**/src/test/**`, `**/src/androidTest/**`, `**/journeys/**`.

@@ -1,3 +1,8 @@
+---
+verified: 2026-09-29
+sources: house
+---
+
 # Review protocol
 
 The rules of engagement. Each one came out of a real review where it earned its place. The "why"

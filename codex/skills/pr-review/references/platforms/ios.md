@@ -1,3 +1,8 @@
+---
+verified: 2026-09-29
+sources: inline
+---
+
 # Platform pack: iOS
 
 Grading criteria for reviewing an iOS/Swift change. Load this pack when the repo is iOS. It
@@ -18,7 +23,7 @@ Paste this into the review's Standards basis section, then append the verificati
 (template.md):
 
 ```markdown
-Findings are graded against published guidance, cited per finding: **[SWIFTUI-DATAFLOW]** Apple's SwiftUI model-data documentation (state ownership, single source of truth), https://developer.apple.com/documentation/swiftui/model-data · **[SWIFT-CONCURRENCY]** the Swift book's concurrency chapter, https://docs.swift.org/swift-book/documentation/the-swift-programming-language/concurrency/ · **[HIG]** Human Interface Guidelines (44 pt targets, alerts, dark mode, typography), https://developer.apple.com/design/human-interface-guidelines · **[UI-STANDARDS]** tiered UI design rules, T2 graded Nit · **[A11Y]** Apple accessibility documentation, https://developer.apple.com/documentation/accessibility · **[SWIFTLINT]** https://github.com/realm/SwiftLint · **OWASP MASVS** v2.1.0 · **[WCAG22]** WCAG 2.2 AA. Apple publishes no official architecture doctrine, so architecture items are graded as *consensus*. Where the only authority is consensus, we grade the code against **its own patterns in the same PR** rather than doctrine, and severity is capped accordingly.
+Findings are graded against published guidance, cited per finding: **[SWIFTUI-DATAFLOW]** Apple's SwiftUI model-data documentation (state ownership, single source of truth), https://developer.apple.com/documentation/swiftui/model-data · **[SWIFT-CONCURRENCY]** the Swift book's concurrency chapter, https://docs.swift.org/latest/documentation/the-swift-programming-language/concurrency/ · **[HIG]** Human Interface Guidelines (44 pt targets, alerts, dark mode, typography), https://developer.apple.com/design/human-interface-guidelines · **[UI-STANDARDS]** tiered UI design rules, T2 graded Nit · **[A11Y]** Apple accessibility documentation, https://developer.apple.com/documentation/accessibility · **[SWIFTLINT]** https://github.com/realm/SwiftLint · **OWASP MASVS** v2.1.0 · **[WCAG22]** WCAG 2.2 AA. Apple publishes no official architecture doctrine, so architecture items are graded as *consensus*. Where the only authority is consensus, we grade the code against **its own patterns in the same PR** rather than doctrine, and severity is capped accordingly.
 ```
 
 ## Architecture, synthesised (no official Apple equivalent)
@@ -217,7 +222,7 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
 | [SWIFTUI-DATAFLOW] | https://developer.apple.com/documentation/swiftui/model-data, Apple's SwiftUI data-flow/model-data documentation (state ownership, observation, bindings) |
 | [BACKYARD-BIRDS] | https://github.com/apple/sample-backyard-birds, Apple sample app (SwiftUI + SwiftData, multi-target) used here as the architecture consensus source |
 | [FOOD-TRUCK] | https://github.com/apple/sample-food-truck, Apple sample app (SwiftUI app + widgets, shared model layer) |
-| [SWIFT-CONCURRENCY] | https://docs.swift.org/swift-book/documentation/the-swift-programming-language/concurrency/, structured concurrency, actors, tasks (official language book) |
+| [SWIFT-CONCURRENCY] | https://docs.swift.org/latest/documentation/the-swift-programming-language/concurrency/, structured concurrency, actors, tasks (official language book) |
 | [SWIFT6-MIGRATION] | https://www.swift.org/migration/documentation/migrationguide/, Swift 6 / strict-concurrency migration guide (staging, Sendable) |
 | [SE-0461] | https://github.com/swiftlang/swift-evolution/blob/main/proposals/0461-async-function-isolation.md, `NonisolatedNonsendingByDefault` and `@concurrent`, implemented in Swift 6.2 |
 | [SE-0466] | https://github.com/swiftlang/swift-evolution/blob/main/proposals/0466-control-default-actor-isolation.md, default actor isolation setting, implemented in Swift 6.2 |
@@ -241,14 +246,14 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
 | [MASVS] | https://mas.owasp.org/MASVS/ (v2.1.0) |
 | [MASTG] | https://mas.owasp.org/MASTG/ (cite the version shown on the site at review time). Cite iOS techniques/tests generically unless a specific iOS test ID is verified |
 | [PINNING] | https://cheatsheetseries.owasp.org/cheatsheets/Pinning_Cheat_Sheet.html, OWASP Pinning Cheat Sheet (public-key/SPKI pins, backup pins, expiration safety-valve, when NOT to pin) |
-| [TOP10-2024] | https://owasp.org/www-project-mobile-top-10/ |
+| [TOP10-2024] | https://owasp.org/projects/mobile-top-10 |
 
 <!-- Source links. Keep in sync with the table above (primary URL per key) so [KEY] references
      render as links wherever this pack's content is pasted -->
 [SWIFTUI-DATAFLOW]: https://developer.apple.com/documentation/swiftui/model-data
 [BACKYARD-BIRDS]: https://github.com/apple/sample-backyard-birds
 [FOOD-TRUCK]: https://github.com/apple/sample-food-truck
-[SWIFT-CONCURRENCY]: https://docs.swift.org/swift-book/documentation/the-swift-programming-language/concurrency/
+[SWIFT-CONCURRENCY]: https://docs.swift.org/latest/documentation/the-swift-programming-language/concurrency/
 [SWIFT6-MIGRATION]: https://www.swift.org/migration/documentation/migrationguide/
 [SE-0461]: https://github.com/swiftlang/swift-evolution/blob/main/proposals/0461-async-function-isolation.md
 [SE-0466]: https://github.com/swiftlang/swift-evolution/blob/main/proposals/0466-control-default-actor-isolation.md
@@ -272,4 +277,4 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
 [MASVS]: https://mas.owasp.org/MASVS/
 [MASTG]: https://mas.owasp.org/MASTG/
 [PINNING]: https://cheatsheetseries.owasp.org/cheatsheets/Pinning_Cheat_Sheet.html
-[TOP10-2024]: https://owasp.org/www-project-mobile-top-10/
+[TOP10-2024]: https://owasp.org/projects/mobile-top-10

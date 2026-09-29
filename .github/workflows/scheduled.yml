@@ -1,0 +1,62 @@
+name: scheduled
+on:
+  schedule:
+    - cron: '17 6 1 * *'   # monthly
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: write
+jobs:
+  freshness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Stamp ages
+        id: freshness
+        continue-on-error: true
+        run: python3 tools/freshness.py | tee freshness.txt
+      - name: Open or update the freshness issue
+        if: steps.freshness.outcome == 'failure' || contains(steps.freshness.outputs.stdout, 'warn')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create freshness --force --description "A verified stamp is 90 days old or older" --color D4A017
+          body="$(printf 'Run \`/toolkit:audit --stale-only\` from the checkout, land the fixes, and let the skill refresh the stamps.\n\n```\n%s\n```\n' "$(cat freshness.txt)")"
+          existing="$(gh issue list --label freshness --state open --json number --jq '.[0].number')"
+          if [ -n "$existing" ]; then gh issue edit "$existing" --body "$body"; else gh issue create --title "Standards need re-verification" --label freshness --body "$body"; fi
+      - name: Close the freshness issue when clean
+        if: steps.freshness.outcome == 'success' && !contains(steps.freshness.outputs.stdout, 'warn')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for n in $(gh issue list --label freshness --state open --json number --jq '.[].number'); do gh issue close "$n" --comment "Every stamp is under 90 days old again."; done
+  linkcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check every cited URL
+        id: linkcheck
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 tools/linkcheck.py --report linkcheck.md
+      - name: Open or update the linkcheck issue
+        if: steps.linkcheck.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create linkcheck --force --description "A cited source no longer resolves" --color B60205
+          existing="$(gh issue list --label linkcheck --state open --json number --jq '.[0].number')"
+          if [ -n "$existing" ]; then gh issue edit "$existing" --body-file linkcheck.md; else gh issue create --title "Cited sources are broken" --label linkcheck --body-file linkcheck.md; fi
+      - name: Close the linkcheck issue when clean
+        if: steps.linkcheck.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for n in $(gh issue list --label linkcheck --state open --json number --jq '.[].number'); do gh issue close "$n" --comment "Every cited URL resolves again."; done

@@ -1,3 +1,8 @@
+---
+verified: 2026-09-29
+sources: inline
+---
+
 # Spring Boot platform pack
 
 Grading criteria for reviewing a Spring Boot service change in Java or Kotlin, built with Gradle or Maven. Load this pack when the build applies `org.springframework.boot` and is not an Android build. It supplies the standards vocabulary that findings cite and the recipes that turn a suspicion into evidence. The platform-neutral review rules live in [`../protocol.md`](../protocol.md) §13 to §16 (volatile facts, `Unverified` grading, pragmatism guardrails, main-safety ownership), and their extensions in §17 to §20 (root cause, verification criteria, SHA ancestry, debug-variant exclusion). All of them apply here.

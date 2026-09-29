@@ -1,4 +1,8 @@
 ---
+verified: 2026-09-29
+sources:
+  - https://developer.android.com/topic/architecture/ui-layer/events
+  - https://developer.android.com/develop/ui/compose/state-hoisting
 paths:
   - "**/*ViewModel.kt"
   - "**/*Screen.kt"

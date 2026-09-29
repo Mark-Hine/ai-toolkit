@@ -1,4 +1,8 @@
 ---
+verified: 2026-09-29
+sources:
+  - https://kotlinlang.org/docs/coding-conventions.html
+  - https://developer.android.com/kotlin/style-guide
 paths:
   - "**/*.kt"
   - "**/*.kts"

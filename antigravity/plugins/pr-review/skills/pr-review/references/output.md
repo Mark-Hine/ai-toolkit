@@ -1,3 +1,8 @@
+---
+verified: 2026-09-29
+sources: house
+---
+
 # Canonical output: `findings.json` (schema `pr-review/v1`)
 
 The machine-readable review. Everything downstream reads this file: the markdown document is

@@ -1,3 +1,8 @@
+---
+verified: 2026-09-29
+sources: inline
+---
+
 # Testing: expectations, tooling, journeys
 
 Rule: `~/.codex/guidance/android/testing.md`. This file holds the reasoning, the pyramid, and the journey template.

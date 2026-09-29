@@ -10,10 +10,10 @@ Canonical URLs for WebFetch and citing. Apple pages render client-side. If a fet
 
 ## Swift
 - API Design Guidelines: https://www.swift.org/documentation/api-design-guidelines/
-- The Swift Programming Language, Concurrency (structured tasks, actors, `Task.detached` caveats): https://docs.swift.org/swift-book/documentation/the-swift-programming-language/concurrency/
+- The Swift Programming Language, Concurrency (structured tasks, actors, `Task.detached` caveats): https://docs.swift.org/latest/documentation/the-swift-programming-language/concurrency/
 - SE-0461 `NonisolatedNonsendingByDefault` and `@concurrent` (implemented, Swift 6.2): https://github.com/swiftlang/swift-evolution/blob/main/proposals/0461-async-function-isolation.md · SE-0466 default actor isolation (implemented, Swift 6.2): https://github.com/swiftlang/swift-evolution/blob/main/proposals/0466-control-default-actor-isolation.md · Swift 6.2 release post: https://www.swift.org/blog/swift-6.2-released/
 - New Xcode 26 app templates reportedly set Default Actor Isolation to MainActor and Approachable Concurrency to Yes. Community-reported, not found in Apple's release notes on 2026-09-29, so check a new project's build settings.
-- The Basics (optionals, "Force unwrapping a nil value triggers a runtime error"): https://docs.swift.org/swift-book/documentation/the-swift-programming-language/thebasics/
+- The Basics (optionals, "Force unwrapping a nil value triggers a runtime error"): https://docs.swift.org/latest/documentation/the-swift-programming-language/thebasics/
 - Swift 6 / strict-concurrency migration guide (staged, per-module adoption): https://www.swift.org/migration/documentation/migrationguide/
   · enabling complete checking: /swift-6-concurrency-migration-guide/enabledataracesafety · strategy: /swift-6-concurrency-migration-guide/migrationstrategy
 - AsyncStream (buffering policy, default unbounded): https://developer.apple.com/documentation/swift/asyncstream · design (SE-0314): https://github.com/swiftlang/swift-evolution/blob/main/proposals/0314-async-stream.md
@@ -41,17 +41,17 @@ Canonical URLs for WebFetch and citing. Apple pages render client-side. If a fet
 
 ## Build
 - App Store upcoming requirements (minimum Xcode/SDK to upload, with effective dates. Look the current floor up at review time, never recall it): https://developer.apple.com/news/upcoming-requirements/
-- Xcode ↔ macOS ↔ SDK table: https://developer.apple.com/support/xcode/ · Xcode release notes: https://developer.apple.com/documentation/xcode-release-notes
+- Xcode ↔ macOS ↔ SDK table: https://developer.apple.com/xcode/system-requirements · Xcode release notes: https://developer.apple.com/documentation/xcode-release-notes
 - Adding package dependencies (version rules, and commit `Package.resolved`): https://developer.apple.com/documentation/xcode/adding-package-dependencies-to-your-app
 - Editing a package dependency as a local package: https://developer.apple.com/documentation/xcode/editing-a-package-dependency-as-a-local-package
 - Swift Package Manager: https://www.swift.org/documentation/package-manager/ (`swift package describe|show-dependencies|update`)
 - Build settings reference: https://developer.apple.com/documentation/xcode/build-settings-reference
-- `xcodebuild` / `simctl` man pages (mirror): https://keith.github.io/xcode-man-pages/xcodebuild.1.html · https://keith.github.io/xcode-man-pages/simctl.1.html
+- `xcodebuild` / `simctl` man pages (mirror): https://keith.github.io/xcode-man-pages/ (index, xcodebuild and simctl pages)
 - CocoaPods: trunk read-only from 2026-12-02, no new pods or versions after that date, existing builds keep working: https://blog.cocoapods.org/CocoaPods-Specs-Repo/ · install vs update: https://guides.cocoapods.org/using/pod-install-vs-update.html
 - Reducing launch time / app size: https://developer.apple.com/documentation/xcode/reducing-your-app-s-launch-time · https://developer.apple.com/documentation/xcode/reducing-your-app-s-size
 
 ## Security and privacy
-- OWASP MASVS v2.1.0: https://mas.owasp.org/MASVS/ · MASTG: https://mas.owasp.org/MASTG/ · Mobile Top 10 2024: https://owasp.org/www-project-mobile-top-10/
+- OWASP MASVS v2.1.0: https://mas.owasp.org/MASVS/ · MASTG: https://mas.owasp.org/MASTG/ · Mobile Top 10 2024: https://owasp.org/projects/mobile-top-10
 - OWASP Pinning Cheat Sheet: https://cheatsheetseries.owasp.org/cheatsheets/Pinning_Cheat_Sheet.html
 - Keychain Services (accessibility classes, `SecAccessControl`): https://developer.apple.com/documentation/security/keychain-services
 - CryptoKit: https://developer.apple.com/documentation/cryptokit · LocalAuthentication: https://developer.apple.com/documentation/localauthentication
@@ -63,7 +63,7 @@ Canonical URLs for WebFetch and citing. Apple pages render client-side. If a fet
 
 ## Community tooling worth knowing (not Apple, verify before relying on it)
 - SwiftUI Agent Skill by Paul Hudson, `twostraws/swiftui-agent-skill`. Catalogue of LLM SwiftUI mistakes (navigation, deprecated APIs, accessibility, performance). Install beside this plugin with `npx skills add https://github.com/twostraws/swiftui-agent-skill --skill swiftui-pro`. The rules here defer to it on SwiftUI API detail. https://github.com/twostraws/swiftui-agent-skill
-- XcodeBuildMCP, MCP server wrapping `xcodebuild`/`simctl` with UI automation on the simulator. Optional. The playbooks work with plain `xcodebuild` and `xcrun simctl`. https://github.com/getsentry/XcodeBuildMCP
+- XcodeBuildMCP, MCP server wrapping `xcodebuild`/`simctl` with UI automation on the simulator. Optional. The playbooks work with plain `xcodebuild` and `xcrun simctl`. https://github.com/getsentry/MobileBuildMCP
 - Sosumi, Apple docs, HIG and WWDC transcripts as Markdown for agents, MCP at `sosumi.ai/mcp`. Use when WebFetch of developer.apple.com returns the JS shell. https://github.com/nshipster/sosumi.ai
 - Xcode 26.3 ships native agent integration over MCP (docs search, project settings, Previews). https://www.apple.com/newsroom/2026/02/xcode-26-point-3-unlocks-the-power-of-agentic-coding/
 - Tuist MCP and skill for `Project.swift` work, only in Tuist repos. https://tuist.dev/en/docs/guides/features/agentic-coding/mcp

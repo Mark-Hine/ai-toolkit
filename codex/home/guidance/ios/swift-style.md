@@ -4,7 +4,7 @@ sources:
   - https://github.com/swiftlang/swift-evolution/blob/main/proposals/0461-async-function-isolation.md
   - https://github.com/swiftlang/swift-evolution/blob/main/proposals/0466-control-default-actor-isolation.md
   - https://www.swift.org/blog/swift-6.2-released/
-  - https://docs.swift.org/swift-book/documentation/the-swift-programming-language/concurrency/
+  - https://docs.swift.org/latest/documentation/the-swift-programming-language/concurrency/
 paths:
   - "**/*.swift"
 ---

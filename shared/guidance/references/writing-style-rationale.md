@@ -20,7 +20,7 @@ The rule file exists because model replies were hard to follow on first read. Mo
 | GOV.UK | Style guide A to Z, and the clear-language and clear-structure guidelines | https://guidance.publishing.service.gov.uk/writing-to-gov-uk-standards/style-guides/a-to-z-style-guide/ and https://guidance.publishing.service.gov.uk/writing-to-gov-uk-standards/writing-guidelines/clear-language/ |
 | Google | Google developer documentation style guide, pages on dashes, semicolons, colons, lists, parentheses, pronouns, text formatting, voice and tone | https://developers.google.com/style |
 | Microsoft | Microsoft Writing Style Guide, top ten tips, punctuation and scannable-content pages | https://learn.microsoft.com/en-us/style-guide/welcome/ |
-| PLG | Federal Plain Language Guidelines, 2011 edition | https://www.plainlanguage.gov/guidelines/ |
+| PLG | Federal Plain Language Guidelines, 2011 edition | https://digital.gov/guides/plain-language |
 | NN/g | Nielsen Norman Group, how users read on the web, and the inverted pyramid | https://www.nngroup.com/articles/how-users-read-on-the-web/ and https://www.nngroup.com/articles/inverted-pyramid/ |
 | Williams | Joseph Williams, Style: Lessons in Clarity and Grace, characters as subjects and actions as verbs | https://nysba.org/thoughts-on-legal-writing-from-the-greatest-of-them-all-joseph-m-williams-part-i/ |
 | Strunk | Strunk, The Elements of Style, rule 13 on omitting needless words and rule 14 on varied sentences | https://www.gutenberg.org/cache/epub/37134/pg37134.txt |
