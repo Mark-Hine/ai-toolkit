@@ -20,9 +20,9 @@ come from the project's `AGENTS.md`. Never guess them.
    Ask `ios-researcher` only where guidance may have moved (navigation APIs, Liquid Glass, privacy manifests, deployment
    target behaviour, App Store requirements).
 4. **Plan.** Files to add or change, state model (one `enum State` per screen: `loading` / `loaded(...)` /
-   `error(...)`), where data code goes, DI wiring, test list, simulator checks. For UI changes, consult `/design-standards` (anti-slop directives, 8pt spatial grid, 5 states). Follow the project's architecture rules. Proceed within authorized scope; ask only about unresolved scope or consequential choices.
+   `error(...)`), where data code goes, DI wiring, test list, simulator checks. For UI changes, consult `/design-standards` (tiered design rules, screen states, accessibility). Follow the project's architecture rules. Proceed within authorized scope; ask only about unresolved scope or consequential choices.
 5. **Implement** in small steps, running the project's build command after each. New UI is SwiftUI inside the project's
-   design-system package and tokens, adhering to `/design-standards` (semantic system colors, Safe Area insets, Dynamic Type, min 44pt touch targets, native haptics), split into a stateless `XContent(state, actions)` with `#Preview` and a stateful
+   design-system package and tokens, following the design rules (IOS-1 colours, IOS-3 safe area, TYP-1 Dynamic Type, A11Y-4 targets), split into a stateless `XContent(state, actions)` with `#Preview` and a stateful
    `XScreen` that owns the `@MainActor` model and wires presentation. Loading runs in `.task`, never `Task {}` in `onAppear`.
    No force unwraps. Use `@Observable` unless the project's deployment target is below iOS 17 (its `AGENTS.md` says).
 6. **Tests.** View-model and service tests in the project's framework (Swift Testing or XCTest per `AGENTS.md`; Quick/Nimble

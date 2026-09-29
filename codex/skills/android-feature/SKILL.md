@@ -18,8 +18,8 @@ Repo facts (modules, build/test commands, design-system names, app id) come from
 3. **Consult skills and references.** Route through `using-chrisbanes-skills`; load the compose-*/kotlin-* skills it names.
    Ask `android-researcher` only where guidance may have moved (navigation, insets, permissions, target-SDK behaviour).
 4. **Plan.** Files to add or change, state model (`UiState` sealed interface, StateFlow), where data code goes,
-   DI wiring, test list, device checks. For UI changes, consult `$design-standards` (anti-slop directives, 8dp spatial grid, 5 states). Follow the project's architecture rules. Proceed within the user-authorized scope. Ask only about unresolved scope or consequential choices.
-5. **Implement** in small steps, running the project's compile check after each. New UI is Compose, Material3, adhering to `$design-standards` (semantic color tokens, surface containers, min 48dp touch targets, edge-to-edge insets), inside the project's theme and components, split into stateless `XContent` and stateful `XScreen`. No orientation locks.
+   DI wiring, test list, device checks. For UI changes, consult `$design-standards` (tiered design rules, screen states, accessibility). Follow the project's architecture rules. Proceed within the user-authorized scope. Ask only about unresolved scope or consequential choices.
+5. **Implement** in small steps, running the project's compile check after each. New UI is Compose, Material3, following the design rules (AND-1 colour roles, AND-2 insets, A11Y-3 targets), inside the project's theme and components, split into stateless `XContent` and stateful `XScreen`. No orientation locks.
 6. **Tests.** ViewModel and use-case tests (JUnit5/Kotest/MockK, `runTest`). Run them with `--tests` and quote the summary.
 7. **Device verification.** `$android-run-app` on the default phone AVD, navigate to the feature, `android screen`; repeat
    on the tablet AVD for any new or changed screen. Check insets (`edge-to-edge`) and large-screen layout (`adaptive`).

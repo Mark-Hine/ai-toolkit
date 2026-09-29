@@ -25,7 +25,7 @@ paths:
 - Lists: stable identity (`Identifiable` or an explicit stable `id`), never `id: \.self` on duplicable data or `UUID()` in `body`.
 - Callbacks: leaves and reusable components take individual closures. Above five callbacks on a screen/section view, group
   them in an `XActions` struct of closures built once by the model. Never build it inside `body`; never put state in it.
-- Accessibility on every new control: `accessibilityLabel`/`Hint`/traits, 44×44 pt minimum hit target, Dynamic Type via
+- Accessibility on every new control: `accessibilityLabel`/`Hint`/traits, a 44 by 44 pt hit region on buttons, never below the 28 pt HIG minimum, Dynamic Type via
   text styles or `@ScaledMetric`, layout checked at `accessibility-extra-large`; decorative images `.accessibilityHidden(true)`.
 - Layout adapts to size classes; no fixed device-size frames, no orientation assumptions; check iPad when the target supports it.
-- UI/UX & Anti-Slop: follow `~/.claude/rules/design-standards.md`. Ban generic purple gradients, card soup, floating badges, and arbitrary spacing. Handle the 5-state completeness law (Loading, Populated, Empty, Error, Degraded). Enforce minimum 44×44 pt touch targets and Dynamic Type scaling. Delegate UI diff reviews to `ui-reviewer`.
+- Follow `~/.claude/rules/design-standards.md` for design rules and their tiers. Screens design loading, loaded, empty and error, plus partial only where they show cached or offline data. Text uses Dynamic Type styles. Delegate UI diff reviews to `ui-reviewer`.
