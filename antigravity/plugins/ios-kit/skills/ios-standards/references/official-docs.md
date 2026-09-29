@@ -5,7 +5,7 @@ sources: inline
 
 # Official documentation registry
 
-Canonical URLs for web fetch and citing. Apple pages render client-side; if a fetch returns nothing, retry via
+Canonical URLs for web fetch and citing. Apple pages render client-side. If a fetch returns nothing, retry via
 `https://developer.apple.com/tutorials/data/documentation/<path>.json` or web search the page title. Imported from the Claude reference dated 2026-09-04. Recheck version-sensitive claims against the linked sources before use.
 
 ## Swift
@@ -13,12 +13,12 @@ Canonical URLs for web fetch and citing. Apple pages render client-side; if a fe
 - The Swift Programming Language, Concurrency (structured tasks, actors, `Task.detached` caveats): https://docs.swift.org/swift-book/documentation/the-swift-programming-language/concurrency/
 - SE-0461 `NonisolatedNonsendingByDefault` and `@concurrent` (implemented, Swift 6.2): https://github.com/swiftlang/swift-evolution/blob/main/proposals/0461-async-function-isolation.md · SE-0466 default actor isolation (implemented, Swift 6.2): https://github.com/swiftlang/swift-evolution/blob/main/proposals/0466-control-default-actor-isolation.md · Swift 6.2 release post: https://www.swift.org/blog/swift-6.2-released/
 - New Xcode 26 app templates reportedly set Default Actor Isolation to MainActor and Approachable Concurrency to Yes. Community-reported, not found in Apple's release notes on 2026-09-29, so check a new project's build settings.
-- The Basics (optionals; "Force unwrapping a nil value triggers a runtime error"): https://docs.swift.org/swift-book/documentation/the-swift-programming-language/thebasics/
+- The Basics (optionals, "Force unwrapping a nil value triggers a runtime error"): https://docs.swift.org/swift-book/documentation/the-swift-programming-language/thebasics/
 - Swift 6 / strict-concurrency migration guide (staged, per-module adoption): https://www.swift.org/migration/documentation/migrationguide/
   · enabling complete checking: /swift-6-concurrency-migration-guide/enabledataracesafety · strategy: /swift-6-concurrency-migration-guide/migrationstrategy
 - AsyncStream (buffering policy, default unbounded): https://developer.apple.com/documentation/swift/asyncstream · design (SE-0314): https://github.com/swiftlang/swift-evolution/blob/main/proposals/0314-async-stream.md
 - swift-format (bundled with the Swift 6 toolchain): https://github.com/swiftlang/swift-format
-- SwiftLint (`force_unwrapping` is opt-in; `force_cast`/`force_try` on by default): https://github.com/realm/SwiftLint
+- SwiftLint (`force_unwrapping` is opt-in, and `force_cast`/`force_try` are on by default): https://github.com/realm/SwiftLint
 
 ## SwiftUI
 - Managing model data in your app (`@Observable`, `@State`, `@Environment`): https://developer.apple.com/documentation/swiftui/managing-model-data-in-your-app
@@ -27,7 +27,7 @@ Canonical URLs for web fetch and citing. Apple pages render client-side; if a fe
 - `task(name:priority:file:line:_:)` ("If the task doesn't finish before SwiftUI removes the view or the view changes identity, SwiftUI cancels the task"): https://developer.apple.com/documentation/swiftui/view/task(name:priority:file:line:_:)
 - WWDC21 "Discover concurrency in SwiftUI" (`@MainActor` on the observable model): https://developer.apple.com/videos/play/wwdc2021/10019/
 - Presentation as data: `alert(_:isPresented:presenting:actions:message:)` (iOS 15+, the `alert(item:content:)` form is deprecated), `sheet(item:onDismiss:content:)`, `navigationDestination(item:destination:)`
-  under https://developer.apple.com/documentation/swiftui/view — the system resets the binding on dismiss.
+  under https://developer.apple.com/documentation/swiftui/view. The system resets the binding on dismiss.
 - `NavigationStack` / `NavigationPath` (programmatic navigation as data): https://developer.apple.com/documentation/swiftui/navigationpath
 - Accessibility modifiers: https://developer.apple.com/documentation/swiftui/view-accessibility
 - Custom fonts and Dynamic Type (`@ScaledMetric`): https://developer.apple.com/documentation/swiftui/applying-custom-fonts-to-text
@@ -42,7 +42,7 @@ Canonical URLs for web fetch and citing. Apple pages render client-side; if a fe
 ## Build
 - App Store upcoming requirements (minimum Xcode/SDK to upload, with effective dates. Look the current floor up at review time, never recall it): https://developer.apple.com/news/upcoming-requirements/
 - Xcode ↔ macOS ↔ SDK table: https://developer.apple.com/support/xcode/ · Xcode release notes: https://developer.apple.com/documentation/xcode-release-notes
-- Adding package dependencies (version rules; commit `Package.resolved`): https://developer.apple.com/documentation/xcode/adding-package-dependencies-to-your-app
+- Adding package dependencies (version rules, and commit `Package.resolved`): https://developer.apple.com/documentation/xcode/adding-package-dependencies-to-your-app
 - Editing a package dependency as a local package: https://developer.apple.com/documentation/xcode/editing-a-package-dependency-as-a-local-package
 - Swift Package Manager: https://www.swift.org/documentation/package-manager/ (`swift package describe|show-dependencies|update`)
 - Build settings reference: https://developer.apple.com/documentation/xcode/build-settings-reference
@@ -62,10 +62,10 @@ Canonical URLs for web fetch and citing. Apple pages render client-side; if a fe
 - OSV vulnerability database (reads `Package.resolved` via osv-scanner): https://osv.dev
 
 ## Community tooling worth knowing (not Apple, verify before relying on it)
-- SwiftUI Agent Skill by Paul Hudson, `twostraws/swiftui-agent-skill`. Catalogue of LLM SwiftUI mistakes (navigation, deprecated APIs, accessibility, performance). Install beside this plugin with `npx skills add https://github.com/twostraws/swiftui-agent-skill --skill swiftui-pro`; the rules here defer to it on SwiftUI API detail. https://github.com/twostraws/swiftui-agent-skill
-- XcodeBuildMCP, MCP server wrapping `xcodebuild`/`simctl` with UI automation on the simulator. Optional; the playbooks work with plain `xcodebuild` and `xcrun simctl`. https://github.com/getsentry/XcodeBuildMCP
+- SwiftUI Agent Skill by Paul Hudson, `twostraws/swiftui-agent-skill`. Catalogue of LLM SwiftUI mistakes (navigation, deprecated APIs, accessibility, performance). Install beside this plugin with `npx skills add https://github.com/twostraws/swiftui-agent-skill --skill swiftui-pro`. The rules here defer to it on SwiftUI API detail. https://github.com/twostraws/swiftui-agent-skill
+- XcodeBuildMCP, MCP server wrapping `xcodebuild`/`simctl` with UI automation on the simulator. Optional. The playbooks work with plain `xcodebuild` and `xcrun simctl`. https://github.com/getsentry/XcodeBuildMCP
 - Sosumi, Apple docs, HIG and WWDC transcripts as Markdown for agents, MCP at `sosumi.ai/mcp`. Use when web fetch of developer.apple.com returns the JS shell. https://github.com/nshipster/sosumi.ai
 - Xcode 26.3 ships native agent integration over MCP (docs search, project settings, Previews). https://www.apple.com/newsroom/2026/02/xcode-26-point-3-unlocks-the-power-of-agentic-coding/
 - Tuist MCP and skill for `Project.swift` work, only in Tuist repos. https://tuist.dev/en/docs/guides/features/agentic-coding/mcp
-- `xcresulttool`: `xcrun xcresulttool get test-results summary --path <bundle>` is the current form; `get --format json` needs `--legacy` since Xcode 16. https://developer.apple.com/forums/thread/763888
+- `xcresulttool`: `xcrun xcresulttool get test-results summary --path <bundle>` is the current form, and `get --format json` needs `--legacy` since Xcode 16. https://developer.apple.com/forums/thread/763888
 - SwiftFormat/SwiftLint on edit: this plugin's `hooks/swift_lint.py` runs them after each `.swift` edit when the repo has `.swiftformat` or `.swiftlint.yml` and the binary is installed.

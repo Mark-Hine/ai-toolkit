@@ -65,17 +65,17 @@ Existing main-session model settings win. Fresh installations default to `gpt-6-
 
 ## Configuration ownership
 
-Repository contribution and mirroring rules live in the root `AGENTS.md`; root `CLAUDE.md` imports it. Shared personal Git and work preferences live in `shared/guidance/common.md`, linked into each agent's installed guidance. Home instructions contain agent-specific loading and routing. Skills contain task procedures, scoped rules contain coding conventions, and references hold rationale and examples. Role model settings are authoritative in agent TOML.
+Repository contribution and mirroring rules live in the root `AGENTS.md`, and root `CLAUDE.md` imports it. Shared personal Git and work preferences live in `shared/guidance/common.md`, linked into each agent's installed guidance. Home instructions contain agent-specific loading and routing. Skills contain task procedures, scoped rules contain coding conventions, and references hold rationale and examples. Role model settings are authoritative in agent TOML.
 
 The installer replaces only its managed instruction block and hooks, preserving unrelated settings. Reinstalling removes the old Codex writing-reminder hook and does not duplicate guard or lint hooks. The writing guide is read through the home instructions instead of being repeated every prompt. Claude keeps its separate writing style and reminder.
 
 ## iOS migration
 
-The five skills, three specialists, four scoped rules and standards references mirror the Claude iOS toolkit. Claude-only metadata is replaced with Codex skill policies, role TOML and hooks. Optional Xcode integrations are discovered rather than required. Research and review remain read-only; test artifacts are written by the verifier. Reviewer build requests go to the verifier. Simulator checks target the selected UDID and restore prior visual settings.
+The five skills, three specialists, four scoped rules and standards references mirror the Claude iOS toolkit. Claude-only metadata is replaced with Codex skill policies, role TOML and hooks. Optional Xcode integrations are discovered rather than required. Research and review remain read-only. Test artifacts are written by the verifier. Reviewer build requests go to the verifier. Simulator checks target the selected UDID and restore prior visual settings.
 
-The Swift lint hook handles `apply_patch`, `Edit` and `Write`. It runs installed SwiftFormat/SwiftLint only when the edited file's repository has the corresponding config. It reports findings without rewriting files. Shell-based edits are outside this hook's coverage. Xcode, simulators and linters are not installed by the toolkit; their live execution must be verified in an app repository.
+The Swift lint hook handles `apply_patch`, `Edit` and `Write`. It runs installed SwiftFormat/SwiftLint only when the edited file's repository has the corresponding config. It reports findings without rewriting files. Shell-based edits are outside this hook's coverage. Xcode, simulators and linters are not installed by the toolkit. Their live execution must be verified in an app repository.
 
-Intentional differences remain. Its specialist commands are single invocations without shell filters. Source references preserve the upstream guidance and dates; this port does not revalidate every Apple example or version claim. Recheck those sources when applying them.
+Intentional differences remain. Its specialist commands are single invocations without shell filters. Source references preserve the upstream guidance and dates. This port does not revalidate every Apple example or version claim. Recheck those sources when applying them.
 
 ## Guard coverage
 

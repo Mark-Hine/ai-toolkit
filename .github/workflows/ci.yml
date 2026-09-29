@@ -47,6 +47,8 @@ jobs:
         run: python3 scripts/ci/check_repo.py
       - name: Mirror parity
         run: python3 scripts/ci/check_parity.py
+      - name: Writing style
+        run: python3 scripts/ci/check_style.py
       - name: Shared tests
         run: python3 -m unittest discover -s shared/tests -v
       - name: Plugin versions bumped

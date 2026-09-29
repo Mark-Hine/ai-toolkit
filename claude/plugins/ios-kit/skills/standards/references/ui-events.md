@@ -6,23 +6,23 @@ sources: inline
 # One-shot model → UI events on iOS: house pattern and reference code
 
 Rule: `~/.claude/rules/ios/ui-events.md`. This file holds the canonical code and the reasoning. Android twin:
-`android-kit:standards` → `references/ui-events.md`; the two differ on purpose, see "Why this differs from Android".
+`android-kit:standards` → `references/ui-events.md`. The two differ on purpose, see "Why this differs from Android".
 
 ## Position
 - SwiftUI presentation is binding-driven and the framework clears the binding itself. `alert(_:isPresented:actions:)`:
   "When the user presses or taps one of the alert's actions, the system sets this value to `false` and dismisses."
-  `sheet(item:)` / `navigationDestination(item:)` take "a binding to an optional source of truth"; `NavigationStack(path:)`
+  `sheet(item:)` / `navigationDestination(item:)` take "a binding to an optional source of truth", and `NavigationStack(path:)`
   holds "a type-erased list of data representing the content of a navigation stack" (developer.apple.com/documentation/swiftui).
   So navigation, sheets and alerts are **optional state on the model**, not events: the sticky-state problem that made
   Android choose a Channel does not exist here.
-- iOS has no system toast; HIG: "Use alerts sparingly. Alerts give people important information, but they interrupt the
+- iOS has no system toast. HIG: "Use alerts sparingly. Alerts give people important information, but they interrupt the
   current task." Toasts are therefore an app-scoped presenter rendered once by the root, never per screen.
 - Effects with no presentation binding (haptics, scroll-to, focus, dismissing the current screen) are the only true
   one-shot events. They go through a buffered, main-actor `EventStream` consumed in `.task`, which SwiftUI cancels when the
   view disappears ("If the task doesn't finish before SwiftUI removes the view or the view changes identity, SwiftUI cancels
   the task"). `AsyncStream` alone is not enough: SE-0314 says "concurrent iteration is considered a programmer error" and a
   cancelled iteration resumes `nil`, so a re-appearing view needs a fresh stream and anything sent meanwhile must be buffered.
-- Residual, accepted: buffered effects die with the process; an effect sent after the view is removed for good is dropped with the model.
+- Residual, accepted: buffered effects die with the process, and an effect sent after the view is removed for good is dropped with the model.
 
 ## Why this differs from Android
 - Android sends navigation through a buffered Channel because Compose has no presentation modifier that clears its own trigger.
@@ -69,8 +69,8 @@ final class HomeModel {
     func onPaid() { effects.send(.paymentSucceeded); effects.send(.popScreen) }
 }
 ```
-No loading in `init`: the screen's `.task` calls `load()` so the work is cancelled with the view. `state` is `private(set)`;
-presentation properties are settable because the presentation modifiers write them back.
+No loading in `init`: the screen's `.task` calls `load()` so the work is cancelled with the view. `state` is `private(set)`.
+Presentation properties are settable because the presentation modifiers write them back.
 
 ## EventStream (buffered, re-subscribable, main actor)
 
@@ -102,7 +102,7 @@ final class EventStream<Event> {
 }
 ```
 Lives in the shared package next to `ToastPresenter`. Unit-test it directly: send before subscribing, subscribe, expect the
-buffered event; cancel, send, re-subscribe, expect delivery.
+buffered event. Cancel, send, re-subscribe, expect delivery.
 
 ## Screen: owns the model, wires presentation, consumes effects
 
@@ -141,7 +141,7 @@ struct HomeScreen: View {
 ```
 `HomeRouteView` is the one place that maps `HomeRoute` to views (including `web` → an in-app `SFSafariViewController`
 wrapper or `openURL`). Deep links append the same `HomeRoute` values to `path`. A `Task { … }` inside a button action is
-fine: it is user-initiated and short; loading and observation stay in `.task`.
+fine because it is user-initiated and short. Loading and observation stay in `.task`.
 
 ## Toasts (app-scoped)
 
@@ -173,9 +173,9 @@ struct RootView: View {                                  // installed once, at t
             }
     }
 }
-// App entry: RootView().environment(toastPresenter)  — the same instance the composition root hands to models.
+// App entry: RootView().environment(toastPresenter). Pass the same instance the composition root hands to models.
 ```
-A toast survives the navigation it accompanies because the root owns it; a screen never holds toast state.
+A toast survives the navigation it accompanies because the root owns it. A screen never holds toast state.
 
 ## Actions struct (closure grouping)
 
@@ -213,7 +213,7 @@ struct HomeContent: View {                             // stateless; #Preview pa
     }
 }
 ```
-Never build the struct inside `body`; never put state, bindings or predicates in it; reusable components never take it.
+Never build the struct inside `body`. Never put state, bindings or predicates in it. Reusable components never take it.
 The alternative single sink `send: (Action) -> Void` (MVI/TCA style) is not the house pattern for new house code: it hides
 what a view can do behind an enum. Where a repo already uses a reducer-style store consistently, follow that repo.
 
@@ -233,13 +233,13 @@ extension Binding where Value == Bool {
 
 Same model. The view controller reads `state`/`path`/`alert` with `withObservationTracking` (or `@Published` on the
 `ObservableObject` variant below iOS 17) and consumes effects with a task started in `viewIsAppearing(_:)` and cancelled
-in `viewDidDisappear(_:)`; `alert != nil` presents a `UIAlertController` whose actions set it back to `nil`.
-The model still never imports UIKit navigation types; the controller maps routes to pushes.
+in `viewDidDisappear(_:)`, and `alert != nil` presents a `UIAlertController` whose actions set it back to `nil`.
+The model still never imports UIKit navigation types. The controller maps routes to pushes.
 
 ## What not to do
 - A `Bool`/optional that the model must reset by hand after a delay, or that re-fires on rotation or restoration.
 - `PassthroughSubject`/`AsyncStream` created once and iterated by several views, or iterated after the first cancellation.
-- `Task {}` in `onAppear` or a model's `init` for loading; `DispatchQueue.main.async` to publish state.
+- `Task {}` in `onAppear` or a model's `init` for loading, and `DispatchQueue.main.async` to publish state.
 - A screen that owns toast state, or a toast modelled as an alert.
-- `NavigationLink(destination:)` with inline views for anything deep-linkable; string routes; `UINavigationController` reach-ins from a model.
+- `NavigationLink(destination:)` with inline views for anything deep-linkable, string routes, and `UINavigationController` reach-ins from a model.
 - Ten closures plus bindings on one content view: derive booleans into `state`, group closures into an actions struct.

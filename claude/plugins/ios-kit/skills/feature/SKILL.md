@@ -9,7 +9,7 @@ argument-hint: "[ticket] [one-line summary]  (say 'modify' if changing an existi
 Repo facts (workspace, schemes, build/test commands, test framework, design-system package, bundle id, deployment target)
 come from the project's `CLAUDE.md`. Never guess them.
 
-1. **Intake.** If an Atlassian MCP tool is available, fetch the Jira ticket and quote its acceptance criteria; otherwise
+1. **Intake.** If an Atlassian MCP tool is available, fetch the Jira ticket and quote its acceptance criteria. Otherwise
    restate the goal in three bullets plus an out-of-scope list. Branch `feat/<ticket>-<slug>` (or the project's documented branch convention) off the default branch.
 2. **Discover the pattern.** Use an Explore subagent to find the closest existing screen or flow: its SwiftUI `View` or
    `UIViewController`, view model / `@Observable` model, service or repository, where dependencies are assembled
@@ -24,14 +24,14 @@ come from the project's `CLAUDE.md`. Never guess them.
    design-system package and tokens, following the design rules (IOS-1 colours, IOS-3 safe area, TYP-1 Dynamic Type, A11Y-4 targets), split into a stateless `XContent(state, actions)` with `#Preview` and a stateful
    `XScreen` that owns the `@MainActor` model and wires presentation. Loading runs in `.task`, never `Task {}` in `onAppear`.
    No force unwraps. Use `@Observable` unless the project's deployment target is below iOS 17 (its `CLAUDE.md` says).
-6. **Tests.** View-model and service tests in the project's framework (Swift Testing or XCTest per `CLAUDE.md`; Quick/Nimble
+6. **Tests.** View-model and service tests in the project's framework (Swift Testing or XCTest per `CLAUDE.md`, with Quick/Nimble
    only where the target already uses it). Run them with `xcodebuild test … -only-testing:<Target>/<Suite>` and quote the
    summary (`xcrun xcresulttool get test-results summary --path <bundle>.xcresult`).
-7. **Simulator verification.** `/ios-kit:run-app` on the default simulator, navigate to the feature, screenshot; repeat at
+7. **Simulator verification.** `/ios-kit:run-app` on the default simulator, navigate to the feature, screenshot. Repeat at
    `content_size accessibility-extra-large` and in dark appearance for any new or changed screen, and on an iPad simulator if
    `TARGETED_DEVICE_FAMILY` includes 2. Then hand off to the `ios-verifier` agent with the test command, the simulator, bundle
-   id and the screens to check. It returns test totals, screenshot paths and findings; a failure is a finding, not something to
+   id and the screens to check. It returns test totals, screenshot paths and findings. A failure is a finding, not something to
    fix inside this step.
-8. **Review.** `ios-reviewer` against the acceptance criteria, and delegate UI/view changes to `ui-reviewer`. Fix Blockers/Majors; list declined Nits.
+8. **Review.** `ios-reviewer` against the acceptance criteria, and delegate UI/view changes to `ui-reviewer`. Fix Blockers/Majors and list declined Nits.
 9. **Commit, only if asked.** Follow the shared Git conventions. Do not push unless asked.
 10. **Report**: files changed, commands run with results, screenshot paths, what is left for QA.

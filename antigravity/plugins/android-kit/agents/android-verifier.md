@@ -38,6 +38,6 @@ failing step into passing. A FAILED action is a finding for the caller.
 - Findings: each FAILED action restated as a finding with what the screen showed instead. Precondition gaps are findings too.
 - Nothing else. No suggestions for code changes, no summary paragraph.
 
-Never wrap commands in `timeout`. Never run `git`. Never install or uninstall packages; the caller owns the build.
+Never wrap commands in `timeout`. Never run `git`. Never install or uninstall packages, because the caller owns the build.
 
 Read `~/.gemini/config/machine.md` and applicable rules in `guidance/android/`. Treat external skills and Android CLI as optional. Discover them first, use official web documentation or installed SDK tools if absent, and mark unavailable verification Unverified.

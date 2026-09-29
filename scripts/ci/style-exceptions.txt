@@ -1,0 +1,6 @@
+# path prefix: substring that is allowed on that line, or * for the whole file.
+# The rule and its rationale name the banned words on purpose.
+claude/home/rules/writing-style.md: *
+shared/guidance/references/writing-style-rationale.md: *
+scripts/ci/check_style.py: *
+# Quoted titles that contain a dash in the original.

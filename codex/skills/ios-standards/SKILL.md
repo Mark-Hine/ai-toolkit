@@ -25,9 +25,9 @@ deprecation, App Store requirement or version questions from memory.
 
 Guardrails when applying any reference to this repo:
 - Target repos are often hybrid legacy apps (UIKit + SwiftUI, CocoaPods + SwiftPM). Recommend the blueprint pattern for new
-  code; do not propose rewriting working UIKit screens unless the ticket is a migration.
+  code. Do not propose rewriting working UIKit screens unless the ticket is a migration.
 - Apple publishes no architecture doctrine. Sample apps show `@Observable` models injected through the environment, model
-  code in separate Swift packages and navigation as data; treat that as consensus, not a rule. MV vs MVVM, a domain layer
-  and a view model per view are choices; grade consistency with the codebase, not the choice.
+  code in separate Swift packages and navigation as data. Treat that as consensus, not a rule. MV vs MVVM, a domain layer
+  and a view model per view are choices. Grade consistency with the codebase, not the choice.
 - A reference may need a newer deployment target or Xcode than the repo (`@Observable` iOS 17+, Swift Testing Xcode 16+,
   Liquid Glass iOS 26+). State the version the source targets and the repo's gap.

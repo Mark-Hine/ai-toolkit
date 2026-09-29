@@ -8,22 +8,22 @@ allowed-tools: Bash(xcodebuild *), Bash(xcrun *), Bash(open -a Simulator*), Bash
 
 # Run the app: $ARGUMENTS
 
-Defaults: the simulator named in `~/.claude/CLAUDE.md` (fallback: the newest iPhone in `xcrun simctl list devices available`);
-the project's workspace, default debug scheme and bundle id from its `CLAUDE.md`. Never guess a scheme name; quote `xcodebuild -list`.
+Defaults: the simulator named in `~/.claude/CLAUDE.md` (fallback: the newest iPhone in `xcrun simctl list devices available`), and
+the project's workspace, default debug scheme and bundle id from its `CLAUDE.md`. Never guess a scheme name. Quote `xcodebuild -list`.
 
-1. `xcodebuild -version`; `xcodebuild -list -workspace <ws>` and confirm the scheme exists. CocoaPods repos: run `pod install`
-   first when `Pods/` is missing or `Podfile.lock` changed; SwiftPM-only repos need nothing.
-2. `xcrun simctl list devices available`; record the selected simulator UDID and use it throughout; if the simulator is not `Booted`: `xcrun simctl boot <udid>`, then
+1. `xcodebuild -version`, then `xcodebuild -list -workspace <ws>` and confirm the scheme exists. CocoaPods repos: run `pod install`
+   first when `Pods/` is missing or `Podfile.lock` changed. SwiftPM-only repos need nothing.
+2. `xcrun simctl list devices available`, then record the selected simulator UDID and use it throughout. If the simulator is not `Booted`, run `xcrun simctl boot <udid>`, then
    `xcrun simctl bootstatus <udid> -b`. `open -a Simulator` when the caller wants to watch.
 3. Build: `xcodebuild build -workspace <ws> -scheme "<scheme>" -destination 'platform=iOS Simulator,id=<udid>'
    -derivedDataPath <scratchpad>/DerivedData -quiet`. On failure re-run without `-quiet` and quote the first `error:` lines.
 4. Locate the product: `xcodebuild -showBuildSettings … | grep -E 'BUILT_PRODUCTS_DIR|FULL_PRODUCT_NAME'`.
-   Install and launch: `xcrun simctl install <udid> <path>.app`; `xcrun simctl launch <udid> <bundle id>` (prints the pid).
+   Install and launch: `xcrun simctl install <udid> <path>.app`, then `xcrun simctl launch <udid> <bundle id>` (prints the pid).
    Deep link: `xcrun simctl openurl <udid> <url>`.
 5. On the first screen: `xcrun simctl io <udid> screenshot <scratchpad>/<simulator>-<scheme>-<screen>.png`.
    For accessibility or dark-mode checks: `xcrun simctl ui <udid> content_size accessibility-extra-large`,
    `xcrun simctl ui <udid> appearance dark`, then screenshot again.
-6. Report: simulator name, UDID and OS; scheme and configuration; `.app` path; launch pid; screenshot path(s); and if the
+6. Report: simulator name, UDID and OS, scheme and configuration, `.app` path, launch pid, screenshot path(s), and if the
    app crashed, the last 30 lines of `xcrun simctl spawn <udid> log show --last 2m --predicate 'processImagePath CONTAINS "<App>"'`.
 
-Do not erase or delete simulators, or change privacy permissions, without user authorization. Record the existing appearance and content-size settings before a visual check and restore them afterwards. Plain simctl cannot tap or type; use existing XCUITests or an available UI automation tool, otherwise mark interaction checks Unverified.
+Do not erase or delete simulators, or change privacy permissions, without user authorization. Record the existing appearance and content-size settings before a visual check and restore them afterwards. Plain simctl cannot tap or type. Use existing XCUITests or an available UI automation tool, otherwise mark interaction checks Unverified.

@@ -7,15 +7,15 @@ Rule: `~/.codex/guidance/android/testing.md`. This file holds the reasoning, the
 | Change | Required | Nice to have |
 |---|---|---|
 | ViewModel / use case / repository | Unit test in the module (`runTest`, fakes, injected dispatcher) | Turbine-style flow assertions if the repo has them |
-| New or changed Compose screen | Preview(s) for each `UiState`; journey for the flow | Compose UI-behaviour test (Robolectric) if infra exists; screenshot test if the repo has a tool |
+| New or changed Compose screen | Preview(s) for each `UiState` and a journey for the flow | Compose UI-behaviour test (Robolectric) if infra exists, and a screenshot test if the repo has a tool |
 | Bug fix | Failing test reproducing the report, then green | Journey step covering the symptom |
-| Dependency / toolchain uplift | Existing tests that compiled at baseline; runtime launch check | Journey on the 16 KB AVD when native code is involved |
+| Dependency / toolchain uplift | Existing tests that compiled at baseline and a runtime launch check | Journey on the 16 KB AVD when native code is involved |
 
 Sources: developer.android.com/training/testing (fundamentals, what to test), Now in Android `core/testing` (fakes over
 mocks, `TestDispatcher` rule), `testing-setup` skill (Google, infra install order: DI → unit → UI → screenshot → e2e).
 
 ## Why fakes over mocks
-Repositories and data sources are owned code with small interfaces; a fake exercises the real contract and survives refactors,
+Repositories and data sources are owned code with small interfaces. A fake exercises the real contract and survives refactors,
 while a mock encodes call order and breaks on every internal change. Mocks stay for third-party SDKs and framework types.
 
 ## Journeys (Android CLI end-to-end)
@@ -24,12 +24,12 @@ Format and evaluation rules: `references/journeys.md` relative to the discovered
 JSON with `PASSED` / `FAILED` / `SKIPPED` per action. Journeys are checked into the repo under `journeys/`.
 
 Conventions:
-- One file per user flow, `journeys/<feature>-<flow>.xml`; `<description>` states preconditions (logged-in test account,
+- One file per user flow, `journeys/<feature>-<flow>.xml`, and `<description>` states preconditions (logged-in test account,
   flavour, AVD).
 - Actions are literal and single-purpose: one tap or one verification each. "Verify" actions inspect only, never scroll.
 - Actions are unconditional. One-off dialogs (What's-new, permission prompts) are handled in the `<description>` precondition
   ("dismiss X before starting"), never as an `If shown…` action, because the evaluator executes steps literally.
-- Journeys assert behaviour, not pixels; screenshot tests own pixels.
+- Journeys assert behaviour, not pixels. Screenshot tests own pixels.
 - A FAILED action is a finding for the report. Do not edit the journey to make it pass unless the product behaviour changed
   deliberately in the same ticket.
 

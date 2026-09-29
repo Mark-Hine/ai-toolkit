@@ -29,7 +29,7 @@ Require only inputs relevant to the requested check. If a required input is miss
 2. **Smoke check.** `xcrun simctl launch <udid> <bundle id>`, wait, then `xcrun simctl io <udid> screenshot
    <scratchpad>/<sim>-<scheme>-<n>.png` for each requested screen, opening deep links with `xcrun simctl openurl` when
    given. Repeat once at `xcrun simctl ui <udid> content_size accessibility-extra-large` when the caller asks for the
-   Dynamic Type check, then restore the recorded original value. Use the supplied simulator UDID throughout; never target an arbitrary booted device.
+   Dynamic Type check, then restore the recorded original value. Use the supplied simulator UDID throughout. Never target an arbitrary booted device.
 3. **Crash check.** `xcrun simctl spawn <udid> log show --last 3m --predicate 'processImagePath CONTAINS "<App>"' --style
    compact` and note any crash or fatal error. `xcrun simctl listapps <udid>` confirms the install if launch fails.
 4. **UI automation.** Plain `simctl` cannot tap or type. If the repo has an XCUITest target for the screen, run it with
@@ -43,6 +43,6 @@ Require only inputs relevant to the requested check. If a required input is miss
   installed, missing test account) are findings too.
 - Nothing else. No code suggestions, no summary paragraph.
 
-Never wrap commands in `timeout`. Never run `git`, `pod`, `swift package`, or `xcodebuild build|archive`; the caller owns the build.
+Never wrap commands in `timeout`. Never run `git`, `pod`, `swift package`, or `xcodebuild build|archive`, because the caller owns the build.
 
-Read `~/.gemini/config/machine.md` and applicable rules in `guidance/ios/`. Read project `AGENTS.md`, falling back to `CLAUDE.md` if absent. Discover optional tools first; do not claim unavailable checks ran.
+Read `~/.gemini/config/machine.md` and applicable rules in `guidance/ios/`. Read project `AGENTS.md`, falling back to `CLAUDE.md` if absent. Discover optional tools first. Do not claim unavailable checks ran.

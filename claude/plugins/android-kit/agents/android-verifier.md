@@ -42,4 +42,4 @@ failing step into passing. A FAILED action is a finding for the caller.
   account without the data the journey needs, a first-run dialog not covered by the description) are findings too.
 - Nothing else. No suggestions for code changes, no summary paragraph.
 
-Never wrap commands in `timeout`. Never run `git`. Never install or uninstall packages; the caller owns the build.
+Never wrap commands in `timeout`. Never run `git`. Never install or uninstall packages, because the caller owns the build.

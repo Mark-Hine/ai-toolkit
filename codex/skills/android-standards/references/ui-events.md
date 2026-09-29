@@ -12,7 +12,7 @@ Rule: `~/.codex/guidance/android/ui-events.md`. This file holds the canonical co
   "should always result in a UI state update" and names Channels as not guaranteeing delivery. Graded Strongly Recommended,
   defined there as "unless it clashes fundamentally with your approach".
 - The single source behind it (manuelvivo.dev/viewmodel-events-antipatterns) calls itself opinionated and concedes the
-  `Dispatchers.Main.immediate` mitigation; kotlinx.coroutines#2886 (Elizarov's endorsement of that mitigation) is still open.
+  `Dispatchers.Main.immediate` mitigation, and kotlinx.coroutines#2886 (Elizarov's endorsement of that mitigation) is still open.
   Orbit, MVIKotlin, FlowMVI and Ballast ship channel-style side effects as first-class APIs. The `kotlin-flow-state-event-modeling`
   skill marks `Channel(BUFFERED).receiveAsFlow()` as the correct primitive for single-consumer exactly-once events.
 - House decision: use the buffered Channel for one-shot events. The defects that matter are (a) collection that is not
@@ -73,7 +73,7 @@ class HomeViewModel @Inject constructor(
 }
 ```
 No stability annotations by default. Strong skipping, on from Kotlin 2.0.20, skips composables with unstable parameters and memoizes lambdas. Add `@Stable` or an immutable collection only when compiler metrics show a problem.
-Why two mechanisms and no marker interface: navigation belongs to the screen that raised it and dies with it; a snackbar
+Why two mechanisms and no marker interface: navigation belongs to the screen that raised it and dies with it. A snackbar
 must survive the navigation it often accompanies and is shown by the root Scaffold. Scope and consumer differentiate them.
 
 ## Collecting events in Compose (lifecycle-aware)
@@ -118,7 +118,7 @@ fun HomeRoute(
     HomeContent(uiState = uiState, onDetailsClick = viewModel::onDetailsClick)
 }
 ```
-The ViewModel never sees `navigator`, `Activity` or a navigation library; only the handler does. In a hybrid repo the same
+The ViewModel never sees `navigator`, `Activity` or a navigation library. Only the handler does. In a hybrid repo the same
 handler mixes Compose destinations, `startActivity` and `finish`, which is what makes the pattern portable across apps.
 Why `repeatOnLifecycle`: `LaunchedEffect` is scoped to the composition, which stays alive while the screen is STOPPED, so a
 bare `collect` would navigate or `startActivity` in the background (blocked on Android 10+). Events sent while stopped wait
@@ -158,7 +158,7 @@ fun SnackbarEffect(presenter: SnackbarPresenter, hostState: SnackbarHostState) {
 }
 ```
 Install once at the root `Scaffold` (`snackbarHost = { SnackbarHost(hostState) }`). Screens call `presenter.show(...)` or emit
-`ShowSnackbar` events; they never own a `SnackbarHostState`.
+`ShowSnackbar` events. They never own a `SnackbarHostState`.
 
 ## Actions holder (callback grouping)
 
@@ -166,7 +166,7 @@ Official position: developer.android.com/develop/ui/compose/state-hoisting prefe
 "maximize the visibility of what the composable function responsibilities are". The Compose API guidelines
 (androidx compose-api-guidelines.md) add that a stateless-parameters-plus-callbacks list "will eventually reach a point of
 scale where it becomes unwieldy" and recommend factoring callbacks into a stable holder at that point. house rule: plain
-lambdas by default; an `XActions` holder once a screen/section composable would exceed five callbacks.
+lambdas by default, and an `XActions` holder once a screen/section composable would exceed five callbacks.
 
 ```kotlin
 /** Function types only. Built once in the ViewModel, so its identity is stable. {} defaults keep previews one-liners. */
@@ -204,16 +204,16 @@ fun HomeContent(uiState: HomeUiState, actions: HomeActions, modifier: Modifier =
     }
 }
 ```
-Rules: never `HomeActions(...)` inside a composable (allocates per recomposition); never state, `State<T>` or predicates
-in the holder; reusable components (`AppButton`, cards, list items) never take a holder. The alternative single sink
+Rules: never `HomeActions(...)` inside a composable (allocates per recomposition). Never state, `State<T>` or predicates
+in the holder. Reusable components (`AppButton`, cards, list items) never take a holder. The alternative single sink
 `onEvent: (ScreenEvent) -> Unit` (Circuit-style MVI) is not the house pattern: it hides what a screen can do behind a
 sealed class and allocates an event per interaction.
 
 ## What not to do
 - `MutableSharedFlow<Event>()` for events (lossy when nothing collects).
-- `MutableLiveData<Boolean>` / `MutableStateFlow("")` as triggers (sticky; re-fire on every re-collection).
+- `MutableLiveData<Boolean>` / `MutableStateFlow("")` as triggers (sticky, and re-fire on every re-collection).
 - `LaunchedEffect(Unit)` capturing a navigator or context (stale capture).
-- Importing a navigation library into a ViewModel (couples every screen to it; hosts differ across repos).
+- Importing a navigation library into a ViewModel (couples every screen to it, and hosts differ across repos).
 - `ShowSnackbar` as a navigation event, or a screen owning a `SnackbarHostState` (the message dies with the screen).
-- A marker interface to separate navigation from other one-shot events; separate by scope and consumer instead.
+- A marker interface to separate navigation from other one-shot events. Separate by scope and consumer instead.
 - Twelve callback parameters plus `State<T>` parameters on one composable: move derived state into `UiState`, group callbacks into an actions holder.

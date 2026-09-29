@@ -18,9 +18,9 @@ Repo facts (modules, compile/assemble commands, catalog vs Groovy scripts, delib
    (AGP↔Gradle↔JDK, Kotlin↔KSP↔Compose compiler). For AGP majors also load `agp-9-upgrade`.
 4. **Plan.** One commit per axis, ordered Gradle → AGP → Kotlin/KSP → Compose BOM/AndroidX → third-party. Name the variants
    you will build and the tests you will run. Get approval.
-5. **Apply each axis.** Edit versions only where the project declares them. Rebuild all compile checks; for
-   AGP/Kotlin/Gradle also one release assemble (R8 path) and one debug assemble. Run the unit tests that passed at baseline.
-   Diff `deps-after.txt` against `deps-before.txt`; list transitive changes.
+5. **Apply each axis.** Edit versions only where the project declares them. Rebuild all compile checks. For
+   AGP/Kotlin/Gradle also run one release assemble (R8 path) and one debug assemble. Run the unit tests that passed at baseline.
+   Diff `deps-after.txt` against `deps-before.txt` and list transitive changes.
 6. **Runtime check** when native or vendored code is involved: `/android-kit:run-app` on the 16 KB AVD, then the
    `android-verifier` agent runs the baseline tests and a smoke journey and returns the evidence.
 7. **Review.** `android-reviewer`. Fix Blockers/Majors.
