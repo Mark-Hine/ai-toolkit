@@ -1,1 +1,0 @@
-../../../shared/guidance/common.md

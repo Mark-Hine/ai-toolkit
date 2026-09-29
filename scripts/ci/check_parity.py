@@ -30,8 +30,10 @@ PR_REVIEW_SHARED = [
 ]
 # Hook modules. shared/hooks is canonical; the plugin and Codex copies must be byte-identical.
 HOOK_GROUPS = [
-    ['shared/hooks/guard.py', 'claude/plugins/guard-kit/hooks/guard.py', 'codex/hooks/guard.py'],
-    ['shared/hooks/swift_lint.py', 'claude/plugins/ios-kit/hooks/swift_lint.py', 'codex/hooks/swift_lint.py'],
+    ['shared/hooks/guard.py', 'claude/plugins/guard-kit/hooks/guard.py', 'codex/hooks/guard.py',
+     'antigravity/plugins/android-kit/hooks/guard.py', 'antigravity/plugins/ios-kit/hooks/guard.py'],
+    ['shared/hooks/swift_lint.py', 'claude/plugins/ios-kit/hooks/swift_lint.py', 'codex/hooks/swift_lint.py',
+     'antigravity/plugins/ios-kit/hooks/swift_lint.py'],
 ]
 DESIGN_REFERENCES = {
     'claude': 'claude/plugins/design-kit/skills/standards/references',

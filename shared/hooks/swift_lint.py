@@ -3,7 +3,9 @@
 
 Runs SwiftFormat --lint and SwiftLint on edited .swift files, only when the nearest enclosing
 directory of the file (up to the git root) carries the tool's config and the binary is installed.
-Never rewrites files. Usage: swift_lint.py [--agent claude|codex|antigravity]
+Never rewrites files. Usage: swift_lint.py [--agent claude|codex|antigravity] [--mode post|inject]
+On Antigravity, PostToolUse output must be `{}`, so findings are stored per conversation and handed to the
+model by the PreInvocation hook (`--mode inject`) as an ephemeral message.
 """
 import argparse
 import json
@@ -12,6 +14,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 import time
 
 TOTAL_BUDGET = 45
@@ -100,10 +103,37 @@ def findings(event):
     return errors, warnings
 
 
-def render(agent, errors, warnings):
+def pending_file(event):
+    """Per-conversation scratch file that carries findings from PostToolUse to the next PreInvocation."""
+    conversation = re.sub(r'[^A-Za-z0-9_-]', '', str(event.get('conversationId') or 'default'))
+    directory = Path(tempfile.gettempdir()) / 'ai-toolkit-agy'
+    directory.mkdir(mode=0o700, exist_ok=True)
+    return directory / f'{conversation}.json'
+
+
+def antigravity_inject(event):
+    """PreInvocation: hand any recorded findings to the model as an ephemeral message, once."""
+    path = pending_file(event)
+    if not path.exists():
+        return json.dumps({})
+    try:
+        messages = json.loads(path.read_text())
+    finally:
+        path.unlink(missing_ok=True)
+    if not messages:
+        return json.dumps({})
+    text = '\n\n'.join(messages) + '\nFix applicable findings without disabling rules.'
+    return json.dumps({'injectSteps': [{'ephemeralMessage': text}]})
+
+
+def render(agent, errors, warnings, event=None):
     if agent == 'antigravity':
+        # PostToolUse output must be `{}`. Findings wait for the next PreInvocation hook.
         if errors or warnings:
-            sys.stderr.write('\n'.join(errors + warnings) + '\n')
+            path = pending_file(event or {})
+            existing = json.loads(path.read_text()) if path.exists() else []
+            path.write_text(json.dumps(existing + errors + warnings))
+            path.chmod(0o600)
         return json.dumps({})
     if not (errors or warnings):
         return ''
@@ -118,17 +148,22 @@ def render(agent, errors, warnings):
 def main(argv=None, stdin=None):
     parser = argparse.ArgumentParser(add_help=False)
     parser.add_argument('--agent', choices=['claude', 'codex', 'antigravity'], default='codex')
+    parser.add_argument('--mode', choices=['post', 'inject'], default='post')
     try:
         opts = parser.parse_args(argv)
     except SystemExit:
-        opts = argparse.Namespace(agent='codex')
+        opts = argparse.Namespace(agent='codex', mode='post')
+    event = {}
     try:
         raw = (stdin or sys.stdin).read()
         event = json.loads(raw) if raw.strip() else {}
+        if opts.mode == 'inject':
+            print(antigravity_inject(event))
+            return 0
         errors, warnings = findings(event)
     except (ValueError, TypeError, AttributeError) as error:
         errors, warnings = [], [f'Swift lint hook could not inspect the edit: {type(error).__name__}']
-    output = render(opts.agent, errors, warnings)
+    output = render(opts.agent, errors, warnings, event)
     if output:
         print(output)
     return 0

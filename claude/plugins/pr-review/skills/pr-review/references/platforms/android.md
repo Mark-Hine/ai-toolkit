@@ -144,7 +144,7 @@ screen consumes it). Check:
   metric or quoted unstable parameter are `Unverified`.
 
 **UI design ([UI-STANDARDS], [M3-DESIGN], [WCAG22]):**
-- Grade UI against the tiered design rules in `~/.claude/rules/design-standards.md` (the `design-kit` standards skill carries the sources, rationale and APIs). Cite the rule ID and source key in each finding. T1 breaches grade Blocker or Major by user impact, T2 breaches grade Nit unless the project opts the rule in. Android specifics are AND-1 to AND-6 (colour roles, edge to edge, five window size classes, orientation at target 36, motion scheme, predictive back), with A11Y-3 for the 48 dp target and A11Y-7 for 200% font scale.
+- Grade UI against the tiered design rules, the `design-standards.md` file the toolkit installs (`~/.claude/rules/` on Claude Code, `guidance/` on Codex and Antigravity). The `design-standards` skill carries the sources, rationale and APIs. Cite the rule ID and source key in each finding. T1 breaches grade Blocker or Major by user impact, T2 breaches grade Nit unless the project opts the rule in. Android specifics are AND-1 to AND-6 (colour roles, edge to edge, five window size classes, orientation at target 36, motion scheme, predictive back), with A11Y-3 for the 48 dp target and A11Y-7 for 200% font scale.
 
 **Coroutines & Flow ([ARCH-RECS], [ARCH-GUIDE], [NIA], [COROUTINES]):**
 - Layers communicate via coroutines/Flow (SR). ViewModels receive Flows and launch work in
@@ -248,7 +248,7 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
 | [STRONG-SKIPPING] | https://developer.android.com/develop/ui/compose/performance/stability/strongskipping, default from Kotlin 2.0.20 |
 | [STABILITY-FIX] | https://developer.android.com/develop/ui/compose/performance/stability/fix, "you shouldn't attempt to make every composable skippable" |
 | [NAV3] | https://developer.android.com/guide/navigation/navigation-3 · migration: https://developer.android.com/guide/navigation/navigation-3/migration-guide |
-| [UI-STANDARDS] | `~/.claude/rules/design-standards.md` (shared/guidance/design-standards.md in ai-toolkit), tiered rules with IDs. Sources per key in the design-kit standards skill, `references/sources.md` |
+| [UI-STANDARDS] | The toolkit's `design-standards.md` rule file (shared/guidance/design-standards.md in ai-toolkit), tiered rules with IDs. Sources per key in the design-standards skill, `references/sources.md` |
 | [M3-DESIGN] | https://m3.material.io. Cite the page per finding (colour roles, grids and spacing, type scale, motion) |
 | [WCAG22] | https://www.w3.org/TR/WCAG22/ (W3C Recommendation, 2024-12-12), cite the success criterion per finding |
 | [VM-EVENTS] | https://developer.android.com/topic/architecture/ui-layer/events, the state-based alternatives (`userMessage` + `userMessageShown()`, `flowWithLifecycle`, `dropUnlessResumed`) |

@@ -443,14 +443,16 @@ def check(event, role=''):
 def render(agent, verdict):
     """The host-specific stdout for a verdict. An empty string means no objection."""
     if agent == 'antigravity':
+        # `decision` is required. `ask` keeps the normal permission prompt and its Always Allow cache.
+        # An empty object is treated as a denial, and `allow` would skip the prompt entirely.
         if verdict is None:
-            return json.dumps({})
-        return json.dumps({'decision': 'deny', 'reason': verdict[1]})
+            return json.dumps({'decision': 'ask'})
+        return json.dumps({'decision': verdict[0] if verdict[0] in ('deny', 'ask') else 'deny', 'reason': verdict[1]})
     if verdict is None:
         return ''
     decision, reason = verdict
-    if decision == 'ask' and agent != 'claude':
-        decision = 'deny'  # only Claude Code supports an interactive ask from a hook
+    if decision == 'ask' and agent == 'codex':
+        decision = 'deny'  # Codex hooks cannot prompt
     return json.dumps({'hookSpecificOutput': {'hookEventName': 'PreToolUse',
                        'permissionDecision': decision, 'permissionDecisionReason': reason}})
 

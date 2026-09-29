@@ -281,7 +281,7 @@ class GuardTests(unittest.TestCase):
                 self.assertEqual('ask', guard.evaluate(event)[0])
                 self.assertIn('"ask"', guard.render('claude', guard.evaluate(event)))
                 self.assertIn('"deny"', guard.render('codex', guard.evaluate(event)))
-                self.assertIn('"deny"', guard.render('antigravity', guard.evaluate(event)))
+                self.assertIn('"ask"', guard.render('antigravity', guard.evaluate(event)))
 
     def test_role_comes_from_argv_then_agent_type(self):
         self.assertEqual('android-researcher', guard.resolve_role({}, 'android-researcher'))
@@ -303,7 +303,7 @@ class GuardTests(unittest.TestCase):
     def test_render_per_host(self):
         self.assertEqual('', guard.render('claude', None))
         self.assertEqual('', guard.render('codex', None))
-        self.assertEqual({}, json.loads(guard.render('antigravity', None)))
+        self.assertEqual({'decision': 'ask'}, json.loads(guard.render('antigravity', None)))
         self.assertEqual({'decision': 'deny', 'reason': 'x'}, json.loads(guard.render('antigravity', ('deny', 'x'))))
         claude = json.loads(guard.render('claude', ('deny', 'x')))['hookSpecificOutput']
         self.assertEqual(('PreToolUse', 'deny', 'x'),
@@ -320,6 +320,8 @@ class GuardTests(unittest.TestCase):
                 payload = json.dumps({'tool_name': 'Bash', 'tool_input': {'command': 'git status'}})
                 guard.main(['--agent', agent], stdin=io.StringIO(payload))
             self.assertNotIn('deny', out.getvalue())
+            if agent == 'antigravity':
+                self.assertIn('ask', out.getvalue())
 
     def test_patch_role_boundaries(self):
         event = {'tool_name': 'apply_patch', 'tool_input':
@@ -344,7 +346,7 @@ class GuardTests(unittest.TestCase):
         antigravity = subprocess.run([sys.executable, str(GUARD), '--agent', 'antigravity'], text=True,
                                      capture_output=True, check=True,
                                      input=json.dumps({'toolCall': {'name': 'run_command', 'args': {'CommandLine': 'git status'}}}))
-        self.assertEqual({}, json.loads(antigravity.stdout))
+        self.assertEqual({'decision': 'ask'}, json.loads(antigravity.stdout))
         antigravity = subprocess.run([sys.executable, str(GUARD), '--agent', 'antigravity'], text=True,
                                      capture_output=True, check=True,
                                      input=json.dumps({'toolCall': {'name': 'run_command', 'args': {'CommandLine': 'git push origin main'}}}))

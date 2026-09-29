@@ -1,6 +1,6 @@
 # Testing: expectations, tooling, journeys
 
-Rule: `guidance/android/testing.md`. This file holds the reasoning, the pyramid, and the journey template.
+Rule: the android-kit rules, section "Tests" (loaded with the plugin). This file holds the reasoning, the pyramid, and the journey template.
 
 ## Pyramid per change
 

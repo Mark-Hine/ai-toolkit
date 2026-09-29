@@ -98,7 +98,13 @@ class SwiftLintTests(unittest.TestCase):
         blocked = json.loads(lint.render('claude', ['e'], ['w']))
         self.assertEqual('block', blocked['decision'])
         self.assertEqual('', lint.render('codex', [], []))
-        self.assertEqual({}, json.loads(lint.render('antigravity', ['e'], [])))
+        with patch.object(lint.tempfile, 'gettempdir', return_value=tempfile.mkdtemp()):
+            event = {'conversationId': 'abc-123'}
+            self.assertEqual({}, json.loads(lint.render('antigravity', ['e'], ['w'], event)))
+            injected = json.loads(lint.antigravity_inject(event))
+            self.assertIn('e', injected['injectSteps'][0]['ephemeralMessage'])
+            self.assertIn('w', injected['injectSteps'][0]['ephemeralMessage'])
+            self.assertEqual({}, json.loads(lint.antigravity_inject(event)))  # delivered once
 
     def test_non_swift_or_deleted_file_runs_no_commands(self):
         with patch.object(lint.subprocess, 'run') as called:

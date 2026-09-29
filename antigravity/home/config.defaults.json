@@ -1,8 +1,0 @@
-{
-  "plugins": {
-    "android-kit": { "enabled": true },
-    "design-kit": { "enabled": true },
-    "ios-kit": { "enabled": true },
-    "pr-review": { "enabled": true }
-  }
-}
