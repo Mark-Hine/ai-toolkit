@@ -38,7 +38,7 @@ Rerun the installer after pulling toolkit updates. It preserves existing configu
 - **`android-kit`**: Android development plugin bundling 5 skills, consolidated Kotlin/Compose rules, guard hooks, and 3 specialist subagent definitions.
 - **`ios-kit`**: iOS/Swift development plugin bundling 5 skills, consolidated Swift/SwiftUI rules, Swift lint hooks, and 3 specialist subagent definitions.
 - **`pr-review`**: Formal PR and release-promotion review plugin with multi-platform grading criteria and Azure DevOps integration.
-- **`design-kit`**: UI/UX design standards and anti-slop review plugin bundling anti-slop directives, spatial grid and typography tokens, the 5-state completeness law, accessibility requirements, and the `ui-reviewer` specialist subagent.
+- **`design-kit`**: tiered design rules (HIG, Material 3, WCAG 2.2, house) with sources, rationale and platform APIs, and the `ui-reviewer` specialist subagent.
 
 ### Skills
 
@@ -55,7 +55,7 @@ Rerun the installer after pulling toolkit updates. It preserves existing configu
 | `/ios-run-app` | Explicitly invoked simulator build, install, launch and screenshots |
 | `/ios-standards` | Apple/Swift/Xcode docs, house patterns and project instructions template |
 | `/pr-review` | Formal JSON and Markdown review, release-promotion verification, and re-review tracking |
-| `/design-standards` | Interactive UI/UX design standards: anti-slop directives, 8-point spatial grid, typographic scale, 5 states, accessibility, and platform fidelity |
+| `/design-standards` | Sources, rationale and platform APIs for the tiered design rules (HIG, Material 3, WCAG 2.2, house) |
 
 ### Specialist Subagents
 
@@ -69,7 +69,7 @@ Defined via `define_subagent` and invoked via `invoke_subagent` using the specif
 | `ios-reviewer` | `pro` | Read-only | Evaluates Swift diffs, grades Blocker/Major/Nit, writes no code |
 | `ios-researcher` | `flash` | Read-only | Queries official Apple/Swift/Xcode documentation |
 | `ios-verifier` | `flash` | Workspace write | Runs `xcodebuild test` and simulator smoke checks, collects evidence |
-| `ui-reviewer` | `pro` | Read-only | Audits UI screens, components, and diffs against anti-slop rules, HIG/M3 fidelity, spatial grid, and 5-state completeness; writes no code |
+| `ui-reviewer` | `pro` | Read-only | Grades UI screens, components and diffs against the tiered design rules, citing rule ID and source. Writes no code |
 
 ## Migration decisions and Antigravity best practices
 

@@ -1,11 +1,11 @@
 # Personal defaults
 
-Read `~/.codex/machine.md` for local tool and device facts. If CODEX_HOME is set, use that directory instead of `~/.codex` for these personal files. Read `guidance/common.md` for shared Git and work preferences and `guidance/writing-style.md` there for responses, documents, PR text and commit bodies. Read `guidance/design-standards.md` for UI/UX anti-slop rules and design standards. These are explicit file-reading instructions, not automatic imports.
+Read `~/.codex/machine.md` for local tool and device facts. If CODEX_HOME is set, use that directory instead of `~/.codex` for these personal files. Read `guidance/common.md` for shared Git and work preferences and `guidance/writing-style.md` there for responses, documents, PR text and commit bodies. Read `guidance/design-standards.md` for the tiered design rules. These are explicit file-reading instructions, not automatic imports.
 
 ## UI/UX and Design Standards
 
 - Read `guidance/design-standards.md` before creating or modifying UI screens, components, and design systems.
-- Use `$design-standards` for anti-slop guidelines, spatial rhythm, 5-state completeness, accessibility requirements, and platform fidelity (Material Design 3 and Apple HIG).
+- Use `$design-standards` for the sources, rationale and platform APIs behind the tiered design rules (HIG, Material 3, WCAG 2.2, house), screen states, accessibility and platform fidelity.
 - Delegate UI/UX diffs, component audits, and screen reviews to `ui-reviewer`. Give it a bounded task and re-check findings before reporting them. If custom agents are unavailable, perform the work inline and disclose the limitation.
 - Role model and reasoning settings live in the installed `agents/ui-reviewer.toml`.
 

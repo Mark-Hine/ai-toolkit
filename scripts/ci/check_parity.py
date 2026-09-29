@@ -33,6 +33,12 @@ HOOK_GROUPS = [
     ['shared/hooks/guard.py', 'claude/plugins/guard-kit/hooks/guard.py', 'codex/hooks/guard.py'],
     ['shared/hooks/swift_lint.py', 'claude/plugins/ios-kit/hooks/swift_lint.py', 'codex/hooks/swift_lint.py'],
 ]
+DESIGN_REFERENCES = {
+    'claude': 'claude/plugins/design-kit/skills/standards/references',
+    'codex': 'codex/skills/design-standards/references',
+    'antigravity': 'antigravity/plugins/design-kit/skills/design-standards/references',
+}
+DESIGN_REFERENCE_FILES = ['sources.md', 'rationale.md', 'platform-apis.md']
 # Files whose text must match outside `<!-- layer-specific:start/end -->` blocks. Never written by --write.
 PR_REVIEW_MARKED = ['references/ci.md']
 LAYER_BLOCK = re.compile(r'<!-- layer-specific:start -->.*?<!-- layer-specific:end -->\n?', re.S)
@@ -42,6 +48,8 @@ def groups():
     for rel in PR_REVIEW_SHARED:
         yield [f'{base}/{rel}' for base in PR_REVIEW.values()]
     yield from HOOK_GROUPS
+    for rel in DESIGN_REFERENCE_FILES:
+        yield [f'{base}/{rel}' for base in DESIGN_REFERENCES.values()]
 
 
 def marked_groups():

@@ -1,7 +1,7 @@
 {
   "name": "design-kit",
-  "version": "1.0.2",
-  "description": "UI/UX design standards, anti-slop guidelines, and dedicated UI reviewer agent for Claude Code",
+  "version": "1.1.0",
+  "description": "Tiered UI design rules (HIG, Material 3, WCAG 2.2, house) with sources, rationale and platform APIs, and a UI reviewer agent that grades against them",
   "author": {
     "name": "Mark Hine",
     "url": "https://github.com/Mark-Hine"
@@ -13,9 +13,10 @@
     "design",
     "ui",
     "ux",
-    "anti-slop",
     "accessibility",
+    "wcag",
     "material3",
+    "hig",
     "swiftui"
   ]
 }

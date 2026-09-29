@@ -45,7 +45,7 @@ Start a new Codex session, then open `/hooks` to review and trust the command gu
 | `$ios-run-app` | Explicitly invoked simulator build, install, launch and screenshots |
 | `$ios-standards` | Apple/Swift/Xcode docs, house patterns and a project instructions template |
 | `$pr-review` | Formal JSON and Markdown review, release-promotion checks and re-review tracking |
-| `$design-standards` | Interactive UI/UX design standards: anti-slop directives, 8-point spatial grid, typographic scale, 5 states, accessibility, and platform fidelity |
+| `$design-standards` | Sources, rationale and platform APIs for the tiered design rules (HIG, Material 3, WCAG 2.2, house) |
 | `android-reviewer`, `ios-reviewer`, `ui-reviewer` | `gpt-6-astra`, high reasoning, read-only code and UI review |
 | `android-researcher`, `ios-researcher` | `gpt-6-sol`, medium reasoning, read-only official-source research |
 | `android-verifier`, `ios-verifier` | `gpt-6-sol`, medium reasoning, workspace writes for build/test outputs and device evidence |

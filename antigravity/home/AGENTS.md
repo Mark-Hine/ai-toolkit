@@ -10,8 +10,8 @@ Read `~/.gemini/config/machine.md` for local tool and device facts. If `GEMINI_C
 ## UI/UX and Design Standards
 
 - Read `guidance/design-standards.md` before creating or modifying UI screens, components, and design systems.
-- When `design-kit` is enabled, its consolidated rules under `rules/AGENTS.md` are active.
-- Use `/design-standards` for anti-slop guidelines, spatial rhythm, 5-state completeness, accessibility requirements, and platform fidelity (Material Design 3 and Apple HIG).
+- When `design-kit` is enabled, its `rules/AGENTS.md` points at the rule file and the reviewer.
+- Use `/design-standards` for the sources, rationale and platform APIs behind the tiered design rules (HIG, Material 3, WCAG 2.2, house), screen states, accessibility and platform fidelity.
 - Delegate UI/UX diffs, component audits, and screen reviews to `ui-reviewer` (`model: pro`, read-only). Give it a bounded task and re-check findings. If unavailable, review inline and disclose the limitation.
 
 ## Android and Kotlin

@@ -13,11 +13,11 @@ Two layers. Plugins carry the shareable parts. The `home/` dotfiles layer carrie
 | `plugins/ios-kit/agents/` | `ios-reviewer` (opus, read-only), `ios-researcher` (sonnet, read-only, Apple docs only), `ios-verifier` (sonnet, runs tests and simulator smoke checks) | When delegated |
 | `plugins/ios-kit/hooks/` | SwiftFormat and SwiftLint after `.swift` edits, only where the nearest config file opts in. SwiftLint errors block, warnings come back as context | On matching edits |
 | `plugins/pr-review/skills/pr-review/` | Formal written PR review with a standards-cited findings register, grading Android, iOS, Spring Boot, React/Next.js and generic repos | On "review this PR" or `/pr-review:pr-review` |
-| `plugins/design-kit/skills/` | `/design-kit:standards` (interactive UI/UX design standards and anti-slop guidelines reference index) | On invocation or when relevant |
-| `plugins/design-kit/agents/` | `ui-reviewer` (opus, read-only, audits UI diffs/components against anti-slop, HIG/M3, spatial grid, and 5 states) | When delegated |
+| `plugins/design-kit/skills/` | `/design-kit:standards` (sources, rationale and platform APIs for the tiered design rules) | On invocation or when relevant |
+| `plugins/design-kit/agents/` | `ui-reviewer` (opus, read-only, grades UI diffs against the tiered design rules, citing rule ID and source) | When delegated |
 | `home/CLAUDE.md` | Global preferences: subagent models, Android and iOS routing. Imports `~/.claude/machine.md` | Every session |
 | `../shared/guidance/common.md` | Shared Git and work preferences, linked as `~/.claude/rules/common.md` | Every session |
-| `../shared/guidance/design-standards.md` | Shared UI/UX and anti-slop design standards, linked as `~/.claude/rules/design-standards.md` | Every session |
+| `../shared/guidance/design-standards.md` | Tiered design rules with IDs and source keys (T1 official, T2 house), linked as `~/.claude/rules/design-standards.md` | Every session |
 | `home/rules/writing-style.md` | Plain-prose rules with a source key per rule (GOV.UK, Google, Microsoft, plain-language guidelines, Anthropic). Rationale lives in `../shared/guidance/references/writing-style-rationale.md` | Every session |
 | `home/rules/android/` | Kotlin style, Compose, testing, one-shot UI events. Path-scoped, load only when matching files are touched | On matching files |
 | `home/rules/ios/` | Swift style, SwiftUI state ownership and design-system use, testing (Swift Testing/XCTest), one-shot model → UI events. Path-scoped | On matching `.swift` files |
