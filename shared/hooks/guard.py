@@ -157,6 +157,9 @@ def shell_reason(command):
         args = []
         for arg in tokens[i + 1:]:
             if re.fullmatch(r'[;&|()<>\n]+', arg):
+                # The lexer splits 2>&1 into 2, >& and 1, so a digit just before a redirect is a file descriptor.
+                if re.search(r'[<>]', arg) and args and args[-1].isdigit():
+                    args.pop()
                 break
             args.append(arg)
         while args and args[0].startswith('-'):

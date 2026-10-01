@@ -56,9 +56,18 @@ class GuardTests(unittest.TestCase):
                         'git branch --list', 'grep -n main README.md', 'git log origin/main..HEAD',
                         'git push origin feature/example && git status',
                         'git push origin feature/example; git status',
-                        'git push origin feature/example\ngit status'):
+                        'git push origin feature/example\ngit status',
+                        'git push origin feature/example 2>&1', 'git push -u origin feat/a:feat/a 2>&1 | tail -3',
+                        'git push origin feature/example 2>/dev/null', 'git push origin feature/example > push.log'):
             with self.subTest(command=command):
                 self.assertIsNone(self.shell(command))
+
+    def test_redirects_do_not_hide_a_bad_push(self):
+        for command in ('git push origin main 2>&1', 'git push 2>&1', 'git push origin 2>&1',
+                        'git push origin HEAD 2>/dev/null', 'git push origin feature/x --force 2>&1',
+                        'git push origin 2>x main'):
+            with self.subTest(command=command):
+                self.assertIsNotNone(self.shell(command))
 
     def test_push_flags_are_scoped_to_the_push_segment(self):
         safe = ('git worktree remove --force scratch && git push origin feature/x',
