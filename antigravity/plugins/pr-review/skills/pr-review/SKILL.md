@@ -133,7 +133,7 @@ the change actually touches:
 5. **Accessibility, tests and CI**: semantics and labels, test quality, pipeline integrity. A test
    step that cannot fail is a Blocker: it falsely certifies everything else.
 
-Each agent's prompt must tell it to: read the loaded platform pack first, compare every claim
+Run every lens agent on the reviewer-tier model (`pro`), as the toolkit's reviewer agents do. In CI mode no personal instructions choose it. Each agent's prompt must tell it to: read the loaded platform pack first, compare every claim
 against the merge-base tree (`git show MERGE_BASE:path`) rather than just reading the new code,
 obey the pragmatism guardrails (protocol.md §15), cite the standard per finding, identify the
 **causal site** for each claim as distinct from its symptom sites (protocol.md §17), return
@@ -144,7 +144,7 @@ explicit exclusions, so uncovered ground is visible instead of assumed reviewed.
 ## Phase 2a: Adversarial verification (second opinion)
 
 Before the lead touches the leads, send them to adversarial agents whose job is to **refute**
-them (protocol.md §21). Batch about eight leads per agent. Each agent checks per lead: cited
+them (protocol.md §21). Run them on the reviewer-tier model too. Batch about eight leads per agent. Each agent checks per lead: cited
 file/line exists at the pinned SHA, merge-base half is true (`git show MERGE_BASE:path`), anchored
 at the root cause rather than a symptom (§17), and not debug-only (§20). Where a runnable command settles
 it (a compile, a test, a grep), **run the command**, because a compile beats reading. Verdicts:
