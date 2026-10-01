@@ -1,9 +1,8 @@
 ---
 name: run-app
 description: Build, install, launch and screenshot a house Android debug variant on an emulator via the Android CLI.
-disable-model-invocation: true
 argument-hint: "[avd] [flavour]"
-allowed-tools: Bash(android *), Bash(./gradlew *), Bash(adb *)
+allowed-tools: Bash(android info*), Bash(android emulator list*), Bash(android emulator start *), Bash(android run *), Bash(android screen *), Bash(android layout*), Bash(./gradlew :app:assemble*), Bash(adb devices*), Bash(adb logcat *), Bash(adb shell monkey *)
 ---
 
 # Run the app: $ARGUMENTS
@@ -22,4 +21,4 @@ from its `CLAUDE.md`. Load the `android-cli` skill if any command below is unfam
 6. Report: device serial and AVD, variant, APK path, launch result, screenshot path(s), and the last 30 lines of
    `adb logcat -d -s AndroidRuntime` if anything crashed.
 
-Mutating device commands prompt for permission. That is intended.
+Device commands outside `allowed-tools`, such as uninstall or emulator removal, use the approval policy and prompt. A request to run the app authorizes its normal build, install and launch steps.

@@ -45,7 +45,7 @@ class ValidateTest(unittest.TestCase):
         self.assertTrue(any('sandbox_mode must be read-only' in e for e in self.errors()))
 
     def test_manual_skill_needs_openai_policy(self):
-        (self.codex / 'skills/android-run-app/agents/openai.yaml').unlink()
+        (self.codex / 'skills/android-uplift-deps/agents/openai.yaml').unlink()
         self.assertTrue(any('allow_implicit_invocation' in e for e in self.errors()))
 
     def test_bad_rules_line_is_rejected(self):

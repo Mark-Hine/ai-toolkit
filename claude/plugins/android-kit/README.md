@@ -7,7 +7,7 @@ Claude Code plugin for Android work. Install with `/plugin marketplace add Mark-
 | `/android-kit:feature PROJ-123 <summary>` | Feature or feature-change playbook: intake, pattern discovery, plan, implement, tests, emulator check, review, commit |
 | `/android-kit:bugfix PROJ-123 <symptom>` | Reproduce (test or emulator), root cause, minimal fix, regression test, review, commit |
 | `/android-kit:uplift-deps PROJ-123 <what>` | Toolchain/dependency uplift, one axis per commit, release-note research, dependency diffs (manual invocation only) |
-| `/android-kit:run-app <avd> <flavour>` | Build, install, launch and screenshot a debug variant via the Android CLI (manual invocation only) |
+| `/android-kit:run-app <avd> <flavour>` | Build, install, launch and screenshot a debug variant via the Android CLI |
 | `standards` skill | Index of official Android/Kotlin/Gradle docs, Now in Android, JetSnack and house patterns, preloaded into the researcher |
 | `android-reviewer` agent | Read-only diff review, runs the project's compile check, grades Blocker/Major/Nit |
 | `android-researcher` agent | Read-only research via `android docs` and official sources. Its shell is limited by guard-kit to `android docs` and `android sdk list` |

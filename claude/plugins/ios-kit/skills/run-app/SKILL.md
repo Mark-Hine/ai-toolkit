@@ -1,9 +1,8 @@
 ---
 name: run-app
 description: Build, install, launch and screenshot an iOS debug scheme on a simulator via xcodebuild and xcrun simctl.
-disable-model-invocation: true
 argument-hint: "[simulator name] [scheme]"
-allowed-tools: Bash(xcodebuild *), Bash(xcrun *), Bash(open -a Simulator*), Bash(pod install*)
+allowed-tools: Bash(xcodebuild -version*), Bash(xcodebuild -list *), Bash(xcodebuild build *), Bash(xcodebuild -showBuildSettings *), Bash(xcrun simctl list *), Bash(xcrun simctl boot *), Bash(xcrun simctl bootstatus *), Bash(xcrun simctl install *), Bash(xcrun simctl launch *), Bash(xcrun simctl openurl *), Bash(xcrun simctl io *), Bash(xcrun simctl ui *), Bash(xcrun simctl spawn * log show *), Bash(open -a Simulator*), Bash(pod install*)
 ---
 
 # Run the app: $ARGUMENTS

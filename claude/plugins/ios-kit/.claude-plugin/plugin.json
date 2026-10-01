@@ -1,6 +1,6 @@
 {
   "name": "ios-kit",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "iOS playbooks, Apple standards index, reviewer/researcher/verifier agents for Claude Code",
   "author": {
     "name": "Mark Hine",
