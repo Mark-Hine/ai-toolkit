@@ -24,6 +24,6 @@ Repo facts (modules, build/test commands, design-system names, app id) come from
    Then hand off to the `android-verifier` agent with the test command, the journey file(s) for the touched screen, the
    device serial and application id. It returns the JSON journey result and screenshot paths. A FAILED action is a
    finding, not something to fix inside this step. A new screen gets a new journey.
-8. **Review.** `android-reviewer` against the acceptance criteria, and delegate UI/layout changes to `ui-reviewer`. Fix Blockers/Majors and list declined Nits.
+8. **Review.** `android-reviewer` against the acceptance criteria, and delegate UI/layout changes to `ui-reviewer`. Confirm each Blocker and Major against the code first, and decline a refuted one with the counter-evidence. Fix the rest, then re-run the compile check and the affected tests. Send the same reviewer the finding IDs and their "Verified fixed when" criteria to re-review the fix delta. Stop after two re-review rounds and report anything still open. List declined Nits.
 9. **Commit, only if asked.** Follow the shared Git conventions. Do not push unless asked.
 10. **Report**: files changed, commands run with results, screenshot paths, what is left for QA.

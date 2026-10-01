@@ -33,6 +33,6 @@ come from the project's `AGENTS.md`. Never guess them.
    `TARGETED_DEVICE_FAMILY` includes 2. Then hand off to `ios-verifier` with test command, simulator, bundle
    id and screens to check. It returns test totals, screenshot paths and findings. A failure is a finding, not something to
    fix inside this step.
-8. **Review.** `ios-reviewer` against the acceptance criteria, and delegate UI/view changes to `ui-reviewer`. Fix Blockers/Majors and list declined Nits.
+8. **Review.** `ios-reviewer` against the acceptance criteria, and delegate UI/view changes to `ui-reviewer`. Confirm each Blocker and Major against the code first, and decline a refuted one with the counter-evidence. Fix the rest, then re-run the compile check and the affected tests. Send the same reviewer the finding IDs and their "Verified fixed when" criteria to re-review the fix delta. Stop after two re-review rounds and report anything still open. List declined Nits.
 9. **Commit, only if asked.** Follow shared Git conventions. Do not push unless asked.
 10. **Report**: files changed, commands run with results, screenshot paths, what is left for QA.

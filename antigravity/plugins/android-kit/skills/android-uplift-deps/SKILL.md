@@ -23,6 +23,6 @@ Repo facts (modules, compile/assemble commands, catalog vs Groovy scripts, delib
    Diff `deps-after.txt` against `deps-before.txt` and list transitive changes.
 6. **Runtime check** when native or vendored code is involved: `/android-run-app` on the 16 KB AVD, then the
    `android-verifier` agent runs baseline tests and a smoke journey and returns evidence.
-7. **Review.** `android-reviewer`. Fix Blockers/Majors.
+7. **Review.** `android-reviewer`. Confirm each Blocker and Major against the code first, and decline a refuted one with the counter-evidence. Fix the rest, then re-run the compile check and the affected tests. Send the same reviewer the finding IDs and their "Verified fixed when" criteria to re-review the fix delta. Stop after two re-review rounds and report anything still open.
 8. **Commit, only if asked.** Follow shared Git conventions. Do not push unless asked.
 9. **Report** table: item, old, new, build result, test result, notable transitive changes, follow-ups.

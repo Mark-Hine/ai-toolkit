@@ -21,6 +21,6 @@ Repo facts (workspace, schemes, build/test commands, test framework, bundle id) 
 5. **Fix** with minimal diff. Note refactor candidates as follow-ups instead of doing them.
 6. **Verify.** Failing test now green plus suite's other tests (`xcodebuild test … -only-testing:`), and project's build
    command for every scheme it lists. Hand test rerun and, for UI bugs, simulator smoke check to `ios-verifier` and quote results.
-7. **Review.** `ios-reviewer` with symptom and root cause as the task statement.
+7. **Review.** `ios-reviewer` with symptom and root cause as the task statement. Confirm each Blocker and Major against the code first, and decline a refuted one with the counter-evidence. Fix the rest, then re-run the compile check and the affected tests. Send the same reviewer the finding IDs and their "Verified fixed when" criteria to re-review the fix delta. Stop after two re-review rounds and report anything still open.
 8. **Commit, only if asked.** Follow shared Git conventions. Do not push unless asked.
 9. **Report**: cause, fix, evidence (test before/after, screenshots), regression risk, pre-existing issues noticed.
