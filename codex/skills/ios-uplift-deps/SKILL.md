@@ -28,6 +28,6 @@ Repo facts (workspace, schemes, build/test commands, SwiftPM vs CocoaPods, delib
    list transitive changes. New or bumped SDKs on Apple's required-reason list must ship `PrivacyInfo.xcprivacy`.
 6. **Runtime check** when an SDK with native code or a swizzling/analytics SDK changed: `$ios-run-app`, launch plus one
    authenticated screen. The `ios-verifier` agent runs the baseline tests and the smoke check and returns the evidence.
-7. **Review.** `ios-reviewer`. Fix Blockers/Majors.
+7. **Review.** `ios-reviewer`. Confirm each Blocker and Major against the code first, and decline a refuted one with the counter-evidence. Fix the rest, then re-run the compile check and the affected tests. Send the same reviewer the finding IDs and their "Verified fixed when" criteria to re-review the fix delta. Stop after two re-review rounds and report anything still open.
 8. **Commit, only if asked.** Follow the shared Git conventions. Do not push unless asked.
 9. **Report** table: item, old, new, build result, test result, notable transitive changes, follow-ups.

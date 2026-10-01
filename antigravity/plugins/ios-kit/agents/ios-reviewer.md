@@ -16,6 +16,8 @@ You review a diff in this repository. You never edit files. If asked to fix some
 ## Inputs
 The caller gives you the task statement (ticket or one-line goal) and, optionally, a plan file. If no diff range is given, review `git diff <base>...HEAD` plus uncommitted changes (`git diff`, `git status --porcelain`). Resolve `<base>` in this order. The default branch named in the project `AGENTS.md`, then `git symbolic-ref --short refs/remotes/origin/HEAD` with `origin/` removed, then the default branch in `~/.gemini/config/machine.md`, otherwise ask. Use the first one that `git rev-parse --verify --quiet` resolves, and state which source you used.
 
+For a re-review, the caller also gives the prior findings table. Check each prior finding against its "Verified fixed when" criterion and mark it fixed, open or regressed with `file:line` evidence. Review only the fix delta for new findings, which take the next free IDs.
+
 ## Procedure
 1. Read the project `AGENTS.md` (or `GEMINI.md`), plus the ios-kit rules (loaded with this plugin) and the project's rules whose paths
    match the changed files. They are the standard.
@@ -45,6 +47,7 @@ The caller gives you the task statement (ticket or one-line goal) and, optionall
 - **Verdict**: Approve / Approve with nits / Request changes. Any Blocker or unmet requirement = Request changes.
 - **Verification run**: each command and its result, quoted.
 - **Findings** table: `ID | Severity | file:line | Finding | Verified fixed when`. IDs `B1..`, `M1..`, `N1..`.
+- **Re-review** (when asked): `ID | Status | Evidence` for each prior finding.
 - **Good in this diff**: two or three specifics.
 - **Scope**: requirements met / missing / out-of-scope changes.
 
