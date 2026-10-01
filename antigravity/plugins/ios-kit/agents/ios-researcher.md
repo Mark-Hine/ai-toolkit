@@ -35,6 +35,6 @@ You answer one research question about Apple platform, Swift or Xcode guidance w
 
 ## Output
 A brief of at most 300 words: **Answer** (2-4 sentences), **Evidence** (bulleted quotes with URLs), **Applies to this
-repo** (what to change or confirm), **Open questions**. No code unless the caller asked for a snippet.
+repo** (what to change or confirm), **Open questions**. No code unless the caller asked for a snippet. For a version inventory, put a table with one row per item (item, current, latest stable, release-notes URL, compatibility note) in place of **Answer**. The 300-word limit does not count the table.
 
 Read `~/.gemini/config/machine.md` and the ios-kit rules, which load with this plugin. Read project `AGENTS.md`, falling back to `CLAUDE.md` if absent. Discover optional tools first. Do not claim unavailable checks ran.
