@@ -14,6 +14,7 @@ Repo facts (modules, build/test commands, design-system names, app id) come from
 2. **Discover the pattern.** Use a research subagent to find the closest existing screen or flow: its Activity/Fragment or
    Compose entry point, ViewModel, repository/use case, DI wiring, and tests. Note whether it is XML or Compose.
    For a *modify* task also map every caller of the code you will change.
+   If it changes UI, capture the touched screens now, the same way as step 7, and label them `before`.
 3. **Consult skills and references.** Route through `using-chrisbanes-skills` and load the compose-*/kotlin-* skills it names.
    Ask `android-researcher` only where guidance may have moved (navigation, insets, permissions, target-SDK behaviour).
 4. **Plan.** Files to add or change, state model (`UiState` sealed interface, StateFlow), where data code goes,
@@ -27,6 +28,6 @@ Repo facts (modules, build/test commands, design-system names, app id) come from
    the JSON journey result and labelled screenshot paths, so the images stay out of this session. Check insets
    (`edge-to-edge`) and large-screen layout (`adaptive`) against its findings. A FAILED action is a finding, not
    something to fix inside this step. A new screen gets a new journey.
-8. **Review.** `android-reviewer` against the acceptance criteria, and delegate UI/layout changes to `ui-reviewer`. Confirm each Blocker and Major against the code first, and decline a refuted one with the counter-evidence. Fix the rest, then re-run the compile check and the affected tests. Send the same reviewer the finding IDs and their "Verified fixed when" criteria to re-review the fix delta. Stop after two re-review rounds and report anything still open. List declined Nits.
+8. **Review.** `android-reviewer` against the acceptance criteria, and delegate UI/layout changes to `ui-reviewer` with the labelled step 7 screenshot paths. Confirm each Blocker and Major against the code first, and decline a refuted one with the counter-evidence. Fix the rest, then re-run the compile check and the affected tests. Send the same reviewer the finding IDs and their "Verified fixed when" criteria to re-review the fix delta. Stop after two re-review rounds and report anything still open. List declined Nits.
 9. **Commit, only if asked.** Follow shared Git conventions. Do not push unless asked.
 10. **Report**: files changed, commands run with results, screenshot paths, what is left for QA.
