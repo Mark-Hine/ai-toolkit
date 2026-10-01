@@ -236,6 +236,23 @@ class GuardTests(unittest.TestCase):
             with self.subTest(command=command):
                 self.assertIsNone(self.shell(command, 'android-verifier'))
 
+    def test_verifier_configuration_capture_settings(self):
+        for command in ('adb shell settings get system font_scale',
+                        'adb -s emulator-5554 shell settings put system font_scale 2.0',
+                        'adb shell settings put system font_scale 1', 'adb shell cmd uimode night',
+                        'adb -s emulator-5556 shell cmd uimode night yes', 'adb shell cmd uimode night no'):
+            with self.subTest(command=command):
+                self.assertIsNone(self.shell(command, 'android-verifier'))
+        for command in ('adb shell settings put global font_scale 2.0',
+                        'adb shell settings delete system font_scale',
+                        'adb shell settings put system screen_brightness 10',
+                        'adb shell settings put system font_scale 2.0 extra',
+                        'adb shell settings put secure font_scale 2.0',
+                        'adb shell cmd uimode night auto', 'adb shell cmd package uninstall com.x'):
+            with self.subTest(command=command):
+                self.assertIsNotNone(self.shell(command, 'android-verifier'))
+        self.assertIsNotNone(self.shell('adb shell settings put system font_scale 2.0', 'android-researcher'))
+
     def test_verifier_logcat_cannot_write_workspace_files(self):
         for prefix in ('adb logcat ', 'adb -s emulator-5554 logcat '):
             for flag in ('-f source.xml', '-fsource.xml', '--file source.xml', '--file=source.xml',
