@@ -18,4 +18,4 @@ The rules live in `~/.claude/rules/design-standards.md`. This skill adds the sou
 5. Check accessibility on a device or simulator where you can, at the largest text size, with the screen reader, with reduced motion and in dark mode.
 6. When a rule and a source in `references/sources.md` disagree, follow the source and report the rule ID, the source and its date.
 7. Read `references/rationale.md` before overriding or arguing a T2 rule. T2 rules are defaults and grade Nit unless the project opts in.
-8. Hand the diff to `ui-reviewer` before calling the work done.
+8. Hand the diff and any labelled screenshots from step 5 to `ui-reviewer` before calling the work done.

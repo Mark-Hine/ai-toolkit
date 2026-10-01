@@ -17,4 +17,4 @@ The rules live in `~/.codex/guidance/design-standards.md`. This skill adds the s
 5. Check accessibility on a device or simulator where you can, at the largest text size, with the screen reader, with reduced motion and in dark mode.
 6. When a rule and a source in `references/sources.md` disagree, follow the source and report the rule ID, the source and its date.
 7. Read `references/rationale.md` before overriding or arguing a T2 rule. T2 rules are defaults and grade Nit unless the project opts in.
-8. Hand the diff to the `ui-reviewer` agent before calling the work done.
+8. Hand the diff and any labelled screenshots from step 5 to the `ui-reviewer` agent before calling the work done.
