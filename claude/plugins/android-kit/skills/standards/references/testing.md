@@ -25,7 +25,7 @@ while a mock encodes call order and breaks on every internal change. Mocks stay 
 
 ## Journeys (Android CLI end-to-end)
 Format and evaluation rules: `~/.claude/skills/android-cli/references/journeys.md`. The agent drives the app with
-`android layout` / `android layout --diff` / `android screen capture` and adb, evaluates each `<action>` literally, and reports
+`android layout` / `android screen capture` and adb, evaluates each `<action>` literally, and reports
 JSON with `PASSED` / `FAILED` / `SKIPPED` per action. Journeys are checked into the repo under `journeys/`.
 
 Conventions:

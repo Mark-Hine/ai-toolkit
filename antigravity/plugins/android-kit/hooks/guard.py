@@ -373,6 +373,9 @@ def role_reason(role, command):
     else:
         allowed = (r'(android\s+(layout|screen|emulator\s+list|info|docs)(\s|$)'
                    r'|adb(?:\s+-s\s+\S+)?\s+(devices|logcat|shell\s+(input|dumpsys|am\s+start|monkey|pm\s+list))(\s|$)'
+                   # Configuration captures read, set and restore only these two display settings.
+                   r'|adb(?:\s+-s\s+\S+)?\s+shell\s+settings\s+(get\s+system\s+font_scale|put\s+system\s+font_scale\s+\d+(\.\d+)?)$'
+                   r'|adb(?:\s+-s\s+\S+)?\s+shell\s+cmd\s+uimode\s+night(\s+(yes|no))?$'
                    r'|sleep\s+[\d.]+$)')
     if not re.match(allowed, command.strip()):
         return 'This specialist only runs its documented research or verification commands.'
