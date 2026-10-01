@@ -1,6 +1,6 @@
 {
   "name": "android-kit",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "Android playbooks, standards index, reviewer/researcher agents and guard hooks for Claude Code",
   "author": {
     "name": "Mark Hine",

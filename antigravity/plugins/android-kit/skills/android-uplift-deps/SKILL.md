@@ -14,7 +14,7 @@ Repo facts (modules, compile/assemble commands, catalog vs Groovy scripts, delib
    `./gradlew :app:dependencies --configuration <debugVariant>RuntimeClasspath > <scratchpad>/deps-before.txt`. Quote results.
 2. **Inventory.** List in-scope entries with current versions (version catalog, or `build.gradle` files in Groovy repos).
    Note any `gradle.properties` opt-outs and convention plugins the uplift touches.
-3. **Research.** Ask `android-researcher` for latest stable of each item, its release notes, and compatibility
+3. **Research.** Send one `android-researcher` per axis from step 4, in parallel, each asking for its inventory table. Ask for the latest stable of each item, its release notes, and compatibility
    (AGP↔Gradle↔JDK, Kotlin↔KSP↔Compose compiler). For AGP majors also load `agp-9-upgrade`.
 4. **Plan.** One commit per axis, ordered Gradle → AGP → Kotlin/KSP → Compose BOM/AndroidX → third-party. Name variants
    you will build and tests you will run. Proceed within user-authorized scope. Ask only about unresolved scope or consequential choices.
