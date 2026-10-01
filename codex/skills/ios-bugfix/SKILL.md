@@ -10,15 +10,17 @@ Read the project AGENTS.md and applicable global guidance first. Fall back to CL
 Repo facts (workspace, schemes, build/test commands, test framework, bundle id) come from the project's `AGENTS.md`.
 
 1. **Restate** the symptom, expected behaviour, and affected scheme, OS version or device if known. Branch `fix/<ticket>-<slug>`.
-2. **Locate.** explorer subagent: trace the path from symptom to code (view → view model → service/repository → API).
-   Read the whole path, not the first suspicious line. `git log -S` for the change that introduced it.
+2. **Locate.** An explorer subagent returns the path from symptom to code (view → view model → service/repository → API) as `file:line` entries.
+   Then read that whole path yourself, not the first suspicious line, because the subagent reads excerpts. `git log -S` for the change that introduced it.
 3. **Reproduce.** Prefer a failing unit test in the target that owns the defect. For UI or platform bugs reproduce on the
    simulator with `$ios-run-app` (an older runtime from `xcrun simctl list runtimes` for OS-specific issues) and capture a
-   screenshot and the relevant `log show` excerpt. Quote the failing output.
+   screenshot and the relevant `log show` excerpt. Quote the failing output. If the bug does not reproduce, stop and report what you
+   tried and the evidence still needed. Do not ship a speculative fix.
 4. **Root cause.** One paragraph: what is wrong and why it produces the symptom. If a fix would only mask it (optional
    chaining that hides a nil, `DispatchQueue.main.async` to paper over isolation, a `try?`), say so and propose the real fix.
    Ask `ios-researcher` when an OS behaviour change or deprecation is suspected.
-5. **Fix** with the minimal diff. Note refactor candidates as follow-ups instead of doing them.
+5. **Fix** with the minimal diff. Note refactor candidates as follow-ups instead of doing them. If the test stays red, go back to step 4 rather
+   than stacking changes. After three failed fixes, stop and report what each attempt showed.
 6. **Verify.** Failing test now green plus the suite's other tests (`xcodebuild test … -only-testing:`), and the project's build
    command for every scheme it lists. Hand the test rerun and, for UI bugs, the simulator smoke check to the `ios-verifier`
    agent and quote its results.
