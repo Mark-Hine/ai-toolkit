@@ -172,6 +172,7 @@ class Installer:
             self.write(cfg / 'machine.md', (ROOT / 'home/machine.md.example').read_text())
         self.link(ROOT / 'home/guidance/writing-style.md', cfg / 'guidance/writing-style.md')
         self.link(ROOT.parent / 'shared/guidance/common.md', cfg / 'guidance/common.md')
+        self.link(ROOT.parent / 'shared/guidance/kotlin.md', cfg / 'guidance/kotlin.md')
         self.link(ROOT.parent / 'shared/guidance/design-standards.md', cfg / 'guidance/design-standards.md')
         self.link(ROOT / 'home/guidance/android', cfg / 'guidance/android')
         self.link(ROOT / 'home/guidance/ios', cfg / 'guidance/ios')

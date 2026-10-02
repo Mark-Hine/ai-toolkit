@@ -8,6 +8,7 @@ include = [
   "claude/plugins/*/skills/*/references/*.md",
   "claude/plugins/pr-review/skills/pr-review/references/*.md",
   "claude/plugins/pr-review/skills/pr-review/references/platforms/*.md",
+  "claude/plugins/pr-review/skills/pr-review/references/languages/*.md",
 ]
 exclude = [
   "**/*template*.md",

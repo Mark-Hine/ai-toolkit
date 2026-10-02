@@ -23,10 +23,13 @@ An earlier version of this installer wrote `plugins.json`, `skills.json`, global
 | --- | --- | --- |
 | `home/AGENTS.md` | `~/.gemini/config/AGENTS.md` managed block | Personal defaults, plugin and subagent routing |
 | `../shared/guidance/common.md` | `~/.gemini/config/guidance/common.md` | Shared Git and work preferences |
+| `../shared/guidance/kotlin.md` | `~/.gemini/config/guidance/kotlin.md` | Kotlin domain modeling and compatibility across platforms |
 | `../shared/guidance/design-standards.md` | `~/.gemini/config/guidance/design-standards.md` | Tiered design rules, also loaded by `design-kit` |
 | `home/writing-style.md` | `~/.gemini/config/guidance/writing-style.md` | Condensed writing preferences |
 | `home/machine.md.example` | `~/.gemini/config/machine.md`, created only if absent | Private machine facts |
 | `plugins/<name>/` | `~/.gemini/config/plugins/<name>` symlink | Skills, generated rules, hooks and agents per plugin |
+
+The shared Kotlin rule loads through the home instructions even when `android-kit` is disabled. Kotlin rationale and examples are bundled with `pr-review`.
 
 Nothing is written to `config.json`, `hooks.json`, `plugins.json` or `skills.json`. Plugins are enabled by default. Use `agy plugin enable` or `agy plugin disable` to change that, never a hand edit of `config.json`.
 

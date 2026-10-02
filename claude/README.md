@@ -18,6 +18,7 @@ Two layers. Plugins carry the shareable parts. The `home/` dotfiles layer carrie
 | `plugins/toolkit/skills/` | `/toolkit:audit` (re-checks the standards against their sources and writes a findings register, invoked by hand) | On invocation |
 | `home/CLAUDE.md` | Global preferences: subagent models, Android and iOS routing. Imports `~/.claude/machine.md` | Every session |
 | `../shared/guidance/common.md` | Shared Git and work preferences, linked as `~/.claude/rules/common.md` | Every session |
+| `../shared/guidance/kotlin.md` | Kotlin domain modeling and compatibility across platforms, linked as `~/.claude/rules/kotlin.md` | On matching `.kt` and `.kts` files |
 | `../shared/guidance/design-standards.md` | Tiered design rules with IDs and source keys (T1 official, T2 house), linked as `~/.claude/rules/design-standards.md` | Every session |
 | `home/rules/writing-style.md` | Plain-prose rules with a source key per rule (GOV.UK, Google, Microsoft, plain-language guidelines, Anthropic). Rationale lives in `../shared/guidance/references/writing-style-rationale.md` | Every session |
 | `home/rules/android/` | Kotlin style, Compose, testing, one-shot UI events. Path-scoped, load only when matching files are touched | On matching files |
@@ -42,7 +43,7 @@ The script symlinks the dotfiles and shared personal preferences, creates `~/.cl
 ## Design principles
 
 - Shared content is platform-scoped, never repo-scoped. Repo breakage is documented in that repo, not enforced here.
-- Rules carry only the rule. Rationale and code samples live in `plugins/android-kit/skills/standards/references/`.
+- Rules carry only the rule. Rationale and code samples live in skill references. The shared Kotlin rationale is mirrored into every PR review skill as `references/languages/kotlin.md`.
 - Subagents pin models. Research is cheap (sonnet), but review needs judgement (opus). Never `inherit`.
 - Guard hooks are deterministic and repo-agnostic. One Python module under `shared/hooks/` serves all three layers, and the plugin and Codex copies are kept identical by CI. Agent command limits come from the same module, keyed on the `agent_type` the hook input carries.
 

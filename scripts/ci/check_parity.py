@@ -55,6 +55,8 @@ LAYER_BLOCK = re.compile(r'<!-- layer-specific:start -->.*?<!-- layer-specific:e
 def groups():
     for rel in PR_REVIEW_SHARED:
         yield [f'{base}/{rel}' for base in PR_REVIEW.values()]
+    yield ['shared/guidance/references/kotlin-rationale.md'] + [
+        f'{base}/references/languages/kotlin.md' for base in PR_REVIEW.values()]
     yield from HOOK_GROUPS
     for rel in DESIGN_REFERENCE_FILES:
         yield [f'{base}/{rel}' for base in DESIGN_REFERENCES.values()]

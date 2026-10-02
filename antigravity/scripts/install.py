@@ -152,6 +152,7 @@ class Installer:
         if not machine_file.exists():
             self.write(machine_file, (ROOT / 'home/machine.md.example').read_text())
         self.link(REPO / 'shared/guidance/common.md', cfg / 'guidance/common.md')
+        self.link(REPO / 'shared/guidance/kotlin.md', cfg / 'guidance/kotlin.md')
         self.link(REPO / 'shared/guidance/design-standards.md', cfg / 'guidance/design-standards.md')
         self.link(ROOT / 'home/writing-style.md', cfg / 'guidance/writing-style.md')
         for plugin_dir in sorted((ROOT / 'plugins').iterdir()):
