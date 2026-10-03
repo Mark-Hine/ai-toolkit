@@ -20,6 +20,7 @@ sources: house
 
 - Before changing multiple files or dependency versions, state a concise implementation plan. Proceed with work already authorized by the user. Use plan mode when the user wants a planning-only session. Small clear fixes need no separate plan.
 - Keep diffs focused. Avoid unrelated refactors, renames and reformatting.
+- Model domain choices and related state explicitly when doing so protects an invariant. Keep text conversion at external boundaries and preserve public compatibility during refactors. Use existing verification tools and focused regression checks.
 - Decide routine matters and state useful assumptions. Ask about unresolved scope, destructive work, secrets, signing or network-security changes when existing authorization does not cover the action.
 - Support build, test and rendering claims with the command and observed result. Cite code as `file:line`. Mark skipped or unavailable checks Unverified and explain failures.
 - A hook block is final for that invocation. Do not change tools, encode a command or disable a guard to bypass it.

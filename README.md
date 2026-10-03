@@ -2,6 +2,8 @@
 
 My portable setup for AI coding agents. One folder per agent, with shared personal preferences under `shared/`.
 
+[Kotlin guidance](shared/guidance/kotlin.md) applies across platforms through each home loader and installer. Its [source rationale](shared/guidance/references/kotlin-rationale.md) is bundled in each PR review skill and loaded by the Android, Spring Boot and generic packs.
+
 | Folder | Agent | Status |
 | --- | --- | --- |
 | [`antigravity/`](antigravity/README.md) | Google Antigravity | Four plugins (`android-kit`, `ios-kit`, `pr-review`, `design-kit`) carrying twelve skills, seven specialist agents, rules generated from the Claude rules, and the shared guard and Swift lint hooks. Symlink installer |

@@ -18,6 +18,7 @@ link() { # link <src> <dst>
 }
 link "$HERE/home/CLAUDE.md" "$CFG/CLAUDE.md"
 link "$REPO_ROOT/shared/guidance/common.md" "$CFG/rules/common.md"
+link "$REPO_ROOT/shared/guidance/kotlin.md" "$CFG/rules/kotlin.md"
 link "$REPO_ROOT/shared/guidance/design-standards.md" "$CFG/rules/design-standards.md"
 link "$HERE/home/rules/writing-style.md" "$CFG/rules/writing-style.md"
 link "$HERE/home/rules/android" "$CFG/rules/android"
@@ -76,7 +77,7 @@ cat <<MSG
 
 Done. Start a new Claude Code session and check:
   /memory   -> CLAUDE.md, rules/common.md, rules/writing-style.md, rules/design-standards.md
-               (rules/android/* and rules/ios/* load only when matching files are touched)
+               (rules/kotlin.md, rules/android/* and rules/ios/* load on matching files)
   /agents   -> android-reviewer, android-researcher, android-verifier, ios-reviewer, ios-researcher, ios-verifier, ui-reviewer
   /skills   -> android-kit:*, ios-kit:*, pr-review:pr-review, design-kit:standards
 Edit $CFG/machine.md with your AVD names, simulator, CLI paths and ticket prefix.

@@ -52,7 +52,7 @@ class FreshnessTest(unittest.TestCase):
         freshness.ROOT = REPO
         import tomllib
         config = tomllib.loads((REPO / 'tools/freshness.toml').read_text())
-        rows = [freshness.assess(p, date(2026, 9, 29), config) for p in freshness.in_scope(config)]
+        rows = [freshness.assess(p, date.today(), config) for p in freshness.in_scope(config)]
         self.assertTrue(rows)
         self.assertEqual([], [r for r in rows if r['status'] == 'error'], [r for r in rows if r['status'] == 'error'])
 

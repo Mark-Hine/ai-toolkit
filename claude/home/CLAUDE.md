@@ -12,6 +12,11 @@ Shared Git and work preferences load from `~/.claude/rules/common.md`. Writing p
 - Use `/design-kit:standards` for the sources, rationale and platform APIs behind the tiered design rules (HIG, Material 3, WCAG 2.2, house), screen states, accessibility and platform fidelity.
 - Delegate UI/UX diffs, component audits, and screen reviews to `ui-reviewer`. Give it a bounded task and re-check findings before reporting them.
 
+## Kotlin across platforms
+
+- `~/.claude/rules/kotlin.md` applies to `.kt` and `.kts` files in every project. Android rules add platform requirements.
+- For rationale, examples and Kotlin review criteria, load `references/languages/kotlin.md` from `/pr-review:pr-review`.
+
 ## Android/Kotlin work
 - Before implementing, check `/skills` for an installed skill that covers the task and load it. Official Android skills
   (`testing-setup`, `edge-to-edge`, `adaptive`, `agp-9-upgrade`, `r8-analyzer`, `android-intent-security`) are procedures. Follow them.

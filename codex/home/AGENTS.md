@@ -9,6 +9,11 @@ Read `~/.codex/machine.md` for local tool and device facts. If CODEX_HOME is set
 - Delegate UI/UX diffs, component audits, and screen reviews to `ui-reviewer`. Give it a bounded task and re-check findings before reporting them. If custom agents are unavailable, perform the work inline and disclose the limitation.
 - Role model and reasoning settings live in the installed `agents/ui-reviewer.toml`.
 
+## Kotlin across platforms
+
+- Read `guidance/kotlin.md` before editing `.kt` or `.kts` files in any project. Android guidance adds platform requirements.
+- For rationale, examples and Kotlin review criteria, load `references/languages/kotlin.md` from `$pr-review`.
+
 ## Android and Kotlin
 
 - Read matching guidance before editing. `guidance/android/kotlin-style.md` applies to Android `.kt` and `.kts` files. `compose.md` applies to Compose screens and components. `ui-events.md` applies to ViewModels and UI event collectors. `testing.md` applies to tests and journeys. The `paths` headers document scope and are not automatically loaded by Codex.

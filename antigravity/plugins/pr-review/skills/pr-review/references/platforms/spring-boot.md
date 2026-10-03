@@ -9,6 +9,8 @@ Grading criteria for reviewing a Spring Boot service change in Java or Kotlin, b
 
 Before grading, record the Spring Boot, Spring Cloud and Java versions in the review's scope block. A version catalog or company BOM may hide them. When it does, read `dependencySubstitution`/`resolutionStrategy` blocks and the managed Tomcat or Jackson version, or run `dependencyInsight`, and mark the result `Unverified: inferred` if it stays indirect. Cite the reference docs for that version line, not the latest.
 
+For Kotlin changes, also load the [Kotlin language reference](../languages/kotlin.md). It supplies cross-platform domain modeling, boundary and compatibility criteria. This pack adds platform requirements.
+
 ## Standards-basis block
 
 Paste this into the review's Standards basis section, then append the verification sentence (template.md):

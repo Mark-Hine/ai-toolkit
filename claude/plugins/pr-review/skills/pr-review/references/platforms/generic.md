@@ -30,6 +30,8 @@ and debug-variant exclusion.
 > would have picked. If the repo has adopted nothing on the point, the reviewable question is
 > whether the change is consistent with the rest of the tree (protocol.md §15).
 
+For Kotlin changes, also load the [Kotlin language reference](../languages/kotlin.md). It supplies cross-platform domain modeling, boundary and compatibility criteria. This pack adds platform requirements.
+
 ## Establishing the standards basis (do this first)
 
 Before reviewing, spend a few minutes finding what this repo already commits to, and cite *that*:

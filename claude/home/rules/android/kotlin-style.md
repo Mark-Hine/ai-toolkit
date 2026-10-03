@@ -19,7 +19,8 @@ paths:
   rather than hardcoding `Dispatchers.IO`. Skill: `kotlin-coroutines-structured-concurrency`.
 - State to the UI is `StateFlow` updated with `update {}`. One-shot events go through `Channel(BUFFERED).receiveAsFlow()`
   collected lifecycle-aware (rule `ui-events.md`). Do not introduce new `LiveData`. Skill: `kotlin-flow-state-event-modeling`.
-- Wrap primitive identifiers and amounts in `@JvmInline value class` where a `data class` would hold one field.
+- Use `@JvmInline value class` for a distinct identifier or amount when it prevents mixing domain values and the
+  public contract permits it. Keep ordinary primitives and local tuples where they are clearer.
   Skill: `kotlin-types-value-class`.
 - Nullability: no `!!` in production code. Use `requireNotNull`/`checkNotNull` with a message or handle the null.
 - Match the existing file's style over these rules when editing a legacy file. Do not reformat unrelated lines.

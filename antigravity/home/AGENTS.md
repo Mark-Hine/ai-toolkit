@@ -14,6 +14,11 @@ Read `~/.gemini/config/machine.md` for local tool and device facts. Read `~/.gem
 - Use `/design-standards` for the sources, rationale and platform APIs behind the tiered design rules (HIG, Material 3, WCAG 2.2, house), screen states, accessibility and platform fidelity.
 - Delegate UI diffs, component audits and screen reviews to `ui-reviewer`.
 
+## Kotlin across platforms
+
+- Read `~/.gemini/config/guidance/kotlin.md` before editing `.kt` or `.kts` files in any project. Android plugin rules add platform requirements.
+- For rationale, examples and Kotlin review criteria, load `references/languages/kotlin.md` from `/pr-review`.
+
 ## Android and Kotlin
 
 - The android-kit rules load with the plugin. Each section names the file paths it applies to.
