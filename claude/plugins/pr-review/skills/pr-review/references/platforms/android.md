@@ -12,7 +12,7 @@ guardrails and main-safety ownership, live in [`../protocol.md`](../protocol.md)
 extensions, which cover root cause not symptom, verification criteria, SHA ancestry and debug-variant
 exclusion, live in §17 to §20. All of them apply here too.
 
-For Kotlin changes, also load the [Kotlin language reference](../languages/kotlin.md). It supplies cross-platform domain modeling, boundary and compatibility criteria; this pack adds platform requirements.
+For Kotlin changes, also load the [Kotlin language reference](../languages/kotlin.md). It supplies cross-platform domain modeling, boundary and compatibility criteria. This pack adds platform requirements.
 
 ## Standards-basis block
 

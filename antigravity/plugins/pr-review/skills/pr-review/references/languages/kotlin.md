@@ -5,7 +5,7 @@ sources: inline
 
 # Kotlin language reference
 
-Load for Kotlin changes alongside the applicable platform pack. These language rules apply to desktop, Android, server and multiplatform code. Project contracts and pinned compiler features take precedence. House judgments below require a concrete readability, correctness or compatibility reason; they do not make every string or tuple a finding.
+Load for Kotlin changes alongside the applicable platform pack. These language rules apply to desktop, Android, server and multiplatform code. Project contracts and pinned compiler features take precedence. House judgments below require a concrete readability, correctness or compatibility reason. They do not make every string or tuple a finding.
 
 ## Sources and limits
 
@@ -17,7 +17,7 @@ Reviewed on 2026-10-03. These are primary Kotlin sources. Check the pinned compi
 | KOT-BOUNDARY | [Enums](https://kotlinlang.org/docs/enum-classes.html), [API backward compatibility](https://kotlinlang.org/docs/api-guidelines-backward-compatibility.html) | Kotlin defines enum names and ordinals. Explicit external codes and boundary parsing are house rules to preserve existing logs, stored values and wire contracts. |
 | KOT-STATE | [Data classes](https://kotlinlang.org/docs/data-classes.html), [API simplicity](https://kotlinlang.org/docs/api-guidelines-simplicity.html) | Generated equality and named properties help model state. Choosing a named record over a tuple is a house readability judgment, not a blanket ban on `Pair` or primitives. |
 | KOT-DISPATCH | [Sealed exhaustiveness](https://kotlinlang.org/docs/sealed-classes.html#use-sealed-classes-with-when-expression), [coding conventions](https://kotlinlang.org/docs/coding-conventions.html) | Closed cases can be checked exhaustively. Open extension types still require an explicit unsupported-case policy. Helper extraction must preserve evaluation and side-effect ordering. |
-| KOT-SAFETY | [Null safety](https://kotlinlang.org/docs/null-safety.html), [type checks and casts](https://kotlinlang.org/docs/typecasts.html) | `!!` can throw; safe casts return null on failure. Validated Java/framework interop can need a cast. Avoiding unchecked production casts is a house rule with that boundary exception. |
+| KOT-SAFETY | [Null safety](https://kotlinlang.org/docs/null-safety.html), [type checks and casts](https://kotlinlang.org/docs/typecasts.html) | `!!` can throw, and safe casts return null on failure. Validated Java/framework interop can need a cast. Avoiding unchecked production casts is a house rule with that boundary exception. |
 | KOT-COMPAT | [API backward compatibility](https://kotlinlang.org/docs/api-guidelines-backward-compatibility.html), [data classes](https://kotlinlang.org/docs/data-classes.html) | Source compatibility does not prove JVM binary compatibility. Generated constructors, `copy`, default bridges, record accessors and destructuring are part of the review. |
 | KOT-VERIFY | [API backward compatibility](https://kotlinlang.org/docs/api-guidelines-backward-compatibility.html), [coding conventions](https://kotlinlang.org/docs/coding-conventions.html) | Project checks and targeted regression evidence are house verification policy. The official pages do not mandate a particular linter or test framework. |
 
