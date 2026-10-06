@@ -19,6 +19,8 @@ Rules for building and reviewing UI on Android, iOS and the web. Every rule has 
 - A correctness defect stays a defect whatever the tier. A crash, a screen stuck on a spinner after a failure, or an error with no way forward grades as a bug.
 - When a rule and its source disagree, the source wins. Report the disagreement.
 - IDs are stable. A retired ID is never reused.
+- The project's `DESIGN.md` and tokens win over T2 rules and over any design skill, including Anthropic's frontend-design, whose advice applies only where the contract leaves a choice open. They never override a T1 rule.
+- An unrequested change to a shared token, shared component or brand asset is a regression against the project's contract, and grades Major whatever the tier.
 
 ## Direction
 
@@ -27,6 +29,13 @@ Rules for building and reviewing UI on Android, iOS and the web. Every rule has 
 - DIR-3 [T2 House] Use a gradient only when the brand or the content motivates it, such as a brand surface in the design system or a scrim that keeps text legible over an image. Build it once as a design-system component and reuse it. JetSnack's gradient buttons and surfaces meet this rule.
 - DIR-4 [T2 House] No decorative glow borders, no pill badge or eyebrow label over every header, and no emoji used as bullets.
 - DIR-5 [T2 House] Do not nest cards inside cards. Group related content with spacing, type hierarchy and a background change before adding a container. A container gets one border or one elevation, with a radius from the design system.
+- DIR-6 [T2 Tuch-2012] Make a product distinctive through type, colour, imagery, iconography and voice. Keep navigation, layout and controls conventional for the platform, because people rate simple, familiar layouts as the most appealing.
+
+## Design system
+
+- SYS-1 [T2 Google-DM, Vercel-DM] Keep the design contract in a root `DESIGN.md` in Google's DESIGN.md format, and reference it from the project instructions file. Read it before changing UI, tokens, components or brand assets.
+- SYS-2 [T2 House, Vercel-DM] Classify each UI change before writing it as use (the contract as it is), extend (a new token, variant or component) or change (an existing one altered). Extend and change update `DESIGN.md` in the same change. A change to a shared token, shared component or brand asset first needs the user's approval of a before and after board of the screens it affects.
+- SYS-3 [T2 Vercel-DM] Encode each repeated design correction where it is enforced, preferring a token or stylesheet constraint, then a lint rule, then a `DESIGN.md` Do or Don't.
 
 ## Spacing
 
@@ -74,6 +83,7 @@ Rules for building and reviewing UI on Android, iOS and the web. Every rule has 
 - AND-4 [T1 AND-16-LARGE] Do not rely on orientation or resizability locks on large screens. From target SDK 36, Android ignores orientation, resizability and aspect-ratio restrictions on displays with a smallest width of 600 dp or more. The temporary opt-out ends at target SDK 37. Displays below 600 dp smallest width keep the manifest value.
 - AND-5 [T1 M3-MOTION] Use the Material 3 motion scheme, whose springs cover spatial and effects motion, instead of hand-tuned easing curves and durations.
 - AND-6 [T1 AND-16-LARGE] Support predictive back. From target SDK 36 on Android 16, predictive back animations are on by default and `onBackPressed` is no longer called, so back handling uses the supported back APIs.
+- AND-7 [T1 AND-ADAPTIVE-ICON] Ship the launcher icon as an adaptive icon with 108 by 108 dp layers. Keep the logo between 48 and 66 dp so no mask clips it, and add a monochrome layer for themed icons. From Android 16 QPR 2 the system themes icons that lack one.
 
 ## iOS
 
@@ -81,6 +91,7 @@ Rules for building and reviewing UI on Android, iOS and the web. Every rule has 
 - IOS-2 [T1 HIG-MATERIALS] From iOS 26, standard bars and controls adopt Liquid Glass automatically. Do not use Liquid Glass in the content layer. Use standard materials for content backgrounds, and apply glass to custom controls sparingly.
 - IOS-3 [T1 HIG-LAYOUT] Keep controls and readable text inside the safe area. Backgrounds may extend under the status bar, Dynamic Island and home indicator.
 - IOS-4 [T1 HIG-HAPTICS] Use haptics sparingly and consistently, for discrete events such as a success, a warning or a toggle. Each haptic maps to one cause.
+- IOS-5 [T1 HIG-APP-ICONS] Build the app icon from 1024 by 1024 px layers in Icon Composer, and check the default, dark, clear and tinted appearances. Leave highlights, shadows, blurs and glows to the system, and include text only when it is essential to the brand.
 
 ## Web
 
@@ -88,3 +99,5 @@ Rules for building and reviewing UI on Android, iOS and the web. Every rule has 
 - WEB-2 [T1 WCAG-1.4.4, MDN-CLAMP] Fluid type uses `clamp()` with a `rem` minimum and a maximum at least twice the minimum, so browser zoom still reaches 200%.
 - WEB-3 [T2 House] Define colour, radius, shadow and spacing tokens as CSS custom properties.
 - WEB-4 [T2 House] Use container queries for component layout. Media queries still own page layout.
+- WEB-5 [T1 MDN-APP-ICONS] Mark a manifest icon `maskable` only when its content sits inside the safe zone, a centred circle whose diameter is 80% of the icon's shorter side.
+- WEB-6 [T2 EM-FAVICON, House] Ship a 32 px `favicon.ico`, an SVG icon that adapts to dark mode and a 180 px Apple touch icon. A site with a web app manifest adds 192 and 512 px icons and a 512 px maskable icon. Generate every size from one master SVG.
