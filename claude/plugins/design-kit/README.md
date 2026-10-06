@@ -37,6 +37,7 @@ Without the dotfiles layer the rule file is absent. The skill and the reviewer t
 | `use-tweak` | Give the feature cards more room | More space comes from existing spacing tokens, with no literals and no token change |
 | `pill-buttons` | Make all buttons pill-shaped | The radius shared with cards and inputs is untouched, and the reply asks approval of a before and after board |
 | `pricing-section` | Add a pricing section | No new stylesheet, inline style, colour, font or token |
+| `contract-conflict` | Make the feature card titles clay | No clay or new colour is applied, and the reply names the contract conflict and asks first |
 | `trigger-header` | Tweak the header colours | The design-kit iterate skill fires |
 | `compose-banner` | Add a Compose promo banner | No literal colour, sp or dp, and the theme supplies colour and type |
 

@@ -32,7 +32,7 @@ Rules for building and reviewing UI on Android, iOS and the web. Every rule has 
 
 ## Design system
 
-- SYS-1 [T2 Google-DM, Vercel-DM] Keep the design contract in a root `DESIGN.md` in Google's DESIGN.md format, and reference it from the project instructions file. Read it before changing UI, tokens, components or brand assets.
+- SYS-1 [T2 Google-DM, Vercel-DM] Keep the design contract in a `DESIGN.md` in Google's DESIGN.md format, at the root unless the project instructions name another path, and reference it from the project instructions file. Read it before changing UI, tokens, components or brand assets.
 - SYS-2 [T2 House, Vercel-DM] Classify each UI change before writing it as use (the contract as it is), extend (a new token, variant or component) or change (an existing one altered). Extend and change update `DESIGN.md` in the same change. A change to a shared token, shared component or brand asset first needs the user's approval of a before and after board of the screens it affects.
 - SYS-3 [T2 Vercel-DM] Encode each repeated design correction where it is enforced, preferring a token or stylesheet constraint, then a lint rule, then a `DESIGN.md` Do or Don't.
 

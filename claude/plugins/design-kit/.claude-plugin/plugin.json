@@ -1,6 +1,6 @@
 {
   "name": "design-kit",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "description": "Tiered UI design rules (HIG, Material 3, WCAG 2.2, house) with sources, rationale and platform APIs, and a UI reviewer agent that grades against them",
   "author": {
     "name": "Mark Hine",

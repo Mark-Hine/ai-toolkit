@@ -12,7 +12,7 @@ How to render screens, options and brand marks as labelled images that `ui-revie
 
 ## Where files go
 
-Each piece of design work gets one folder, `.design/iterations/<date>-<slug>/`, holding its captures, option prototypes, test sheets, board and notes. Offer to add `.design/` to `.gitignore`, and keep it out of lint and the build. The decision itself lands in `DESIGN.md`, so the folder can be thrown away.
+Each piece of design work gets one folder, `.design/iterations/<date>-<slug>/`, holding its captures, option prototypes, test sheets, board and notes. Offer to add `.design/` to `.gitignore`, and keep it out of lint and the build. Keep work in progress, such as draft SVGs, preview renders and helper scripts, in a `drafts/` subfolder, so the top level holds only the captures, the option files, the test sheets, the board and the notes. The decision itself lands in `DESIGN.md`, so the folder can be thrown away.
 
 Name images `<state>-<page>-<label>-<scheme>.png`, where the state is `before`, `after` or an option letter. For example `before-home-phone-dark.png` or `B-pricing-desktop-light.png`.
 

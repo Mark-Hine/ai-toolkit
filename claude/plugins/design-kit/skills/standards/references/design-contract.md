@@ -7,6 +7,7 @@ sources:
   - https://tailwindcss.com/docs/theme
   - https://github.com/schoero/eslint-plugin-better-tailwindcss
   - https://github.com/AndyOGo/stylelint-declaration-strict-value
+  - https://stylelint.io/user-guide/rules/no-duplicate-selectors/
   - https://github.com/realm/SwiftLint
   - https://detekt.dev/docs/rules/style/
 ---
@@ -14,6 +15,10 @@ sources:
 # Design contract
 
 A project keeps its design system in a root `DESIGN.md` that every agent reads before UI work (SYS-1 to SYS-3). The format is Google's DESIGN.md, version alpha, checked with the `@google/design.md` CLI. This file covers what the format leaves open: drafting the file, keeping one source of values, loading it, recording changes and enforcing it with lint.
+
+## An existing contract
+
+When the project instructions already name a contract, such as `docs/DESIGN.md`, that file is the contract, whatever its format. Keep it where it is. Offer to add what it lacks, such as the YAML tokens or the Brand marks, References and Decisions sections, and add them only when the user agrees.
 
 ## Drafting the file
 
@@ -178,12 +183,14 @@ export default [
 ];
 ```
 
-**Plain CSS.** stylelint-declaration-strict-value requires a variable for the listed properties everywhere except the token file:
+**Plain CSS.** stylelint-declaration-strict-value requires a variable for the listed properties everywhere except the token file. The two core duplicate rules catch a later pass that appends an override instead of editing the rule it changes. A repeat inside a different media query is allowed, and the rules suit plain CSS, not SCSS or Less:
 
 ```json
 {
   "plugins": ["stylelint-declaration-strict-value"],
   "rules": {
+    "no-duplicate-selectors": true,
+    "declaration-block-no-duplicate-properties": true,
     "scale-unlimited/declaration-strict-value": [
       ["/color$/", "background", "fill", "stroke", "font-family", "border-radius", "box-shadow", "/^(margin|padding|gap)/"],
       { "ignoreVariables": true, "ignoreFunctions": false, "ignoreValues": ["inherit", "currentColor", "transparent", "none", "0", "auto", "/^calc\\(/"] }

@@ -31,7 +31,7 @@ An unrequested change to a shared token, component or brand asset alters screens
 
 ## SYS-1 to SYS-3 (Google-DM, Vercel-DM, House)
 
-Google's DESIGN.md is an open format with YAML tokens, eight ordered prose sections and a CLI that lints, diffs and exports it. Unknown sections are preserved, so a project can add Brand marks and Decisions sections. The format gives no workflow for keeping the file and the code in sync, which is what SYS-2 adds.
+Google's DESIGN.md is an open format with YAML tokens, eight ordered prose sections and a CLI that lints, diffs and exports it. Unknown sections are preserved, so a project can add Brand marks and Decisions sections. The format gives no workflow for keeping the file and the code in sync, which is what SYS-2 adds. A project whose instructions already name a contract elsewhere, such as `docs/DESIGN.md`, keeps it there, because its instructions and history link to that path.
 
 Vercel generated pages with and without a design.md, a bounded stylesheet and deterministic checks, and counted 39 known failures against 91. The sample was three desktop scenarios, and the checks catch only failures someone has written down. The house treats the result as evidence for the contract and for SYS-3, not as a measure of taste. Vercel's advice to encode each correction in the layer that enforces it is SYS-3.
 
