@@ -85,6 +85,31 @@ The `gemini` CLI no longer signs in on this machine, because Google retired its 
 - `pricing-section` and `compose-banner` never read `DESIGN.md`, with or without the plugin. The skill does not fire for routine additions within the system, by design, and in a real project the import supplies the contract. The -0.05 on `pricing-section` was one run that wrote a literal. Three reruns with kept transcripts showed no skill call and no literal.
 - Codex and Antigravity runtime behaviour is Unverified. Their validators cover structure only.
 
+## Follow-ups at 1.7.2
+
+A test of `iterate` with fresh Opus agents, on a clone of a private web project, led to #44. This section scores its follow-ups and the new `contract-conflict` case. The run used three runs per arm on Sonnet 5.5 with Claude Code 2.1.291, and cost $3.48 over 227 s.
+
+| Case | 1.7.2, with | 1.7.2, without | Δ |
+| --- | --- | --- | --- |
+| `contract-conflict` (new) | 1.00 | 0.25 | +0.75 |
+| `logo-audit` | 1.00 | 0.20 | +0.80 |
+| `pill-buttons` | 1.00 | 0.40 | +0.60 |
+| `trigger-header` | 1.00 | 0.00 | +1.00 |
+| `use-tweak` | 1.00 | 0.87 | +0.13 |
+| `pricing-section` | 0.86 | 0.86 | 0.00 |
+| `compose-banner` | 0.83 | 0.83 | 0.00 |
+| Mean Δ | | | +0.47 |
+
+`contract-conflict` behaved consistently in each arm:
+- **With the plugin**, every run fired the skill, named the conflict with the contract, built a board and left the titles unchanged.
+- **Without the plugin**, every run applied the reserved colour.
+
+The wider trigger left the routine cases alone. `pricing-section` and `compose-banner` still match the no-plugin arm, as they did at 1.7.1.
+
+The real-project test also showed two things:
+- **A full logo loop on a real site.** The request went from rendered test sheets to a second opinion through `agy`, in 90 turns at $3.63 on Opus. It then stopped for the pick, with no project file changed.
+- **A conflicting request refused without the skill.** The project's instructions and the rule file refused it correctly even before the trigger change, but no board was drawn.
+
 ## After merging
 
 Run `claude/install.sh` so `~/.claude/rules/design-assets.md` is linked. Then update the installed design-kit plugin so new sessions get `iterate`. The machine file on this machine already names `agy` as the second-opinion CLI.
