@@ -1,7 +1,7 @@
 ---
 name: iterate
 description: "Design playbook for web, Android and iOS. Improves, audits, polishes, redesigns or extends UI, a design system or brand assets such as a logo, app icon or favicon. Keeps the project's DESIGN.md contract, compares rendered options and stops for the user's pick before changing the system."
-when_to_use: "Use when asked to improve or audit a logo or icon, make a page look better or more modern, tweak a header, colours, fonts or spacing, design a new screen, or refresh a brand. Also use for any change to something several screens share, such as making all buttons pill-shaped or changing the accent colour, the base font or the corner radius, and before any change that alters how existing screens look."
+when_to_use: "Use when asked to improve or audit a logo or icon, make a page look better or more modern, tweak a header, colours, fonts or spacing, design a new screen, or refresh a brand. Also use for any change to something several screens share, such as making all buttons pill-shaped, giving prices or titles a different colour, size or weight, or changing the accent colour, the base font or the corner radius, and before any change that alters how existing screens look."
 argument-hint: "[what to change] [web|android|ios]"
 metadata:
   verified: 2026-10-06
@@ -12,7 +12,7 @@ metadata:
 
 Design work starts from the project's contract and ends with the user's choice. The rules are in `~/.claude/rules/design-standards.md` and the references are in `${CLAUDE_PLUGIN_ROOT}/skills/standards/references/`. Each step leaves a file or a stated decision, so a skipped step shows. If a reference cannot be read or a tool is unavailable, carry on with these steps, mark what it would have checked as Unverified and name it in the report. Do not stop to ask for access.
 
-1. **Contract.** Read `DESIGN.md` and its Decisions section (SYS-1). If the project has none, draft one from the code with `design-contract.md`, show the draft and its open questions, and wait for the user to confirm it. Offer the `@DESIGN.md` pointer line for the project's `CLAUDE.md`.
+1. **Contract.** Read the project's `DESIGN.md`, at the root or where the project instructions point, and its Decisions section (SYS-1). If the project has none, draft one from the code with `design-contract.md`, show the draft and its open questions, and wait for the user to confirm it. Offer the `@DESIGN.md` pointer line for the project's `CLAUDE.md`.
 2. **Classify.** State the class of the request, use, extend or change, and whether it is specified, such as "make the buttons pill-shaped", or open, such as "make it look modern" (SYS-2). A logo, an icon, a shared token and a shared component are changes.
 3. **Before.** Capture every affected screen in `.design/iterations/<date>-<slug>/`, labelled `before`. On the web follow `capture.md`. On Android and iOS use `/android-kit:run-app` or `/ios-kit:run-app` with the platform verifier, or the platform's own tools when those kits are absent. For a brand mark, render the current mark on the test sheet.
 4. **Diagnose.** Apply the screening checklist in `options.md` to the before images. Cite each image and region, and name what works and must stay.
