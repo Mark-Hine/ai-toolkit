@@ -174,6 +174,12 @@ screen consumes it). Check:
 repositories, and data sources, plus UI navigation tests. **Prefer fakes over mocks** (`Fake*` naming is
 optional). Feed test-coverage findings with these expectations.
 
+**Observability ([PLAY-VITALS]):** when the change adds a user journey or a failure path, check that
+failures reach handled-error reporting as non-fatals rather than a swallowed `catch`, and that any
+analytics event it declares is actually sent. Fatal-crash reporting alone leaves every non-crashing
+failure invisible. Play Vitals collects crash, ANR and startup metrics, and the app instruments the
+rest itself.
+
 
 ## Security: MASVS v2.1.0 control map (+ Top 10 2024 cross-map)
 
@@ -189,7 +195,7 @@ Pass/Fail/Partial/Unverified with `file:line` evidence.
 | STORAGE-1 | Sensitive data stored securely | Where tokens/PII actually live (plain `SharedPreferences`/files/Room = Fail, and external storage writes). Grade against the **current** recommended at-rest approach. **Verify at review time (protocol.md §13). `EncryptedSharedPreferences`/`security-crypto` is deprecated, so its use is a graded finding, not a pass**. The current guidance is Keystore-backed DataStore + Tink (confirm). DataStore has no built-in encryption, so it is the non-secret store paired with Keystore/Tink. Refs: MASVS-STORAGE-1 · [DATASTORE] · [MASVS] |
 | STORAGE-2 | No sensitive-data leakage | `android:allowBackup` + `data_extraction_rules.xml`/`fullBackupContent`, `Log.*`/`Timber`/`println` with sensitive vars, `FLAG_SECURE` on sensitive screens, and **in-memory residency of secrets**. PIN/password/key material held in an immutable `String` stays in the heap until GC and is recoverable from a dump. The target is `CharArray`/`ByteArray` zero-filled in a `finally` immediately after use. Grade the **whole path** (input field → repository → crypto call), not one variable. Where a Compose `TextField`/`String` boundary makes end-to-end wiping impossible, grade the **residency window** and say so. Never give a clean pass, and never propose a fix that can't be built |
 | CRYPTO-1 | Strong, correctly-used crypto | `Cipher.getInstance` args (ECB/DES/RC4/NoPadding), MD5/SHA-1 for security, `Random()` vs `SecureRandom`, static IVs |
-| CRYPTO-2 | Sound key management | Hardcoded keys/secrets (BuildConfig, constants, high-entropy strings), `AndroidKeyStore` usage and `setUserAuthenticationRequired` |
+| CRYPTO-2 | Sound key management | Hardcoded keys/secrets (BuildConfig, constants, high-entropy strings), `AndroidKeyStore` usage and `setUserAuthenticationRequired`. **A secret removed by this change is still in git history**, so the removal closes nothing by itself. Ask whether the credential was rotated (a Q until answered), and grade a committed secret that is still live as a B. Read the PR's own commits as well as the final diff, because a secret added in one commit and removed in the next still ships to everyone who clones the repository. Refs: MASVS-CRYPTO-2 · [MASVS] |
 | AUTH-1 | Secure auth/authz protocols | Token issuance/refresh/rotation wiring (pairs with token-refresh trace) and session invalidation on logout |
 | AUTH-2 | Secure local authentication | `BiometricPrompt` bound to a `CryptoObject` (not a bare boolean callback), deprecated `FingerprintManager` and PIN hashing |
 | AUTH-3 | Extra auth for sensitive ops | Step-up auth before payments/credential changes. Trace one sensitive flow |
@@ -199,17 +205,17 @@ Pass/Fail/Partial/Unverified with `file:line` evidence.
 | PLATFORM-2 | Secure WebViews | `setJavaScriptEnabled`, `addJavascriptInterface`, `setAllowFileAccess*`/`UniversalAccess`, `loadUrl` with untrusted input, `setWebContentsDebuggingEnabled` in release |
 | PLATFORM-3 | Secure UI usage | **Keyboard cache:** Compose `KeyboardOptions(keyboardType = KeyboardType.Password/NumberPassword, autoCorrectEnabled = false)` and View `InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS` / `IME_FLAG_NO_PERSONALIZED_LEARNING`. Name the sensitive fields you checked and their actual state. **Overlay / tapjacking:** `filterTouchesWhenObscured` **and** `Window.setHideOverlayWindows(true)` (API 31+) on windows rendering balances/OTP/PIN. Sensitive data in `AndroidManifest` task snapshots. Screen capture lives in STORAGE-2 (`FLAG_SECURE`), so cross-reference rather than re-checking |
 | CODE-1 | Up-to-date platform version | `minSdk`/`targetSdk`. **Look up the current Play target-API requirement + effective date at review time (protocol.md §13), don't assert from memory**. Grade `targetSdk` below it as a **hard Play-update gate** (dated finding, e.g. "targetSdk N required for Play updates from <date>"), not merely "behind". Feeds currency findings |
-| CODE-2 | Enforced app updates / incident response | In-app update / **force-update** mechanism, and a remote **feature kill-switch** for production incident response (remote-config-gated). For a regulated/fintech app treat absence as a graded finding, and check the mechanism is wired, not just declared. A **certificate-pinning kill-switch** is a specific case of this (see NETWORK-2). It must be **signed/authenticated** (an unauthenticated toggle is a one-switch bypass) and fail back to default PKI trust + CT, never to disabled TLS validation |
-| CODE-3 | No known-vulnerable components | Dependency versions vs known CVEs, and SCA tooling in CI (dependency-check/Snyk/Renovate) |
+| CODE-2 | Enforced app updates / incident response | In-app update / **force-update** mechanism, and a remote **feature kill-switch** for production incident response (remote-config-gated). For a regulated/fintech app treat absence as a graded finding, and check the mechanism is wired, not just declared. A **certificate-pinning kill-switch** is a specific case of this (see NETWORK-2). It must be **signed/authenticated** (an unauthenticated toggle is a one-switch bypass) and fail back to default PKI trust + CT, never to disabled TLS validation. **Every flag the mechanism publishes needs a consumer.** When the change adds or renames a remote-config flag, grep for a read of it. A flag that is published and read by nothing is worse than an absent one, because an incident responder will reach for it and nothing will happen, so grade it as an M. The same check applies to a maintenance screen or a re-consent version the change adds. |
+| CODE-3 | No known-vulnerable components | **Grade the resolved graph, not the declared one** when the change adds or bumps a dependency. Compare `./gradlew :<app>:dependencies --configuration <variant>RuntimeClasspath` before and after, because CVEs arrive mostly through transitive versions the catalog never names. Check the changed coordinates against [OSV], with `osv-scanner` or the OSV `querybatch` API and `pkg:maven/<group>/<artifact>@<version>` purls. **Grade reachability, not the raw list:** a CVE in a code path the app never calls is a currency note, not a vulnerability. A change that adds an **unmanaged** dependency, such as a committed `libs/*.aar` or `*.jar`, a private or vendored Maven repository in `settings.gradle*` or a `force`/`substitute` rule, has no update path and no advisory feed. Grade it as an M at least and ask about its licence. Note whether SCA runs in CI (Renovate, Dependabot, dependency-check). Refs: MASVS-CODE-3 · [OSV] |
 | CODE-4 | Input validation | SQL concatenation (`rawQuery`/`execSQL` + `+`), deep-link/`Uri` param handling, unsafe deserialization |
 | RESILIENCE-1 | Platform-integrity validation | Device attestation / root-tamper wiring. Read it, don't grep-match. **SafetyNet Attestation is decommissioned (verify current status, protocol.md §13) → any reliance on it is broken, not merely dated. The current mechanism is the Play Integrity API.** Also check verdicts are **enforced server-side**, not client-only (trivially bypassable). Refs: MASVS-RESILIENCE-1 · [PLAY-INTEGRITY] · [MASVS] |
 | RESILIENCE-2 | Anti-tampering | Signature/integrity checks and R8 `minifyEnabled` on release |
-| RESILIENCE-3 | Anti-static-analysis | Obfuscation config (`proguard-rules.pro` keep-rule breadth), string/asset protection |
+| RESILIENCE-3 | Anti-static-analysis | `minifyEnabled` on release, then **keep-rule breadth**. A single `-keep class <app.package>.**` undoes most of what R8 would do, so grade the rules a change adds rather than their presence, and ask what each one is for, such as reflective serialization, DI codegen or a vendored AAR. Where the `r8-analyzer` skill is installed, use it for this check. It finds redundant rules, package-wide over-reach and rules that subsume a library's own consumer rules. Also string and asset protection for sensitive constants |
 | RESILIENCE-4 | Anti-dynamic-analysis | Debugger/emulator/hook detection, `android:debuggable` and `StrictMode` debug-only |
 | PRIVACY-1 | Minimal data/resource access | `<uses-permission>` audit of dangerous permissions vs actual feature need, and `QUERY_ALL_PACKAGES` |
 | PRIVACY-2 | Prevent user identification | Device identifiers (`ANDROID_ID`, IMEI, MAC, ad ID) collection & linkage |
 | PRIVACY-3 | Transparency | Data-collection disclosure vs actual SDK behavior (analytics/marketing SDKs found in the dependency inventory) |
-| PRIVACY-4 | User data control | Deletion/opt-out paths for collected data |
+| PRIVACY-4 | User data control | Deletion and opt-out paths for collected data, and in-app **account deletion** where accounts can be created. Google Play's User Data policy requires an in-app path and a web deletion URL, and it does not accept deactivating, freezing or closing a product as deletion. When the change touches account or profile flows, verify that deletion removes server-side data, not just the local session, and that any retention carve-out (credit reporting, AML) is disclosed. Refs: MASVS-PRIVACY-4 · [PLAY-USERDATA] |
 
 **Card data ([PCI-DSS]):** when the change displays, stores, logs or transmits cardholder data or
 sensitive authentication data, also load [`../pci-dss.md`](../pci-dss.md) and cite the PCI DSS
@@ -276,6 +282,9 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
 | [PINNING] | https://cheatsheetseries.owasp.org/cheatsheets/Pinning_Cheat_Sheet.html, OWASP Pinning Cheat Sheet (public-key/SPKI pins, backup pins, expiration safety-valve, when NOT to pin) |
 | [TOP10-2024] | https://owasp.org/projects/mobile-top-10 |
 | [PCI-DSS] | https://www.pcisecuritystandards.org/document_library/, PCI DSS v4.0.1 (June 2024, v4.0 retired 2024-12-31). Cite by requirement number, such as `PCI DSS 4.0.1 Req 3.4.1`. `../pci-dss.md` maps the requirements a card-data change usually touches. Glossary (CHD, SAD, CDE): https://www.pcisecuritystandards.org/glossary/ |
+| [OSV] | https://osv.dev, an open vulnerability database. Its `querybatch` API accepts purls, and `osv-scanner` reads lockfiles directly |
+| [PLAY-USERDATA] | https://support.google.com/googleplay/android-developer/answer/13327111, the Play User Data policy. Apps that let users create an account must offer in-app **and** web account deletion |
+| [PLAY-VITALS] | https://developer.android.com/google/play/vitals, the crash, ANR and startup metrics Play collects, and what the app must instrument itself |
 | [GRADLE-DOCS] | https://docs.gradle.org/current/userguide/best_practices_general.html (+ version_catalogs.html, configuration_cache.html) |
 | [AGP-BUILD] | https://developer.android.com/build/optimize-your-build (+ /migrate-to-catalogs, /shrink-code) |
 | [BASELINE-PROF] | https://developer.android.com/topic/performance/baselineprofiles/overview |
@@ -318,6 +327,9 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
 [PINNING]: https://cheatsheetseries.owasp.org/cheatsheets/Pinning_Cheat_Sheet.html
 [TOP10-2024]: https://owasp.org/projects/mobile-top-10
 [PCI-DSS]: https://www.pcisecuritystandards.org/document_library/
+[OSV]: https://osv.dev
+[PLAY-USERDATA]: https://support.google.com/googleplay/android-developer/answer/13327111
+[PLAY-VITALS]: https://developer.android.com/google/play/vitals
 [GRADLE-DOCS]: https://docs.gradle.org/current/userguide/best_practices_general.html
 [AGP-BUILD]: https://developer.android.com/build/optimize-your-build
 [BASELINE-PROF]: https://developer.android.com/topic/performance/baselineprofiles/overview
