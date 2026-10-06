@@ -25,6 +25,7 @@ An earlier version of this installer wrote `plugins.json`, `skills.json`, global
 | `../shared/guidance/common.md` | `~/.gemini/config/guidance/common.md` | Shared Git and work preferences |
 | `../shared/guidance/kotlin.md` | `~/.gemini/config/guidance/kotlin.md` | Kotlin domain modeling and compatibility across platforms |
 | `../shared/guidance/design-standards.md` | `~/.gemini/config/guidance/design-standards.md` | Tiered design rules, also loaded by `design-kit` |
+| `../shared/guidance/design-assets.md` | `~/.gemini/config/guidance/design-assets.md` | Read before editing design contract, token, theme, SVG and icon files |
 | `home/writing-style.md` | `~/.gemini/config/guidance/writing-style.md` | Condensed writing preferences |
 | `home/machine.md.example` | `~/.gemini/config/machine.md`, created only if absent | Private machine facts |
 | `plugins/<name>/` | `~/.gemini/config/plugins/<name>` symlink | Skills, generated rules, hooks and agents per plugin |

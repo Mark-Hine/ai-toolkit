@@ -36,10 +36,11 @@ class InstallTests(unittest.TestCase):
                 link = home / 'plugins' / name
                 self.assertTrue(link.is_symlink(), name)
                 self.assertEqual((ROOT / 'plugins' / name).resolve(), link.resolve())
-            for name in ('common.md', 'kotlin.md', 'design-standards.md', 'writing-style.md'):
+            for name in ('common.md', 'kotlin.md', 'design-standards.md', 'design-assets.md', 'writing-style.md'):
                 self.assertTrue((home / 'guidance' / name).is_symlink(), name)
             self.assertEqual((home / 'guidance/kotlin.md').resolve(), ROOT.parent / 'shared/guidance/kotlin.md')
             self.assertIn('guidance/kotlin.md', (home / 'AGENTS.md').read_text())
+            self.assertIn('guidance/design-assets.md', (home / 'AGENTS.md').read_text())
             self.assertIn('<!-- ai-toolkit:start -->', (home / 'AGENTS.md').read_text())
             self.assertTrue((home / 'machine.md').is_file())
             for absent in ('config.json', 'hooks.json', 'plugins.json', 'skills.json', 'GEMINI.md', 'skills', 'guidance/android', 'guidance/ios'):

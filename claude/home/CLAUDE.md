@@ -12,6 +12,7 @@ Shared Git and work preferences load from `~/.claude/rules/common.md`. Writing p
 - Use `/design-kit:iterate` to improve, audit, polish, redesign or extend UI, a design system or brand assets such as a logo, app icon, colours or fonts. It renders options and stops for a pick before the system changes.
 - Use `/design-kit:standards` for the sources, rationale and platform APIs behind the tiered design rules (HIG, Material 3, WCAG 2.2, house), screen states, accessibility and platform fidelity.
 - Delegate compliance review of UI diffs and screens to `ui-reviewer`. It grades rules and the contract, not taste. Give it a bounded task and re-check findings before reporting them.
+- `~/.claude/rules/design-assets.md` loads when a `DESIGN.md`, token, stylesheet, theme, SVG or icon file is read or edited.
 - Load Anthropic's `frontend-design` for web aesthetics when it is installed, within the limits of the project's `DESIGN.md`.
 
 ## Kotlin across platforms

@@ -33,6 +33,11 @@ class InstallTests(unittest.TestCase):
                 self.assertEqual(rule.resolve(), ROOT / 'shared/guidance/kotlin.md')
                 self.assertIn('"**/*.kt"', rule.read_text())
                 self.assertIn('~/.claude/rules/kotlin.md', (home / 'CLAUDE.md').read_text())
+                assets = home / 'rules/design-assets.md'
+                self.assertTrue(assets.is_symlink())
+                self.assertEqual(assets.resolve(), ROOT / 'shared/guidance/design-assets.md')
+                self.assertIn('"**/DESIGN.md"', assets.read_text())
+                self.assertIn('~/.claude/rules/design-assets.md', (home / 'CLAUDE.md').read_text())
                 self.assertEqual(json.loads((home / 'settings.json').read_text())['model'], 'personal-model')
                 self.assertEqual((home / 'machine.md').read_text(), 'Private facts.\n')
                 self.assertFalse((home / 'rules/references').exists(), 'Rationale stays in skill references')
