@@ -42,6 +42,12 @@ DESIGN_REFERENCES = {
 }
 DESIGN_REFERENCE_FILES = ['sources.md', 'rationale.md', 'platform-apis.md', 'design-contract.md', 'capture.md',
                           'options.md', 'brand-marks.md', 'companions.md']
+ITERATE_SCRIPTS = {
+    'claude': 'claude/plugins/design-kit/skills/iterate/scripts',
+    'codex': 'codex/skills/design-iterate/scripts',
+    'antigravity': 'antigravity/plugins/design-kit/skills/design-iterate/scripts',
+}
+ITERATE_SCRIPT_FILES = ['board.py', 'capture.mjs', 'second-opinion.schema.json']
 AUDIT_REFERENCES = {
     'claude': 'claude/plugins/toolkit/skills/audit/references',
     'codex': 'codex/skills/toolkit-audit/references',
@@ -61,6 +67,8 @@ def groups():
     yield from HOOK_GROUPS
     for rel in DESIGN_REFERENCE_FILES:
         yield [f'{base}/{rel}' for base in DESIGN_REFERENCES.values()]
+    for rel in ITERATE_SCRIPT_FILES:
+        yield [f'{base}/{rel}' for base in ITERATE_SCRIPTS.values()]
     for rel in AUDIT_REFERENCE_FILES:
         yield [f'{base}/{rel}' for base in AUDIT_REFERENCES.values()]
 

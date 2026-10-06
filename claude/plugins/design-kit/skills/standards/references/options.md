@@ -115,46 +115,7 @@ one colour, visible on every ground, simple, platform safe), then its strengths 
 Last, name the option you would pick and why. Do not edit any file.
 ```
 
-For screens, replace the checks with the screening checklist above. Write the schema beside the board as `second-opinion.schema.json`:
-
-```json
-{
-  "type": "object",
-  "properties": {
-    "options": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "label": { "type": "string" },
-          "defects": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "image": { "type": "string" },
-                "region": { "type": "string" },
-                "check": { "type": "string" },
-                "finding": { "type": "string" }
-              },
-              "required": ["image", "region", "check", "finding"]
-            }
-          },
-          "strengths": { "type": "array", "items": { "type": "string" } },
-          "fit": { "type": "string" }
-        },
-        "required": ["label", "defects", "strengths", "fit"]
-      }
-    },
-    "preference": {
-      "type": "object",
-      "properties": { "label": { "type": "string" }, "reason": { "type": "string" } },
-      "required": ["label", "reason"]
-    }
-  },
-  "required": ["options", "preference"]
-}
-```
+For screens, replace the checks with the screening checklist above. Copy `second-opinion.schema.json` from the iterate skill's `scripts/` folder beside the board.
 
 **Use.** Save the reply as `second-opinion.md` beside the board, naming the CLI and model.
 

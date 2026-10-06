@@ -8,7 +8,7 @@ The rules themselves live in `shared/guidance/design-standards.md`, installed as
 
 | Skill | Invocation | Purpose |
 | --- | --- | --- |
-| `iterate` | `/design-kit:iterate` | The design playbook. It reads or drafts the project's `DESIGN.md` contract, classifies each change as use, extend or change, captures before and after, offers rendered options on a blind board for open requests and brand marks, stops for the user's pick, then records the decision and implements through tokens. Its references are `design-contract.md`, `capture.md`, `options.md`, `brand-marks.md` and `companions.md` |
+| `iterate` | `/design-kit:iterate` | The design playbook. It reads or drafts the project's `DESIGN.md` contract, classifies each change as use, extend or change, captures before and after, offers rendered options on a blind board for open requests and brand marks, stops for the user's pick, then records the decision and implements through tokens. Its references are `design-contract.md`, `capture.md`, `options.md`, `brand-marks.md` and `companions.md`. `scripts/board.py` builds the strips, sheets and board in one command, so runs read only compact strips. Pass `quick` for one round without a second opinion |
 | `standards` | `/design-kit:standards` | The procedure for building or reviewing UI against the rules, plus `references/sources.md` (every source key with URL and verified date), `references/rationale.md` (why each T2 rule exists) and `references/platform-apis.md` (the Compose, SwiftUI and CSS APIs per rule) |
 
 ## Specialist subagent (`agents/`)
