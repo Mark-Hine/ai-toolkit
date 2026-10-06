@@ -39,6 +39,8 @@ Each option starts from a different exemplar, so the options diverge instead of 
 
 Respect each source's terms. Awwwards forbids reproducing its content. Dribbble's terms and Adobe's terms for Behance forbid scraping. Mobbin refuses automated reads. Use screenshots the user takes from these sites instead of fetching them, and never copy an exemplar's assets, layout or mark.
 
+When none of these sources gives anchors, for example in a session without web access, draw each option from a different aspect of the product's subject, say that anchors were unavailable, and carry on. Do not stop the loop to ask for references.
+
 Record each anchor in one line: the link, what it does well, the principle borrowed, and what to avoid. When a research subagent gathers anchors, pin it to a research model (`sonnet` in Claude Code) and give it these source rules.
 
 ## Divergence
@@ -89,7 +91,7 @@ A model from a different family screens the board before the user picks, because
 
 **Which CLI.** Use the first CLI on the "Second-opinion CLIs" line of the agent's `machine.md` that runs a different model family from the agent using this skill. Claude Code asks Gemini or a GPT model, Codex asks Gemini or Claude, and Antigravity asks Claude or a GPT model. Always name the model, because some CLIs offer several families. When no CLI is listed or it fails to sign in, skip the step and report "Second opinion: Unverified" with the reason.
 
-**Consent.** The board images leave the machine for another vendor. Ask the user before the first send in each session, and skip without asking when the project instructions forbid external review, as work on unreleased designs may.
+**Consent.** The board images leave the machine for another vendor. Ask the user before the first send in each session, and skip without asking when the project instructions forbid external review, as work on unreleased designs may. When the user has not answered yet, finish the board and ask in the same message as the pick, so consent costs no extra round.
 
 **Command.** Run it from the iteration folder, read-only and with a time limit. Never pass a flag that skips permissions or allows writes.
 

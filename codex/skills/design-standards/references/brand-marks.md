@@ -16,10 +16,12 @@ How to audit, refine or redesign a logo or app icon, and ship it to every platfo
 
 ## Refine or redesign
 
-Render the current mark on the test sheet in `capture.md` first, and diagnose it against the criteria below with the image paths as evidence. Then agree the route with the user before drawing anything.
+Render the current mark on the test sheet in `capture.md` first, and diagnose it against the criteria below with the image paths as evidence.
 
-- **Refine** when people recognise the mark and its idea works. Fix the construction, the optical balance, the small-size version and the asset set, and keep the recognition the mark has earned.
-- **Redesign** when the idea fails the criteria or the user asks for a new identity. Produce three to five concepts.
+- **Refine** keeps the mark's idea and fixes the construction, the optical balance, the small-size version and the asset set. Recognition people already have is worth keeping.
+- **Redesign** starts from new ideas, when the idea fails the criteria or the user wants a new identity.
+
+Follow the route the user names. When they ask to improve the mark without naming one, put a refinement of the current mark and two to four redesign concepts on the same board. Say which route the diagnosis favours, and ask whether people already recognise the current mark. The user then chooses the route by picking an option, with no extra round of questions before the board.
 
 The agent takes geometric and typographic marks to a final master. Pictorial and illustrated marks, mascots and detailed emblems stop at rendered concepts plus the designer brief below, because model-drawn pictorial SVGs are rarely good enough to ship.
 
@@ -47,7 +49,7 @@ Draw each concept from a different idea:
 - A wordmark with one drawn detail.
 - A combination of symbol and wordmark, with a symbol that works alone.
 
-Anchor each concept to a different exemplar, as `options.md` describes, and give each one sentence that ties it to the brief.
+Anchor each concept to a different exemplar, as `options.md` describes, and give each one sentence that ties it to the brief. Save each concept as its own SVG beside the board, named by its board letter, such as `A.svg`, so the test sheet, the board and the final master use the same file.
 
 ## Construction
 

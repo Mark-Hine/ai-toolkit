@@ -1,7 +1,7 @@
 ---
 name: iterate
 description: "Design playbook for web, Android and iOS. Improves, audits, polishes, redesigns or extends UI, a design system or brand assets such as a logo, app icon or favicon. Keeps the project's DESIGN.md contract, compares rendered options and stops for the user's pick before changing the system."
-when_to_use: "Use when asked to improve or audit a logo or icon, make a page look better or more modern, tweak a header, colours, fonts or spacing, design a new screen, refresh a brand, or change a shared token or component. Also use before any change that alters how existing screens look."
+when_to_use: "Use when asked to improve or audit a logo or icon, make a page look better or more modern, tweak a header, colours, fonts or spacing, design a new screen, or refresh a brand. Also use for any change to something several screens share, such as making all buttons pill-shaped or changing the accent colour, the base font or the corner radius, and before any change that alters how existing screens look."
 argument-hint: "[what to change] [web|android|ios]"
 metadata:
   verified: 2026-10-06
@@ -10,7 +10,7 @@ metadata:
 
 # Design iteration: $ARGUMENTS
 
-Design work starts from the project's contract and ends with the user's choice. The rules are in `~/.claude/rules/design-standards.md` and the references are in `${CLAUDE_PLUGIN_ROOT}/skills/standards/references/`. Each step leaves a file or a stated decision, so a skipped step shows.
+Design work starts from the project's contract and ends with the user's choice. The rules are in `~/.claude/rules/design-standards.md` and the references are in `${CLAUDE_PLUGIN_ROOT}/skills/standards/references/`. Each step leaves a file or a stated decision, so a skipped step shows. If a reference cannot be read or a tool is unavailable, carry on with these steps, mark what it would have checked as Unverified and name it in the report. Do not stop to ask for access.
 
 1. **Contract.** Read `DESIGN.md` and its Decisions section (SYS-1). If the project has none, draft one from the code with `design-contract.md`, show the draft and its open questions, and wait for the user to confirm it. Offer the `@DESIGN.md` pointer line for the project's `CLAUDE.md`.
 2. **Classify.** State the class of the request, use, extend or change, and whether it is specified, such as "make the buttons pill-shaped", or open, such as "make it look modern" (SYS-2). A logo, an icon, a shared token and a shared component are changes.
@@ -18,10 +18,10 @@ Design work starts from the project's contract and ends with the user's choice. 
 4. **Diagnose.** Apply the screening checklist in `options.md` to the before images. Cite each image and region, and name what works and must stay.
 5. **Route.**
    - A use change goes to step 9.
-   - A specified extend or change gets one option and a before and after board, then waits for approval at step 7.
+   - A specified extend or change gets one option. Build its before and after board first, then ask for approval at step 7. Asking for approval without the board does not meet SYS-2.
    - An open request, a new screen and all brand work go to step 6.
 6. **Options.** Write the brief from `options.md`. Take three anchors from the References section of `DESIGN.md`, from the user's links, or from a research subagent pinned to `sonnet` that follows the source rules in `options.md`. Make three options, each from a different anchor and each different from the others on at least two of type, colour, layout, density and shape. Brand work gets three to five concepts and follows `brand-marks.md`, where pictorial marks stop at concepts plus a designer brief. For web aesthetics, load `frontend-design` when it is installed and follow the precedence guard in `companions.md`. When it is missing, give its install line once and continue.
-7. **Board.** Render each option as in step 3 and screen it with the checklist. Build the blind board from `capture.md`, then get a second opinion on it from another model family as `options.md` describes. Fix or drop any option that either screen shows is broken, then stop. Ask the user to pick, combine or reject, and open the notes and the second opinion only after they answer.
+7. **Board.** Render each option as in step 3 and screen it with the checklist. Build the blind board from `capture.md`, writing `board.html` even when nothing can be rendered, then get a second opinion on it from another model family as `options.md` describes. Fix or drop any option that either screen shows is broken, then stop. Ask the user to pick, combine or reject, and open the notes and the second opinion only after they answer.
 8. **Record.** Update `DESIGN.md` in the same change as the code, with the tokens, any new Do or Don't, the chosen anchor under References and a Decisions entry naming what was chosen, what was rejected and why. Keep the ten most recent Decisions entries.
 9. **Implement.** Change the code through tokens and components only. A new or refined brand mark becomes one master SVG and the platform assets in `brand-marks.md`.
 10. **Verify.** Run the project's lint and type check. Capture the after state of every affected screen. Hand `ui-reviewer` the diff, the before and after paths, the board path and `DESIGN.md`. Confirm each Blocker and Major in the code, fix the confirmed ones, send the same reviewer the finding IDs to re-review the fix delta, and stop after two rounds.
