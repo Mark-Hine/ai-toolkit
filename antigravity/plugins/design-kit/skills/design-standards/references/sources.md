@@ -19,8 +19,8 @@ Base URL `https://developer.apple.com/design/human-interface-guidelines/`. Pages
 | HIG-TYPOGRAPHY | `/typography` | built-in text styles, the size and leading table | 2026-09-29 |
 | HIG-HAPTICS | `/playing-haptics` | use haptics consistently and sparingly | 2026-09-29 |
 | HIG-APP-ICONS | `/app-icons` | 1024 by 1024 px layers in Icon Composer, the default, dark, clear and tinted appearances, effects the system adds, text only when essential | 2026-10-06 |
-| HIG-LAYOUT | `/layout` | safe areas, layout margins, no spacing grid | to fetch |
-| HIG-COLOR | `/color` | semantic colours, dark and increased-contrast variants | to fetch |
+| HIG-LAYOUT | `/layout` | safe areas, layout margins, no spacing grid | 2026-10-06 |
+| HIG-COLOR | `/color` | semantic colours, dark and increased-contrast variants | 2026-10-06 |
 
 ## Material 3
 
@@ -30,7 +30,7 @@ Base URL `https://m3.material.io/`. Pages render client-side and return only a t
 | --- | --- | --- | --- |
 | M3-SPACING | `/foundations/layout/grids-spacing/spacing` | "Spacing units follow an 8dp scale", icons align to a 4dp grid, type to a 4dp baseline | 2026-09-29, snippet |
 | M3-TYPE | `/styles/typography/type-scale-tokens` | the type roles, cross-checked against the Compose Material 3 typography page | 2026-09-29 |
-| M3-COLOR | `/styles/color/roles` | colour roles | to fetch |
+| M3-COLOR | `/styles/color/roles` | colour roles | 2026-10-06, through the Compose Material 3 page |
 | M3-MOTION | `/styles/motion/overview/how-it-works` | motion schemes, spatial and effects springs | to fetch |
 
 ## Android developer documentation
@@ -41,9 +41,9 @@ Base URL `https://developer.android.com/`.
 | --- | --- | --- | --- |
 | AND-WSC | `/develop/ui/compose/layouts/adaptive/use-window-size-classes` | five width classes and `supportLargeAndXLargeWidth` | 2026-09-29 |
 | AND-16-LARGE | `/about/versions/16/behavior-changes-16` | orientation and resizability locks ignored at sw600dp for target 36, opt-out ends at 37, predictive back default | 2026-09-29 |
-| AND-A11Y | `/guide/topics/ui/accessibility/apps` | 48 dp targets, labels | to fetch |
-| AND-EDGE | `/develop/ui/compose/system/insets` | edge to edge and insets | to fetch |
-| AND-FONT-SCALE | `/about/versions/14/features#non-linear-font-scaling` | font scaling to 200% | to fetch |
+| AND-A11Y | `/guide/topics/ui/accessibility/apps` | 48 dp targets, labels | 2026-10-06 |
+| AND-EDGE | `/develop/ui/compose/system/insets` | edge to edge and insets | 2026-10-06 |
+| AND-FONT-SCALE | `/about/versions/14/features#non-linear-font-scaling` | font scaling to 200% | 2026-10-06 |
 | AND-ADAPTIVE-ICON | `/develop/ui/views/launch/icon_design_adaptive` | 108 by 108 dp layers, a logo of 48 to 66 dp inside the masked viewport, the monochrome layer for themed icons, automatic theming from Android 16 QPR 2 | 2026-10-06 |
 | AND-ANIM-SCALE | `/reference/android/provider/Settings.Global#ANIMATOR_DURATION_SCALE` | the Remove animations scale | to fetch |
 
