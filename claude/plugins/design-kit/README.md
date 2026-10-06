@@ -17,3 +17,25 @@ The rules themselves live in `shared/guidance/design-standards.md`, installed as
 ## Plugins-only installs
 
 Without the dotfiles layer the rule file is absent. The skill and the reviewer then grade against the Tier 1 sources in `references/sources.md` and say so.
+
+## Evals
+
+`evals/` holds a `claude plugin eval` suite. Each case copies a small fixture from `evals/_fixtures/` into an empty workspace: a web site with a `DESIGN.md` contract and tokens, or a Compose module with a theme. The cases check two things. Open design requests should produce rendered options and stop for a pick, and smaller changes should keep to the contract's tokens and components.
+
+| Case | Request | What passes |
+| --- | --- | --- |
+| `logo-audit` | Audit and improve a generic logo | The original mark is kept, three to five concepts and a rendered sheet are created, and the reply asks for a pick |
+| `use-tweak` | Give the feature cards more room | More space comes from existing spacing tokens, with no literals and no token change |
+| `pill-buttons` | Make all buttons pill-shaped | The radius shared with cards and inputs is untouched, and the reply asks approval of a before and after board |
+| `pricing-section` | Add a pricing section | No new stylesheet, inline style, colour, font or token |
+| `trigger-header` | Tweak the header colours | The design-kit iterate skill fires |
+| `compose-banner` | Add a Compose promo banner | No literal colour, sp or dp, and the theme supplies colour and type |
+
+Run the suite from the repository root. The scaffolds are this repository's own scripts, and runs need write tools to change the fixture:
+
+```bash
+claude plugin eval claude/plugins/design-kit --scaffold --trust-plugin --allow-tools Write Edit \
+  --model claude-sonnet-5-5 --judge-model claude-sonnet-5-5 --no-publish
+```
+
+Eval runs load only this plugin, without `~/.claude/rules` or any `CLAUDE.md`, so they measure the skills and agents but not the rule files. Results go to `evals/results/`, which git ignores. Recorded baselines live in `docs/evals/`.
