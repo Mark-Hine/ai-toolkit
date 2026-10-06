@@ -16,4 +16,4 @@ Points at the installed rule file and names the reviewer to delegate to.
 
 ## Specialist subagent (`agents/`)
 
-- `ui-reviewer`: read-only reviewer (`model: pro`). Grades UI diffs, mockups, views and components against the rule file, cites the rule ID and source key in every finding, and reports screen-state coverage and accessibility. Writes no code.
+- `ui-reviewer`: read-only reviewer (`model: pro`). Grades UI diffs, mockups, views and components against the rule file and the project's `DESIGN.md` contract, cites the rule ID and source key in every finding, and reports screen-state coverage, accessibility and contract changes. Writes no code.

@@ -12,7 +12,7 @@ The rules themselves live in `shared/guidance/design-standards.md`, installed as
 
 ## Specialist subagent (`agents/`)
 
-- `ui-reviewer`: read-only reviewer (`model: opus`, `effort: high`). Grades UI diffs, mockups, views and components against the rule file, cites the rule ID and source key in every finding, and reports screen-state coverage and accessibility. Writes no code.
+- `ui-reviewer`: read-only reviewer (`model: opus`, `effort: high`). Grades UI diffs, mockups, views and components against the rule file and the project's `DESIGN.md` contract, cites the rule ID and source key in every finding, and reports screen-state coverage, accessibility and contract changes. Writes no code.
 
 ## Plugins-only installs
 
