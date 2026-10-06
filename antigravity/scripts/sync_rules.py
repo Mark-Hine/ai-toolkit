@@ -58,8 +58,9 @@ KITS = {
         'title': 'Design rules',
         'sources': ['shared/guidance/design-standards.md'],
         'delegation': [
-            'The `design-standards` skill holds the sources, the rationale for house rules and the platform APIs per rule.',
-            'Delegate UI diffs, component audits and screen reviews to `ui-reviewer` (`model: pro`, read-only tools) through `invoke_subagent`. Give it a bounded task and re-check its findings before reporting them.',
+            'Use `/design-iterate` to improve, audit, polish, redesign or extend UI, a design system or brand assets. It keeps the project `DESIGN.md` contract, renders options and stops for the user\'s pick.',
+            'The `design-standards` skill holds the sources, the rationale for house rules, the platform APIs per rule and the design references.',
+            'Delegate compliance review of UI diffs and screens to `ui-reviewer` (`model: pro`, read-only tools) through `invoke_subagent`. It grades rules and the contract, not taste. Give it a bounded task and re-check its findings before reporting them.',
         ],
     },
 }

@@ -1,6 +1,6 @@
 # Codex setup
 
-The Codex port of the Claude setup includes twelve skills, seven specialist agents, personal instructions, Android, iOS, UI/UX and writing guidance, command permissions, and lifecycle hooks. The Claude setup remains available in `../claude/`.
+The Codex port of the Claude setup includes fourteen skills, seven specialist agents, personal instructions, Android, iOS, UI/UX and writing guidance, command permissions, and lifecycle hooks. The Claude setup remains available in `../claude/`.
 
 ## Install
 
@@ -46,6 +46,7 @@ Start a new Codex session, then open `/hooks` to review and trust the command gu
 | `$ios-run-app` | Explicitly invoked simulator build, install, launch and screenshots |
 | `$ios-standards` | Apple/Swift/Xcode docs, house patterns and a project instructions template |
 | `$pr-review` | Formal JSON and Markdown review, release-promotion checks and re-review tracking |
+| `$design-iterate` | Design playbook: the `DESIGN.md` contract, before and after captures, rendered options on a blind board, the user's pick, then tokens and review |
 | `$design-standards` | Sources, rationale and platform APIs for the tiered design rules (HIG, Material 3, WCAG 2.2, house) |
 | `android-reviewer`, `ios-reviewer`, `ui-reviewer` | `gpt-6-astra`, high reasoning, read-only code and UI review |
 | `android-researcher`, `ios-researcher` | `gpt-6-sol`, medium reasoning, read-only official-source research |

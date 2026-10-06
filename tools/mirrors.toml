@@ -54,7 +54,8 @@ claude = "claude/plugins/{p}-kit/skills/{s}/SKILL.md"
 codex = "codex/skills/{p}-{s}/SKILL.md"
 antigravity = "antigravity/plugins/{p}-kit/skills/{p}-{s}/SKILL.md"
 items = [["android", "feature"], ["android", "bugfix"], ["android", "run-app"], ["android", "uplift-deps"], ["android", "standards"],
-         ["ios", "feature"], ["ios", "bugfix"], ["ios", "run-app"], ["ios", "uplift-deps"], ["ios", "standards"]]
+         ["ios", "feature"], ["ios", "bugfix"], ["ios", "run-app"], ["ios", "uplift-deps"], ["ios", "standards"],
+         ["design", "iterate"]]
 
 [[groups]]
 name = "standards-references"

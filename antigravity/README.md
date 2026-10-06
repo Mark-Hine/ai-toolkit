@@ -1,6 +1,6 @@
 # Antigravity setup
 
-The Antigravity port of the portable AI toolkit. Four plugins carry twelve skills, seven specialist subagents, generated rules and lifecycle hooks, in the layout the bundled Antigravity customization docs describe. The Claude Code setup is in `../claude/` and the OpenAI Codex setup in `../codex/`.
+The Antigravity port of the portable AI toolkit. Five plugins carry fourteen skills, seven specialist subagents, generated rules and lifecycle hooks, in the layout the bundled Antigravity customization docs describe. The Claude Code setup is in `../claude/` and the OpenAI Codex setup in `../codex/`.
 
 ## Install
 
@@ -40,7 +40,7 @@ Each plugin follows the documented shape: `plugin.json` (name, description, vers
 - **`android-kit`**: five Android skills, generated Kotlin, Compose, UI-event and testing rules, the PreToolUse guard, and three specialists.
 - **`ios-kit`**: five iOS skills, generated Swift, SwiftUI, UI-event and testing rules, the PreToolUse guard, the Swift lint hooks, and three specialists.
 - **`pr-review`**: the formal PR and release-promotion review skill with its platform packs and the Azure DevOps poster.
-- **`design-kit`**: the `design-standards` skill with sources, rationale and platform APIs, the generated design rules, and `ui-reviewer`.
+- **`design-kit`**: the `design-iterate` playbook, the `design-standards` skill with sources, rationale, platform APIs and design references, the generated design rules, and `ui-reviewer`.
 
 ### Rules are generated
 
@@ -61,6 +61,7 @@ Each plugin follows the documented shape: `plugin.json` (name, description, vers
 | `/ios-run-app` | Simulator build, install, launch and screenshots. Invoke it explicitly |
 | `/ios-standards` | Apple, Swift and Xcode docs, house patterns and the project instructions template |
 | `/pr-review` | Formal JSON and Markdown review, release-promotion verification and re-review tracking |
+| `/design-iterate` | Design playbook: the `DESIGN.md` contract, before and after captures, rendered options on a blind board, the user's pick, then tokens and review |
 | `/design-standards` | Sources, rationale and platform APIs for the tiered design rules (HIG, Material 3, WCAG 2.2, house) |
 
 Antigravity has no switch for implicit skill invocation, so the "invoke it explicitly" skills say so in their descriptions and nothing enforces it.
