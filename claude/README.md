@@ -19,6 +19,7 @@ Two layers. Plugins carry the shareable parts. The `home/` dotfiles layer carrie
 | `home/CLAUDE.md` | Global preferences: subagent models, Android and iOS routing. Imports `~/.claude/machine.md` | Every session |
 | `../shared/guidance/common.md` | Shared Git and work preferences, linked as `~/.claude/rules/common.md` | Every session |
 | `../shared/guidance/kotlin.md` | Kotlin domain modeling and compatibility across platforms, linked as `~/.claude/rules/kotlin.md` | On matching `.kt` and `.kts` files |
+| `../shared/guidance/design-assets.md` | Pointer to the design contract and the iterate skill, linked as `~/.claude/rules/design-assets.md` | On matching `DESIGN.md`, token, stylesheet, theme, SVG and icon files |
 | `../shared/guidance/design-standards.md` | Tiered design rules with IDs and source keys (T1 official, T2 house), linked as `~/.claude/rules/design-standards.md` | Every session |
 | `home/rules/writing-style.md` | Plain-prose rules with a source key per rule (GOV.UK, Google, Microsoft, plain-language guidelines, Anthropic). Rationale lives in `../shared/guidance/references/writing-style-rationale.md` | Every session |
 | `home/rules/android/` | Kotlin style, Compose, testing, one-shot UI events. Path-scoped, load only when matching files are touched | On matching files |

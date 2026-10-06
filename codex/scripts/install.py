@@ -174,6 +174,7 @@ class Installer:
         self.link(ROOT.parent / 'shared/guidance/common.md', cfg / 'guidance/common.md')
         self.link(ROOT.parent / 'shared/guidance/kotlin.md', cfg / 'guidance/kotlin.md')
         self.link(ROOT.parent / 'shared/guidance/design-standards.md', cfg / 'guidance/design-standards.md')
+        self.link(ROOT.parent / 'shared/guidance/design-assets.md', cfg / 'guidance/design-assets.md')
         self.link(ROOT / 'home/guidance/android', cfg / 'guidance/android')
         self.link(ROOT / 'home/guidance/ios', cfg / 'guidance/ios')
         self.link(ROOT / 'home/toolkit.rules', cfg / 'rules/ai-toolkit.rules')

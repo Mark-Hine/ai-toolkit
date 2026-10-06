@@ -23,6 +23,7 @@ Start a new Codex session, then open `/hooks` to review and trust the command gu
 | `../shared/guidance/common.md` | `~/.codex/guidance/common.md` | Shared Git and work preferences used by both agents |
 | `../shared/guidance/kotlin.md` | `~/.codex/guidance/kotlin.md` | Kotlin domain modeling and compatibility across platforms |
 | `../shared/guidance/design-standards.md` | `~/.codex/guidance/design-standards.md` | Shared UI design standards |
+| `../shared/guidance/design-assets.md` | `~/.codex/guidance/design-assets.md` | Read before editing design contract, token, theme, SVG and icon files |
 | `home/guidance/` | `~/.codex/guidance/` | Writing preferences and scoped Android/iOS rules |
 | `home/config.defaults.toml` | Merged into `~/.codex/config.toml` | Model, reasoning, approval, sandbox, web search and agent defaults |
 | `home/toolkit.rules` | `~/.codex/rules/ai-toolkit.rules` | Routine command escalation permissions |

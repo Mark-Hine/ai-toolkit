@@ -54,6 +54,8 @@ class InstallTests(unittest.TestCase):
             self.assertTrue((home / 'guidance/kotlin.md').is_symlink())
             self.assertEqual((home / 'guidance/kotlin.md').resolve(), ROOT.parent / 'shared/guidance/kotlin.md')
             self.assertIn('guidance/kotlin.md', (home / 'AGENTS.md').read_text())
+            self.assertEqual((home / 'guidance/design-assets.md').resolve(), ROOT.parent / 'shared/guidance/design-assets.md')
+            self.assertIn('guidance/design-assets.md', (home / 'AGENTS.md').read_text())
             self.assertEqual((home / 'guidance/design-standards.md').read_text(),
                              (ROOT.parent / 'shared/guidance/design-standards.md').read_text())
             for role in ('ios-researcher', 'ios-reviewer', 'ios-verifier', 'ui-reviewer'):

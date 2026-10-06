@@ -14,6 +14,7 @@ Read `~/.gemini/config/machine.md` for local tool and device facts. Read `~/.gem
 - Use `/design-iterate` to improve, audit, polish, redesign or extend UI, a design system or brand assets such as a logo, app icon, colours or fonts. It renders options and stops for a pick before the system changes.
 - Use `/design-standards` for the sources, rationale and platform APIs behind the tiered design rules (HIG, Material 3, WCAG 2.2, house), screen states, accessibility and platform fidelity.
 - Delegate compliance review of UI diffs and screens to `ui-reviewer`. It grades rules and the contract, not taste.
+- Read `~/.gemini/config/guidance/design-assets.md` before editing a `DESIGN.md`, token, stylesheet, theme, SVG or icon file.
 - Load Anthropic's `frontend-design` skill for web aesthetics when it is installed, within the limits of the project's `DESIGN.md`.
 
 ## Kotlin across platforms
