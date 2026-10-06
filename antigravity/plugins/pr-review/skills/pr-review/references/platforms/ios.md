@@ -143,7 +143,7 @@ screen consumes it). Check:
   Grade it as a style issue, not a bug (per the pragmatism guardrails above), unless it demonstrably blocks the main
   thread.
 - **Swift 6 / strict concurrency as a currency signal:** note the language mode and
-  `SWIFT_STRICT_CONCURRENCY` level, `SWIFT_DEFAULT_ACTOR_ISOLATION` and `SWIFT_APPROACHABLE_CONCURRENCY` ([SE-0466]), `Sendable` adoption on crossing types, and whether warnings are
+  `SWIFT_STRICT_CONCURRENCY` level, `SWIFT_DEFAULT_ACTOR_ISOLATION` ([SE-0466]), `SWIFT_APPROACHABLE_CONCURRENCY` (an Xcode setting that turns on a set of upcoming features, so look up the current set at review time, protocol.md §13), `Sendable` adoption on crossing types, and whether warnings are
   suppressed with `@unchecked Sendable` (each one is a claim to verify). This feeds currency findings.
 - Smells to grep and quote: `DispatchSemaphore`/`DispatchGroup.wait` on the main thread (deadlock
   class), runloop spinning, GCD-and-async/await mixed without a single bridging seam
