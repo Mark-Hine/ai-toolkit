@@ -13,7 +13,7 @@ Two layers. Plugins carry the shareable parts. The `home/` dotfiles layer carrie
 | `plugins/ios-kit/agents/` | `ios-reviewer` (opus, read-only), `ios-researcher` (sonnet, read-only, Apple docs only), `ios-verifier` (sonnet, runs tests and simulator smoke checks) | When delegated |
 | `plugins/ios-kit/hooks/` | SwiftFormat and SwiftLint after `.swift` edits, only where the nearest config file opts in. SwiftLint errors block, warnings come back as context | On matching edits |
 | `plugins/pr-review/skills/pr-review/` | Formal written PR review with a standards-cited findings register, grading Android, iOS, Spring Boot, React/Next.js and generic repos | On "review this PR" or `/pr-review:pr-review` |
-| `plugins/design-kit/skills/` | `/design-kit:standards` (sources, rationale and platform APIs for the tiered design rules) | On invocation or when relevant |
+| `plugins/design-kit/skills/` | `/design-kit:iterate` (design playbook with the `DESIGN.md` contract, rendered options and the user's pick), `standards` (sources, rationale and platform APIs for the tiered design rules) | On invocation or when relevant |
 | `plugins/design-kit/agents/` | `ui-reviewer` (opus, read-only, grades UI diffs against the tiered design rules, citing rule ID and source) | When delegated |
 | `plugins/toolkit/skills/` | `/toolkit:audit` (re-checks the standards against their sources and writes a findings register, invoked by hand) | On invocation |
 | `home/CLAUDE.md` | Global preferences: subagent models, Android and iOS routing. Imports `~/.claude/machine.md` | Every session |

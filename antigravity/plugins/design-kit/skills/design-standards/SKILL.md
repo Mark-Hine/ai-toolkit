@@ -8,9 +8,9 @@ metadata:
 
 # Design standards
 
-The rules live in `~/.gemini/config/guidance/design-standards.md`. This skill adds the sources, the reasons and the APIs. If that rule file is missing, grade against the Tier 1 sources in `references/sources.md` only and say so.
+The rules live in `~/.gemini/config/guidance/design-standards.md`. This skill adds the sources, the reasons and the APIs. If that rule file is missing, grade against the Tier 1 sources in `references/sources.md` only and say so. To improve, redesign or extend a design, or to work on a logo or app icon, use `/design-iterate`. It adds the project's `DESIGN.md` contract, rendered options and the user's pick to these rules.
 
-1. Read the project instructions file, then the rule file. Note any T2 rule IDs the project opts in.
+1. Read the project instructions file, the project's `DESIGN.md` when one exists (SYS-1), then the rule file. Note any T2 rule IDs the project opts in.
 2. Name the platform, and the tone and density the screen commits to (DIR-1).
 3. Build or review against the rule file one section at a time. Take each API from `references/platform-apis.md`. Do not restate rules from memory.
 4. List the states the screen can reach (STA-1) and confirm that the state model has a case for each and the UI renders it.

@@ -10,9 +10,11 @@ Read `~/.gemini/config/machine.md` for local tool and device facts. Read `~/.gem
 
 ## UI and design
 
-- Read `~/.gemini/config/guidance/design-standards.md` before creating or modifying UI screens, components or design systems. When `design-kit` is enabled, the same rules load with the plugin.
+- Read `~/.gemini/config/guidance/design-standards.md` before creating or modifying UI screens, components or design systems. When `design-kit` is enabled, the same rules load with the plugin. The project's `DESIGN.md` wins over any design skill (SYS-1).
+- Use `/design-iterate` to improve, audit, polish, redesign or extend UI, a design system or brand assets such as a logo, app icon, colours or fonts. It renders options and stops for a pick before the system changes.
 - Use `/design-standards` for the sources, rationale and platform APIs behind the tiered design rules (HIG, Material 3, WCAG 2.2, house), screen states, accessibility and platform fidelity.
-- Delegate UI diffs, component audits and screen reviews to `ui-reviewer`.
+- Delegate compliance review of UI diffs and screens to `ui-reviewer`. It grades rules and the contract, not taste.
+- Load Anthropic's `frontend-design` skill for web aesthetics when it is installed, within the limits of the project's `DESIGN.md`.
 
 ## Kotlin across platforms
 

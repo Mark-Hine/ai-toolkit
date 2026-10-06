@@ -4,10 +4,12 @@ Read `~/.codex/machine.md` for local tool and device facts. If CODEX_HOME is set
 
 ## UI/UX and Design Standards
 
-- Read `guidance/design-standards.md` before creating or modifying UI screens, components, and design systems.
+- Read `guidance/design-standards.md` before creating or modifying UI screens, components, and design systems. The project's `DESIGN.md` wins over any design skill (SYS-1).
+- Use `$design-iterate` to improve, audit, polish, redesign or extend UI, a design system or brand assets such as a logo, app icon, colours or fonts. It renders options and stops for a pick before the system changes.
 - Use `$design-standards` for the sources, rationale and platform APIs behind the tiered design rules (HIG, Material 3, WCAG 2.2, house), screen states, accessibility and platform fidelity.
-- Delegate UI/UX diffs, component audits, and screen reviews to `ui-reviewer`. Give it a bounded task and re-check findings before reporting them. If custom agents are unavailable, perform the work inline and disclose the limitation.
+- Delegate compliance review of UI diffs and screens to `ui-reviewer`. It grades rules and the contract, not taste. Give it a bounded task and re-check findings before reporting them. If custom agents are unavailable, perform the work inline and disclose the limitation.
 - Role model and reasoning settings live in the installed `agents/ui-reviewer.toml`.
+- Load Anthropic's `frontend-design` skill for web aesthetics when it is installed, within the limits of the project's `DESIGN.md`.
 
 ## Kotlin across platforms
 
