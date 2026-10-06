@@ -155,6 +155,7 @@ The board puts options side by side so the user compares them at the same size a
 - For options, show one column per option in random order, labelled A, B and C, with no ranking or scores.
 - For a change to a shared token, component or brand asset, show before and after for every affected screen.
 - Keep notes, screening results and any second opinion inside a closed section that the user opens after the pick.
+- When the session cannot render images, still write `board.html`. For a token or component change, put the before and after versions of the real components side by side in the page, using the project's stylesheet, so the user's browser renders them. Report the captures as Unverified.
 
 ```html
 <!doctype html>

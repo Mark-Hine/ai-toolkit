@@ -1,7 +1,7 @@
 ---
 type: regex
 target: files
-pattern: '(?:^.*\.svg$[\s\S]*?){7}'
+pattern: '(?:^|/)[F-Z]\.svg$'
 flags: m
 match: not_contains
 ---
