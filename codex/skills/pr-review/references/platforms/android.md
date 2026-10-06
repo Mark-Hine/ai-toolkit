@@ -180,6 +180,22 @@ analytics event it declares is actually sent. Fatal-crash reporting alone leaves
 failure invisible. Play Vitals collects crash, ANR and startup metrics, and the app instruments the
 rest itself.
 
+**Risky-pattern counts ([KOTLIN-NULL-SAFETY], [KOTLIN-CASTS], [KOTLIN-ENUMS], [KOTLIN-SEALED], [COROUTINES]):**
+count each pattern on the lines the change adds, leaving out tests and generated code, and list each
+new site as `file:line` with the count. A count is a measurement, not a finding. Raise a finding
+only for a site that meets the last column, at the severity its effect earns (protocol.md §3).
+
+| Pattern | How to count | A site is a finding when |
+|---|---|---|
+| `!!` | `!!` in added Kotlin lines | the value can be null at runtime, such as a nullable API result or a platform type. `!!` throws on null ([KOTLIN-NULL-SAFETY]) |
+| Unchecked `as` | `as` casts that are not `as?` | the type is not guaranteed, such as a `Bundle` or `Intent` extra or deserialised data. A failed `as` throws ([KOTLIN-CASTS]) |
+| `valueOf` or `enumValueOf` on outside text | `valueOf(` with a server, stored or deep-link argument | there is no fallback, so an unknown value throws `IllegalArgumentException` ([KOTLIN-ENUMS]) |
+| `else` in a `when` over a sealed type or enum | each added `when` on a sealed or enum subject | it hides a case the code should handle. An exhaustive `when` over a sealed type needs no `else` ([KOTLIN-SEALED]) |
+| `GlobalScope` | `GlobalScope.` | always, usually an N. It hardcodes the scope and makes the code hard to test ([COROUTINES]) |
+| `runBlocking` | `runBlocking` outside test sources | it can run on the main thread |
+| Hardcoded dispatchers | `Dispatchers.IO` and `Dispatchers.Default` outside the dispatcher module | always, usually an N under the main-safety rule (protocol.md §16, [COROUTINES]) |
+| New `LiveData` | `MutableLiveData` and `LiveData<` | never by itself. Report the count |
+
 
 ## Security: MASVS v2.1.0 control map (+ Top 10 2024 cross-map)
 
@@ -282,6 +298,10 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
 | [PINNING] | https://cheatsheetseries.owasp.org/cheatsheets/Pinning_Cheat_Sheet.html, OWASP Pinning Cheat Sheet (public-key/SPKI pins, backup pins, expiration safety-valve, when NOT to pin) |
 | [TOP10-2024] | https://owasp.org/projects/mobile-top-10 |
 | [PCI-DSS] | https://www.pcisecuritystandards.org/document_library/, PCI DSS v4.0.1 (June 2024, v4.0 retired 2024-12-31). Cite by requirement number, such as `PCI DSS 4.0.1 Req 3.4.1`. `../pci-dss.md` maps the requirements a card-data change usually touches. Glossary (CHD, SAD, CDE): https://www.pcisecuritystandards.org/glossary/ |
+| [KOTLIN-NULL-SAFETY] | https://kotlinlang.org/docs/null-safety.html, `!!` throws on null |
+| [KOTLIN-CASTS] | https://kotlinlang.org/docs/typecasts.html, a failed `as` throws and `as?` returns null |
+| [KOTLIN-ENUMS] | https://kotlinlang.org/docs/enum-classes.html, `valueOf` throws on an unknown name |
+| [KOTLIN-SEALED] | https://kotlinlang.org/docs/sealed-classes.html, exhaustive `when` without `else` |
 | [OSV] | https://osv.dev, an open vulnerability database. Its `querybatch` API accepts purls, and `osv-scanner` reads lockfiles directly |
 | [PLAY-USERDATA] | https://support.google.com/googleplay/android-developer/answer/13327111, the Play User Data policy. Apps that let users create an account must offer in-app **and** web account deletion |
 | [PLAY-VITALS] | https://developer.android.com/google/play/vitals, the crash, ANR and startup metrics Play collects, and what the app must instrument itself |
@@ -327,6 +347,10 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
 [PINNING]: https://cheatsheetseries.owasp.org/cheatsheets/Pinning_Cheat_Sheet.html
 [TOP10-2024]: https://owasp.org/projects/mobile-top-10
 [PCI-DSS]: https://www.pcisecuritystandards.org/document_library/
+[KOTLIN-NULL-SAFETY]: https://kotlinlang.org/docs/null-safety.html
+[KOTLIN-CASTS]: https://kotlinlang.org/docs/typecasts.html
+[KOTLIN-ENUMS]: https://kotlinlang.org/docs/enum-classes.html
+[KOTLIN-SEALED]: https://kotlinlang.org/docs/sealed-classes.html
 [OSV]: https://osv.dev
 [PLAY-USERDATA]: https://support.google.com/googleplay/android-developer/answer/13327111
 [PLAY-VITALS]: https://developer.android.com/google/play/vitals

@@ -161,6 +161,21 @@ analytics event it declares is actually sent. Fatal-crash reporting alone leaves
 failure invisible. MetricKit delivers launch, hang, crash and disk metrics as daily payloads, and the
 app instruments the rest itself.
 
+**Risky-pattern counts ([SWIFT-BOOK], [OSLOG]):**
+count each pattern on the lines the change adds, leaving out tests and generated code, and list each
+new site as `file:line` with the count. A count is a measurement, not a finding. Raise a finding
+only for a site that meets the last column, at the severity its effect earns (protocol.md §3).
+
+| Pattern | How to count | A site is a finding when |
+|---|---|---|
+| Force unwrap `!` | postfix `!` on an optional, leaving out `!=`, negation and outlets | the value can be nil at runtime, such as a network result or a dictionary lookup. Force unwrapping nil is a runtime error ([SWIFT-BOOK], The Basics) |
+| `try!` | `try!` | the call can throw at runtime, such as decoding or file access. A thrown error becomes a runtime error ([SWIFT-BOOK], Error Handling) |
+| `as!` | `as!` | the type is not guaranteed, such as decoded or bridged data. A wrong type is a runtime error ([SWIFT-BOOK], Type Casting) |
+| `.shared` reach-ins | `.shared` outside the composition root | never by itself. Report the count, because each one hides a dependency from tests |
+| `Task.detached` | `Task.detached` | it drops priority, task-locals and cancellation without a stated reason |
+| `DispatchQueue.main.async` | `DispatchQueue.main.async` in code that uses Swift concurrency | it patches isolation that `@MainActor` should own |
+| `print` and `NSLog` | `print(` and `NSLog(` outside debug-only code | it can write personal or sensitive data in a release build. Otherwise report the count next to `os.Logger` use, which redacts interpolated strings and objects by default ([OSLOG]) |
+
 
 ## Security: MASVS v2.1.0 control map (+ Top 10 2024 cross-map)
 
@@ -258,6 +273,8 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
 | [PINNING] | https://cheatsheetseries.owasp.org/cheatsheets/Pinning_Cheat_Sheet.html, OWASP Pinning Cheat Sheet (public-key/SPKI pins, backup pins, expiration safety-valve, when NOT to pin) |
 | [TOP10-2024] | https://owasp.org/projects/mobile-top-10 |
 | [PCI-DSS] | https://www.pcisecuritystandards.org/document_library/, PCI DSS v4.0.1 (June 2024, v4.0 retired 2024-12-31). Cite by requirement number, such as `PCI DSS 4.0.1 Req 3.4.1`. `../pci-dss.md` maps the requirements a card-data change usually touches. Glossary (CHD, SAD, CDE): https://www.pcisecuritystandards.org/glossary/ |
+| [SWIFT-BOOK] | https://docs.swift.org/latest/documentation/the-swift-programming-language/, The Swift Programming Language. Cite the chapter by name: The Basics for force unwrapping, Error Handling for `try!`, Type Casting for `as!` |
+| [OSLOG] | https://developer.apple.com/documentation/os/logger, which redacts interpolated strings and objects by default, with `privacy: .public` to show a value |
 | [OSV] | https://osv.dev, an open vulnerability database. Its `querybatch` API accepts purls, and `osv-scanner` reads `Package.resolved` and `Podfile.lock` directly |
 | [METRICKIT] | https://developer.apple.com/documentation/metrickit, on-device launch, hang, crash and disk metrics delivered as daily `MXMetricPayload`s |
 
@@ -292,5 +309,7 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
 [PINNING]: https://cheatsheetseries.owasp.org/cheatsheets/Pinning_Cheat_Sheet.html
 [TOP10-2024]: https://owasp.org/projects/mobile-top-10
 [PCI-DSS]: https://www.pcisecuritystandards.org/document_library/
+[SWIFT-BOOK]: https://docs.swift.org/latest/documentation/the-swift-programming-language/
+[OSLOG]: https://developer.apple.com/documentation/os/logger
 [OSV]: https://osv.dev
 [METRICKIT]: https://developer.apple.com/documentation/metrickit
