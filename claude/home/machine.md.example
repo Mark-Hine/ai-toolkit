@@ -4,4 +4,5 @@
   AVDs: `<phone-avd>` (default), `<tablet-avd>`, `<16kb-avd>`, `<min-sdk-avd>`.
 - Guardrail hooks from the `guard-kit` plugin block protected-branch pushes and secret-file edits. A block is final, do not work around it.
 - iOS: Xcode at `xcode-select -p`, default simulator `<iPhone simulator name>` (`xcrun simctl list devices available`).
+- Second-opinion CLIs for design boards: `<cli and model>`, for example `agy` with `gemini-3.1-pro-high` or `codex` with a GPT model. List only CLIs that are signed in. Leave the line out to skip the step.
 - Ticket prefix for commit scopes: `<PREFIX>`. Default branch when a repo names none: `<develop | main>`.
