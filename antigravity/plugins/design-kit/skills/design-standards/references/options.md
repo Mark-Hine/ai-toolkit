@@ -83,6 +83,85 @@ Build the board as `capture.md` describes, then follow these rules:
 - After the pick, open the notes: the screening findings, and what each option would change in `DESIGN.md`.
 - For a change to a shared token, component or brand asset, the board shows before and after for every affected screen, and the user's approval is required before the change lands (SYS-2).
 
+## Second opinion
+
+A model from a different family screens the board before the user picks, because a model grading its own family's work favours it. The second opinion finds defects and describes strengths. The user still decides.
+
+**Which CLI.** Use the first CLI on the "Second-opinion CLIs" line of the agent's `machine.md` that runs a different model family from the agent using this skill. Claude Code asks Gemini or a GPT model, Codex asks Gemini or Claude, and Antigravity asks Claude or a GPT model. Always name the model, because some CLIs offer several families. When no CLI is listed or it fails to sign in, skip the step and report "Second opinion: Unverified" with the reason.
+
+**Consent.** The board images leave the machine for another vendor. Ask the user before the first send in each session, and skip without asking when the project instructions forbid external review, as work on unreleased designs may.
+
+**Command.** Run it from the iteration folder, read-only and with a time limit. Never pass a flag that skips permissions or allows writes.
+
+| CLI | Read-only call |
+| --- | --- |
+| Antigravity CLI | `agy -p "<prompt>" --mode plan --sandbox --model gemini-3.1-pro-high --output-format json --json-schema second-opinion.schema.json --print-timeout 300s` |
+| Claude Code | `claude -p "<prompt>" --permission-mode plan --allowedTools Read --model opus --output-format json --json-schema "$(cat second-opinion.schema.json)"` |
+| Codex | `codex exec --sandbox read-only -m <gpt model> --image board.png --output-schema second-opinion.schema.json "<prompt>"` |
+
+Model names change. Take the current one from the CLI's own model list.
+
+**Prompt.** Send the brief, the checks that apply and the image paths, and leave out the code and `DESIGN.md`. A prompt for a brand mark board reads like this:
+
+```text
+You are giving a second opinion on logo options. The user will choose, so describe and do not decide for them.
+Brief: <job, audience, traits, what is fixed>.
+Open board.png in this folder. It shows the current mark and options A, B and C at several sizes, on light, dark,
+brand and photo grounds, in one colour and blurred, and in a header and a tab.
+For each option, list defects with the image, the region and the check that fails (distinctive, works small,
+one colour, visible on every ground, simple, platform safe), then its strengths and its fit to the brief.
+Last, name the option you would pick and why. Do not edit any file.
+```
+
+For screens, replace the checks with the screening checklist above. Write the schema beside the board as `second-opinion.schema.json`:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "options": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": { "type": "string" },
+          "defects": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "image": { "type": "string" },
+                "region": { "type": "string" },
+                "check": { "type": "string" },
+                "finding": { "type": "string" }
+              },
+              "required": ["image", "region", "check", "finding"]
+            }
+          },
+          "strengths": { "type": "array", "items": { "type": "string" } },
+          "fit": { "type": "string" }
+        },
+        "required": ["label", "defects", "strengths", "fit"]
+      }
+    },
+    "preference": {
+      "type": "object",
+      "properties": { "label": { "type": "string" }, "reason": { "type": "string" } },
+      "required": ["label", "reason"]
+    }
+  },
+  "required": ["options", "preference"]
+}
+```
+
+**Use.** Save the reply as `second-opinion.md` beside the board, naming the CLI and model.
+
+- Before the pick, check each defect against the image yourself. Fix or drop an option whose defect you confirm, and say which.
+- Keep its preference in the closed notes until the user picks, so the pick stays blind.
+- When its preference differs from the user's pick for a reason the user has not weighed, say so once and ask whether to switch.
+
+**Failure.** A timeout, an error, a failed sign-in or a reply that does not match the schema skips the step. Report "Second opinion: Unverified" with the reason and carry on. The second opinion never blocks the loop.
+
 ## What not to trust
 
 - **A model's score as the decision.** Models rate their own output higher than people do (Panickssery and others, 2024), so the user decides.
