@@ -192,6 +192,10 @@ Pass/Fail/Partial/Unverified with `file:line` evidence.
 | PRIVACY-3 | Transparency | `PrivacyInfo.xcprivacy` present and truthful for the app **and** third-party SDKs (required-reason APIs declared with valid reason codes. Enforcement dates move, so verify protocol.md §13). Nutrition-label consistency vs the SDKs actually found in the dependency inventory, and `ITSAppUsesNonExemptEncryption` declared correctly. **Log hygiene:** `os_log`/`Logger` interpolations marked `privacy: .public` on sensitive values, and raw `print()`/`NSLog` of PII reaching Release builds. Refs: MASVS-PRIVACY-3 · [PRIVACY-MANIFEST] |
 | PRIVACY-4 | User data control | Deletion/opt-out paths for collected data and in-app **account deletion** where accounts can be created (an App Store review requirement). Verify the flow deletes server-side data, not just the local session |
 
+**Card data ([PCI-DSS]):** when the change displays, stores, logs or transmits cardholder data or
+sensitive authentication data, also load [`../pci-dss.md`](../pci-dss.md) and cite the PCI DSS
+requirement beside the MASVS control.
+
 **OWASP Mobile Top 10 (2024) cross-map** (check owasp.org for a newer edition before citing it. The Top 10 is the
 awareness list, MASVS is the verification standard). Emit as
 a compact table pointing each M-risk at the MASVS rows above rather than re-checking:
@@ -247,6 +251,7 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
 | [MASTG] | https://mas.owasp.org/MASTG/ (cite the version shown on the site at review time). Cite iOS techniques/tests generically unless a specific iOS test ID is verified |
 | [PINNING] | https://cheatsheetseries.owasp.org/cheatsheets/Pinning_Cheat_Sheet.html, OWASP Pinning Cheat Sheet (public-key/SPKI pins, backup pins, expiration safety-valve, when NOT to pin) |
 | [TOP10-2024] | https://owasp.org/projects/mobile-top-10 |
+| [PCI-DSS] | https://www.pcisecuritystandards.org/document_library/, PCI DSS v4.0.1 (June 2024, v4.0 retired 2024-12-31). Cite by requirement number, such as `PCI DSS 4.0.1 Req 3.4.1`. `../pci-dss.md` maps the requirements a card-data change usually touches. Glossary (CHD, SAD, CDE): https://www.pcisecuritystandards.org/glossary/ |
 
 <!-- Source links. Keep in sync with the table above (primary URL per key) so [KEY] references
      render as links wherever this pack's content is pasted -->
@@ -278,3 +283,4 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
 [MASTG]: https://mas.owasp.org/MASTG/
 [PINNING]: https://cheatsheetseries.owasp.org/cheatsheets/Pinning_Cheat_Sheet.html
 [TOP10-2024]: https://owasp.org/projects/mobile-top-10
+[PCI-DSS]: https://www.pcisecuritystandards.org/document_library/

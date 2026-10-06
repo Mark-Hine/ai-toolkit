@@ -211,6 +211,10 @@ Pass/Fail/Partial/Unverified with `file:line` evidence.
 | PRIVACY-3 | Transparency | Data-collection disclosure vs actual SDK behavior (analytics/marketing SDKs found in the dependency inventory) |
 | PRIVACY-4 | User data control | Deletion/opt-out paths for collected data |
 
+**Card data ([PCI-DSS]):** when the change displays, stores, logs or transmits cardholder data or
+sensitive authentication data, also load [`../pci-dss.md`](../pci-dss.md) and cite the PCI DSS
+requirement beside the MASVS control.
+
 **OWASP Mobile Top 10 (2024) cross-map** (check owasp.org for a newer edition before citing it. The Top 10 is the
 awareness list, MASVS is the verification standard). Emit as
 a compact table pointing each M-risk at the MASVS rows above rather than re-checking:
@@ -271,6 +275,7 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
 | [MASTG] | https://mas.owasp.org/MASTG/ (cite the version shown on the site at review time), incl. MASTG-KNOW-0015 (cert pinning), MASTG-TEST-0244 (missing pinning, Android) |
 | [PINNING] | https://cheatsheetseries.owasp.org/cheatsheets/Pinning_Cheat_Sheet.html, OWASP Pinning Cheat Sheet (public-key/SPKI pins, backup pins, expiration safety-valve, when NOT to pin) |
 | [TOP10-2024] | https://owasp.org/projects/mobile-top-10 |
+| [PCI-DSS] | https://www.pcisecuritystandards.org/document_library/, PCI DSS v4.0.1 (June 2024, v4.0 retired 2024-12-31). Cite by requirement number, such as `PCI DSS 4.0.1 Req 3.4.1`. `../pci-dss.md` maps the requirements a card-data change usually touches. Glossary (CHD, SAD, CDE): https://www.pcisecuritystandards.org/glossary/ |
 | [GRADLE-DOCS] | https://docs.gradle.org/current/userguide/best_practices_general.html (+ version_catalogs.html, configuration_cache.html) |
 | [AGP-BUILD] | https://developer.android.com/build/optimize-your-build (+ /migrate-to-catalogs, /shrink-code) |
 | [BASELINE-PROF] | https://developer.android.com/topic/performance/baselineprofiles/overview |
@@ -312,6 +317,7 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
 [MASTG]: https://mas.owasp.org/MASTG/
 [PINNING]: https://cheatsheetseries.owasp.org/cheatsheets/Pinning_Cheat_Sheet.html
 [TOP10-2024]: https://owasp.org/projects/mobile-top-10
+[PCI-DSS]: https://www.pcisecuritystandards.org/document_library/
 [GRADLE-DOCS]: https://docs.gradle.org/current/userguide/best_practices_general.html
 [AGP-BUILD]: https://developer.android.com/build/optimize-your-build
 [BASELINE-PROF]: https://developer.android.com/topic/performance/baselineprofiles/overview
