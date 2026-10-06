@@ -22,11 +22,15 @@ The concrete Compose, SwiftUI and CSS APIs that satisfy each rule in `design-sta
 | AND-4 | `android:screenOrientation` is ignored at sw600dp from target 36. `PROPERTY_COMPAT_ALLOW_RESTRICTED_RESIZABILITY` is the temporary opt-out | | |
 | AND-5 | `MaterialTheme.motionScheme`, `MotionScheme.expressive()`, `MotionScheme.standard()`, spatial and effects specs (confirm member names against the current material3 release) | | |
 | AND-6 | `BackHandler`, `PredictiveBackHandler`, `OnBackPressedDispatcher`, Navigation 3 `NavigationBackHandler` | | |
+| AND-7 | `adaptive-icon` XML in `res/mipmap-anydpi-v26/ic_launcher.xml` with `background`, `foreground` and `monochrome` layers. Image Asset Studio in Android Studio generates them | | |
 | IOS-1 | | `Color(.systemBackground)`, `Color(.label)`, `Color(.secondarySystemBackground)`, asset catalog colours with dark and high-contrast variants | |
 | IOS-2 | | system `toolbar` and `TabView` adopt glass. Custom glass through `glassEffect` behind `if #available(iOS 26, *)`. Content backgrounds use `.regularMaterial` | |
 | IOS-3 | | `safeAreaInset(edge:alignment:spacing:content:)` (iOS 15), `safeAreaPadding` (iOS 17), `GeometryProxy.safeAreaInsets`, `ignoresSafeArea` for backgrounds only | |
 | IOS-4 | | `.sensoryFeedback(_:trigger:)` (iOS 17), `UINotificationFeedbackGenerator` below iOS 17 | |
+| IOS-5 | | an Icon Composer `.icon` file added to the app target, built from layers exported from the master SVG | |
 | WEB-1 | | | `<main>`, `<nav>`, `<header>`, `<footer>`, `<article>` |
 | WEB-2 | | | `font-size: clamp(1rem, 0.9rem + 0.5vw, 2rem)` |
 | WEB-3 | | | `--space-4: 1rem` and friends on `:root` |
 | WEB-4 | | | `@container` with `container-type` on the parent |
+| WEB-5 | | | `"purpose": "maskable"` on a manifest `icons` entry |
+| WEB-6 | | | `<link rel="icon" href="/favicon.ico" sizes="32x32">`, `<link rel="icon" href="/icon.svg" type="image/svg+xml">`, `<link rel="apple-touch-icon" href="/apple-touch-icon.png">`, manifest `icons` at 192 and 512 px |

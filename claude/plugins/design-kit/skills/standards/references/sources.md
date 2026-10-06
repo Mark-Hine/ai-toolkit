@@ -18,6 +18,7 @@ Base URL `https://developer.apple.com/design/human-interface-guidelines/`. Pages
 | HIG-MATERIALS | `/materials` | do not use Liquid Glass in the content layer, standard materials for content | 2026-09-29 |
 | HIG-TYPOGRAPHY | `/typography` | built-in text styles, the size and leading table | 2026-09-29 |
 | HIG-HAPTICS | `/playing-haptics` | use haptics consistently and sparingly | 2026-09-29 |
+| HIG-APP-ICONS | `/app-icons` | 1024 by 1024 px layers in Icon Composer, the default, dark, clear and tinted appearances, effects the system adds, text only when essential | 2026-10-06 |
 | HIG-LAYOUT | `/layout` | safe areas, layout margins, no spacing grid | to fetch |
 | HIG-COLOR | `/color` | semantic colours, dark and increased-contrast variants | to fetch |
 
@@ -43,6 +44,7 @@ Base URL `https://developer.android.com/`.
 | AND-A11Y | `/guide/topics/ui/accessibility/apps` | 48 dp targets, labels | to fetch |
 | AND-EDGE | `/develop/ui/compose/system/insets` | edge to edge and insets | to fetch |
 | AND-FONT-SCALE | `/about/versions/14/features#non-linear-font-scaling` | font scaling to 200% | to fetch |
+| AND-ADAPTIVE-ICON | `/develop/ui/views/launch/icon_design_adaptive` | 108 by 108 dp layers, a logo of 48 to 66 dp inside the masked viewport, the monochrome layer for themed icons, automatic theming from Android 16 QPR 2 | 2026-10-06 |
 | AND-ANIM-SCALE | `/reference/android/provider/Settings.Global#ANIMATOR_DURATION_SCALE` | the Remove animations scale | to fetch |
 
 ## WCAG 2.2
@@ -70,6 +72,7 @@ W3C Recommendation, current edition dated 2024-12-12. Verified 2026-09-29. One k
 | MDN-REDUCED-MOTION | https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion | to fetch |
 | MDN-CLAMP | https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/clamp | 2026-09-29 |
 | MDN-CONTAINER | https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Containment/Container_queries | to fetch |
+| MDN-APP-ICONS | https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/How_to/Define_app_icons | 2026-10-06 |
 | MDN-CUSTOM-PROPS | https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascading_variables/Using_custom_properties | to fetch |
 
 ## Tier 2 origins
@@ -80,4 +83,8 @@ W3C Recommendation, current edition dated 2024-12-12. Verified 2026-09-29. One k
 | Hurff | https://www.scotthurff.com/posts/why-your-user-interface-is-awkward-youre-ignoring-the-ui-stack/ (2015-08-17), the UI Stack | 2026-09-29 |
 | Butterick | https://practicaltypography.com/line-length.html | 2026-09-29 |
 | Bringhurst | The Elements of Typographic Style, a book with no URL | n/a |
+| Google-DM | https://github.com/google-labs-code/design.md, the DESIGN.md format (alpha) and its `@google/design.md` CLI, read through `design.md spec` at version 0.4.0 | 2026-10-06 |
+| Vercel-DM | https://vercel.com/blog/how-our-agents-build-on-brand-pages-with-design-md (2026-08-31), design.md guidance plus a bounded stylesheet plus deterministic checks, 39 against 91 known failures | 2026-10-06 |
+| Tuch-2012 | https://research.google/pubs/the-role-of-visual-complexity-and-prototypicality-regarding-first-impression-of-websites-working-towards-understanding-aesthetic-judgments/, Tuch and others in the International Journal of Human-Computer Studies 70(11), DOI 10.1016/j.ijhcs.2012.06.003 | 2026-10-06, abstract |
+| EM-FAVICON | https://evilmartians.com/chronicles/how-to-favicon-in-2021-six-files-that-fit-most-needs, now titled "How to Favicon in 2026: Three files that fit most needs" and updated 2026-01-21 | 2026-10-06 |
 | House | An ai-toolkit decision. The reason is in `rationale.md` | n/a |
