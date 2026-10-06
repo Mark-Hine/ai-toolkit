@@ -259,6 +259,10 @@ through to nothing, or worse, to a different tree than the one reviewed. Branch 
 are re-derived at use time, never recalled from earlier in the session or from notes. This rule
 exists because recalled SHAs have gone orphaned mid-review more than once.
 
+`python3 scripts/check_ancestry.py --ref <ref> --file <review.md>` runs this check for every backticked
+SHA in a review document, or pass the SHAs as arguments. It exits 1 when any SHA is off-branch
+(reachable only from another ref), orphaned (reachable from no ref) or missing.
+
 ## 20. Debug-variant exclusion
 
 A defect confined to debug builds, and **verifiably** absent from every release variant, is not
