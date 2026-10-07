@@ -9,6 +9,8 @@ Read the project AGENTS.md (or GEMINI.md) and applicable guidance first. Fall ba
 
 Repo facts (modules, build/test commands, design-system names, app id) come from the project's `AGENTS.md`. Never guess them.
 
+Skills named below are optional companions. When one is missing, follow `references/companions.md` in the `android-standards` skill and continue.
+
 1. **Intake.** If an Atlassian MCP tool is available, fetch the Jira ticket and quote its acceptance criteria. Otherwise
    restate the goal in three bullets plus an out-of-scope list. Branch `feat/<ticket>-<slug>` (or the project's documented branch convention) off the default branch.
 2. **Discover the pattern.** Use a research subagent to find the closest existing screen or flow: its Activity/Fragment or

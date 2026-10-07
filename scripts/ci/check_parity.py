@@ -73,6 +73,9 @@ def groups():
         yield [f'claude/plugins/{kit}-kit/skills/standards/references/source-anchors.md',
                f'codex/skills/{kit}-standards/references/source-anchors.md',
                f'antigravity/plugins/{kit}-kit/skills/{kit}-standards/references/source-anchors.md']
+    yield ['claude/plugins/android-kit/skills/standards/references/companions.md',
+           'codex/skills/android-standards/references/companions.md',
+           'antigravity/plugins/android-kit/skills/android-standards/references/companions.md']
     for rel in DESIGN_REFERENCE_FILES:
         yield [f'{base}/{rel}' for base in DESIGN_REFERENCES.values()]
     for rel in ITERATE_SCRIPT_FILES:

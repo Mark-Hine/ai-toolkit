@@ -11,6 +11,8 @@ Read the project AGENTS.md and applicable global guidance first. Fall back to CL
 Repo facts (modules, compile/assemble commands, catalog vs Groovy scripts, deliberate opt-outs) come from the project's
 `AGENTS.md` and its `gradle-deps` rule if present. Write the step 4 plan before editing dependency versions. Existing authorization to perform the uplift is sufficient.
 
+Skills named below are optional companions. When one is missing, follow `references/companions.md` in the `android-standards` skill and continue.
+
 1. **Baseline.** Clean `git status` on `feat/<ticket>-<slug>` (or the project's documented branch convention). Run the project's compile checks and
    `./gradlew :app:dependencies --configuration <debugVariant>RuntimeClasspath > <scratchpad>/deps-before.txt`. Quote results.
 2. **Inventory.** List the in-scope entries with current versions (version catalog, or `build.gradle` files in Groovy repos).

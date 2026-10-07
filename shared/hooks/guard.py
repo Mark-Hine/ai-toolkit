@@ -23,6 +23,10 @@ TOOLKIT_ROLES = {'android-researcher', 'android-reviewer', 'android-verifier',
                  'web-researcher', 'web-reviewer', 'web-verifier', 'ui-reviewer'}
 SHELL_LIMITED_ROLES = {'android-researcher', 'android-verifier', 'ios-researcher', 'ios-verifier',
                        'web-researcher', 'web-verifier'}
+# Commands that set up a checkout. The calling session runs them, so a verifier gets a path instead.
+SETUP_COMMANDS = {'git', 'pod', 'swift', 'carthage', 'bundle', 'npm', 'pnpm', 'yarn', 'bun'}
+SETUP_REASON = ('Verifier agents do not run git or dependency installers. '
+                'Ask the calling session to prepare the checkout and pass its path.')
 SHELL_TOOLS = {'Bash', 'shell', 'shell_command', 'exec_command', 'run_command'}
 EDIT_TOOLS = {'apply_patch', 'Edit', 'Write', 'NotebookEdit',
               'write_to_file', 'replace_file_content', 'multi_replace_file_content'}
@@ -415,12 +419,18 @@ def role_reason(role, command):
         return 'Specialist command could not be parsed.'
     if read_command(tokens):
         return None
+    # The web verifier runs package-manager scripts, so its allowlist is checked before the setup message.
+    setup = role.endswith('-verifier') and bool(tokens) and tokens[0].rsplit('/', 1)[-1] in SETUP_COMMANDS
+    if role.startswith('web-'):
+        if web_command_allowed(tokens, role == 'web-researcher'):
+            return None
+        return SETUP_REASON if setup else (
+            'This web specialist only runs its documented package queries or test, lint, type-check and capture commands.')
+    if setup:
+        return SETUP_REASON
     if role.startswith('ios-'):
         return None if ios_command_allowed(tokens, role == 'ios-researcher') else (
             'This iOS specialist only runs its documented read-only queries or test/simulator evidence commands.')
-    if role.startswith('web-'):
-        return None if web_command_allowed(tokens, role == 'web-researcher') else (
-            'This web specialist only runs its documented package queries or test, lint, type-check and capture commands.')
     if role == 'android-verifier' and tokens and tokens[0] == './gradlew':
         return gradle_reason(tokens[1:])
     if role == 'android-researcher':

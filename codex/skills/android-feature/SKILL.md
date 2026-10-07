@@ -10,6 +10,8 @@ Read the project AGENTS.md and applicable global guidance first. Fall back to CL
 
 Repo facts (modules, build/test commands, design-system names, app id) come from the project's `AGENTS.md`. Never guess them.
 
+Skills named below are optional companions. When one is missing, follow `references/companions.md` in the `android-standards` skill and continue.
+
 1. **Intake.** If an Atlassian MCP tool is available, fetch the Jira ticket and quote its acceptance criteria. Otherwise
    restate the goal in three bullets plus an out-of-scope list. Branch `feat/<ticket>-<slug>` (or the project's documented branch convention) off the default branch.
 2. **Discover the pattern.** Use an explorer subagent to find the closest existing screen or flow: its Activity/Fragment or
@@ -21,7 +23,7 @@ Repo facts (modules, build/test commands, design-system names, app id) come from
 4. **Plan.** Files to add or change, state model (`UiState` sealed interface, StateFlow), where data code goes,
    DI wiring, test list, device checks. For UI changes, consult `$design-standards` (tiered design rules, screen states, accessibility). Follow the project's architecture rules. Proceed within the user-authorized scope. Ask only about unresolved scope or consequential choices.
 5. **Implement** in small steps, running the project's compile check after each. New UI is Compose, Material3, following the design rules (AND-1 colour roles, AND-2 insets, A11Y-3 targets), inside the project's theme and components, split into stateless `XContent` and stateful `XScreen`. No orientation locks.
-6. **Tests.** Follow the change-to-test mapping in the Android testing guidance (`~/.codex/guidance/android/testing.md`). ViewModel, use-case and repository changes get unit tests with fakes for owned code and MockK only at true boundaries. A new or changed screen gets a Compose UI test where the module has the infra, otherwise a preview per `UiState`, plus the journey in step 7. Run them with `--tests` and quote the summary.
+6. **Tests.** Follow the change-to-test mapping in the Android testing guidance (`~/.codex/guidance/android/testing.md`, or `references/testing.md` in the `android-standards` skill when the guidance is not installed). ViewModel, use-case and repository changes get unit tests with fakes for owned code and MockK only at true boundaries. A new or changed screen gets a Compose UI test where the module has the infra, otherwise a preview per `UiState`, plus the journey in step 7. Run them with `--tests` and quote the summary.
 7. **Device verification.** `$android-run-app` on the default phone AVD, and on the tablet AVD for any new or changed screen.
    Then hand off to the `android-verifier` agent with the test command, the journey file(s) for the touched screen,
    each device serial and the application id. For a new or changed screen, also ask for a configuration capture of
