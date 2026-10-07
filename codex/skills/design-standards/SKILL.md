@@ -15,6 +15,6 @@ The rules live in `~/.codex/guidance/design-standards.md`. This skill adds the s
 3. Build or review against the rule file one section at a time. Take each API from `references/platform-apis.md`. Do not restate rules from memory.
 4. List the states the screen can reach (STA-1) and confirm that the state model has a case for each and the UI renders it.
 5. Check accessibility on a device or simulator where you can, at the largest text size, with the screen reader, with reduced motion and in dark mode.
-6. When a rule and a source in `references/sources.md` disagree, follow the source and report the rule ID, the source and its date.
+6. Do not fetch a source page to grade a rule. When a rule is disputed, quote its anchor from `references/source-anchors.md`. When the rule and the anchored sentence disagree, follow the source and report the rule ID, the anchor and its confirmed date.
 7. Read `references/rationale.md` before overriding or arguing a T2 rule. T2 rules are defaults and grade Nit unless the project opts in.
 8. Hand the diff and any labelled screenshots from step 5 to the `ui-reviewer` agent before calling the work done.

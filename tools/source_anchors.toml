@@ -22,4 +22,9 @@ enforce = false
 
 # Registries whose declared keys (mode "key", group 1 of the pattern is the key) or URLs (mode "url")
 # need an anchor. Added as each plugin is anchored.
-registries = []
+
+[[registries]]
+# design-kit: every key in a sources.md table.
+files = ["claude/plugins/design-kit/skills/standards/references/sources.md"]
+pattern = '^\| (?!Key \|)([A-Za-z][A-Za-z0-9.\-]*) \|'
+mode = "key"

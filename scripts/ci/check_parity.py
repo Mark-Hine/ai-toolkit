@@ -42,7 +42,7 @@ DESIGN_REFERENCES = {
     'codex': 'codex/skills/design-standards/references',
     'antigravity': 'antigravity/plugins/design-kit/skills/design-standards/references',
 }
-DESIGN_REFERENCE_FILES = ['sources.md', 'rationale.md', 'platform-apis.md', 'design-contract.md', 'capture.md',
+DESIGN_REFERENCE_FILES = ['sources.md', 'source-anchors.md', 'rationale.md', 'platform-apis.md', 'design-contract.md', 'capture.md',
                           'options.md', 'brand-marks.md', 'companions.md']
 ITERATE_SCRIPTS = {
     'claude': 'claude/plugins/design-kit/skills/iterate/scripts',
