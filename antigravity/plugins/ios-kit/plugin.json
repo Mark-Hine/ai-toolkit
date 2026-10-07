@@ -1,5 +1,5 @@
 {
   "name": "ios-kit",
   "description": "iOS playbooks, Apple standards references, generated rules, the PreToolUse guard, the Swift lint hooks, and researcher, reviewer and verifier agents.",
-  "version": "1.1.0"
+  "version": "1.2.0"
 }

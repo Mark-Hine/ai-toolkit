@@ -1,6 +1,6 @@
 {
   "name": "guard-kit",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Repo-agnostic PreToolUse guard: blocks protected-branch and force pushes, destructive git, timeout wrappers, and edits to secrets, signing material and lock files. Limits the toolkit's researcher and verifier agents to their documented commands.",
   "author": {
     "name": "Mark Hine",
