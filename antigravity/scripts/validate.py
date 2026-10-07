@@ -18,7 +18,7 @@ TOOLS = {'view_file', 'list_dir', 'find_by_name', 'grep_search', 'search_web', '
 WRITE_TOOLS = {'write_to_file', 'replace_file_content', 'multi_replace_file_content'}
 EVENTS = {'PreToolUse', 'PostToolUse', 'PreInvocation', 'PostInvocation', 'Stop'}
 GROUPED = {'PreToolUse', 'PostToolUse'}
-LEAKS = ['codex exec', 'CODEX_API_KEY', '~/.codex', '$pr-review', '$android-', '$ios-', 'define_subagent',
+LEAKS = ['codex exec', 'CODEX_API_KEY', '~/.codex', '$pr-review', '$android-', '$ios-', '$web-', 'define_subagent',
          'enable_write_tools', 'GEMINI_CONFIG_DIR', '.claude/rules', 'CLAUDE_PLUGIN_ROOT']
 RULE_LIMIT = 24_000
 
@@ -80,8 +80,8 @@ def check_skills(errors):
 
 def check_agents(errors):
     agents = list(ROOT.glob('plugins/*/agents/*.md'))
-    if len(agents) != 7:
-        errors.append(f'expected 7 agents, found {len(agents)}')
+    if len(agents) != 10:
+        errors.append(f'expected 10 agents, found {len(agents)}')
     for path in agents:
         fields = frontmatter(path.read_text())
         if fields is None:
@@ -191,7 +191,7 @@ def main():
     if errors:
         return 1
     skills = len(list(ROOT.glob('plugins/*/skills/*/SKILL.md')))
-    print(f'Validated {skills} skills, 7 agents, {len(list(ROOT.glob("plugins/*/plugin.json")))} plugins, hook manifests, generated rules, home layout, local links and Python syntax.')
+    print(f'Validated {skills} skills, 10 agents, {len(list(ROOT.glob("plugins/*/plugin.json")))} plugins, hook manifests, generated rules, home layout, local links and Python syntax.')
     return 0
 
 

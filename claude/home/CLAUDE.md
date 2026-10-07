@@ -37,3 +37,5 @@ Shared Git and work preferences load from `~/.claude/rules/common.md`. Writing p
 ## Web, React and TypeScript
 
 - Read matching rules before editing. `~/.claude/rules/web/typescript.md` applies to TypeScript files, `react.md` to React and Next.js components, and `testing.md` to tests. Project instructions and matching project rules take precedence.
+- Use the `/web-kit:feature`, `/web-kit:bugfix`, `/web-kit:run-app` and `web-kit:standards` playbooks when relevant.
+- Delegate framework and package-version research to `web-researcher`, non-trivial web diff review to `web-reviewer`, and tests, type checks and Playwright captures to `web-verifier`. Use the model settings under Subagents. Give each a bounded task and re-check findings. If unavailable, work inline and disclose the limitation.

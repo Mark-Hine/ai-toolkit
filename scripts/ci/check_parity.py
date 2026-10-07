@@ -34,7 +34,8 @@ PR_REVIEW_SHARED = [
 # Hook modules. shared/hooks is canonical; the plugin and Codex copies must be byte-identical.
 HOOK_GROUPS = [
     ['shared/hooks/guard.py', 'claude/plugins/guard-kit/hooks/guard.py', 'codex/hooks/guard.py',
-     'antigravity/plugins/android-kit/hooks/guard.py', 'antigravity/plugins/ios-kit/hooks/guard.py'],
+     'antigravity/plugins/android-kit/hooks/guard.py', 'antigravity/plugins/ios-kit/hooks/guard.py',
+     'antigravity/plugins/web-kit/hooks/guard.py'],
     ['shared/hooks/swift_lint.py', 'claude/plugins/ios-kit/hooks/swift_lint.py', 'codex/hooks/swift_lint.py',
      'antigravity/plugins/ios-kit/hooks/swift_lint.py'],
 ]
@@ -69,13 +70,14 @@ def groups():
         f'{base}/references/languages/kotlin.md' for base in PR_REVIEW.values()]
     yield from HOOK_GROUPS
     # Source anchors are rewritten by tools/source_anchors.py --write, so the kit copies stay byte-identical.
-    for kit in ('android', 'ios'):
+    for kit in ('android', 'ios', 'web'):
         yield [f'claude/plugins/{kit}-kit/skills/standards/references/source-anchors.md',
                f'codex/skills/{kit}-standards/references/source-anchors.md',
                f'antigravity/plugins/{kit}-kit/skills/{kit}-standards/references/source-anchors.md']
-    yield ['claude/plugins/android-kit/skills/standards/references/companions.md',
-           'codex/skills/android-standards/references/companions.md',
-           'antigravity/plugins/android-kit/skills/android-standards/references/companions.md']
+    for kit in ('android', 'web'):
+        yield [f'claude/plugins/{kit}-kit/skills/standards/references/companions.md',
+               f'codex/skills/{kit}-standards/references/companions.md',
+               f'antigravity/plugins/{kit}-kit/skills/{kit}-standards/references/companions.md']
     for rel in DESIGN_REFERENCE_FILES:
         yield [f'{base}/{rel}' for base in DESIGN_REFERENCES.values()]
     for rel in ITERATE_SCRIPT_FILES:

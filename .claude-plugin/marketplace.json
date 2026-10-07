@@ -4,7 +4,7 @@
     "name": "Mark Hine",
     "url": "https://github.com/Mark-Hine"
   },
-  "description": "Claude Code plugins for Android, iOS, UI design review and formal PR review.",
+  "description": "Claude Code plugins for Android, iOS, web, UI design review and formal PR review.",
   "plugins": [
     {
       "name": "android-kit",
@@ -26,6 +26,17 @@
         "swift",
         "swiftui",
         "xcode"
+      ]
+    },
+    {
+      "name": "web-kit",
+      "source": "./claude/plugins/web-kit",
+      "description": "Web playbooks for React, Next.js and TypeScript (feature, bugfix, run in a browser), a standards index, and reviewer, researcher and verifier agents.",
+      "keywords": [
+        "web",
+        "react",
+        "nextjs",
+        "typescript"
       ]
     },
     {

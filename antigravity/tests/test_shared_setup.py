@@ -30,7 +30,7 @@ class SharedSetupTests(unittest.TestCase):
 
     def test_hooks_are_the_shared_module(self):
         shared = (ROOT / 'shared/hooks/guard.py').read_bytes()
-        for kit in ('android-kit', 'ios-kit'):
+        for kit in ('android-kit', 'ios-kit', 'web-kit'):
             self.assertEqual(shared, (ROOT / 'antigravity/plugins' / kit / 'hooks/guard.py').read_bytes(), kit)
         self.assertEqual((ROOT / 'shared/hooks/swift_lint.py').read_bytes(), (ROOT / 'antigravity/plugins/ios-kit/hooks/swift_lint.py').read_bytes())
 
