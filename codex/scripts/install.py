@@ -177,6 +177,7 @@ class Installer:
         self.link(ROOT.parent / 'shared/guidance/design-assets.md', cfg / 'guidance/design-assets.md')
         self.link(ROOT / 'home/guidance/android', cfg / 'guidance/android')
         self.link(ROOT / 'home/guidance/ios', cfg / 'guidance/ios')
+        self.link(ROOT / 'home/guidance/web', cfg / 'guidance/web')
         self.link(ROOT / 'home/toolkit.rules', cfg / 'rules/ai-toolkit.rules')
         for source in sorted((ROOT / 'skills').iterdir()):
             if (source / 'SKILL.md').is_file():
