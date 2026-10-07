@@ -1,5 +1,5 @@
 {
   "name": "android-kit",
   "description": "Android playbooks, standards references, rules generated from the canonical Claude rules, the PreToolUse guard, and researcher, reviewer and verifier agents.",
-  "version": "1.1.1"
+  "version": "1.2.0"
 }

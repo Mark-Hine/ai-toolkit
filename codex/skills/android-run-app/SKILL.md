@@ -11,6 +11,8 @@ Read the project AGENTS.md and applicable global guidance first. Fall back to CL
 Defaults: the default phone AVD named in `~/.codex/machine.md`, and the project's default debug flavour and application id
 from its `AGENTS.md`. Load the `android-cli` skill if any command below is unfamiliar.
 
+Skills named below are optional companions. When one is missing, follow `references/companions.md` in the `android-standards` skill and continue.
+
 1. `android info`, then confirm the compile SDK platform is installed (`ls $ANDROID_HOME/platforms`, because the `android sdk list` pattern filter misses `android-37.0`-style names).
 2. `android emulator list`. If the AVD is not running, `android emulator start <avd>` and wait until `adb devices` shows `device`.
 3. Build: `./gradlew :app:assemble<Flavour>Debug` (capitalise the flavour, and omit the flavour segment if the project has none).
