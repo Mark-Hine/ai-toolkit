@@ -6,8 +6,10 @@ user-invocable: false
 
 # Android standards reference
 
-Use this to pick the authoritative source for a question, then fetch it (`android docs search` / `android docs fetch`
-or WebFetch). Do not answer deadline, deprecation or version questions from memory.
+Use this to pick the authoritative source for a question. For a standard, quote its anchor in
+`references/source-anchors.md` instead of fetching the page. Look up deadlines, deprecations and versions
+when you use them (`android docs search` / `android docs fetch` or WebFetch), because they change between
+anchor checks. Do not answer those from memory.
 
 | Question | Read |
 |---|---|

@@ -214,6 +214,23 @@ class LintTest(unittest.TestCase):
         errors, _ = self.lint(text, enforce=True, registries=registry)
         self.assertTrue(any('OSV has no source anchor' in e for e in errors))
 
+    def test_body_urls_and_sources_modes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / 'refs').mkdir()
+            (root / 'refs/source-anchors.md').write_text('### X\n- URL: https://a.org/x(y:)\n- Quote: "Q."\n', encoding='utf-8')
+            (root / 'refs/docs.md').write_text('- X: https://a.org/x(y:).\n- Pattern https://a.org/<path>.json\n', encoding='utf-8')
+            (root / 'refs/rule.md').write_text('---\nverified: 2026-10-01\nsources:\n  - https://b.org/z\n---\nBody\n', encoding='utf-8')
+            config = dict(CONFIG, anchors=['refs/source-anchors.md'], enforce=True, skip_url_substrings=['<'],
+                          registries=[{'files': ['refs/docs.md'], 'mode': 'url'}, {'files': ['refs/rule.md'], 'mode': 'sources'}])
+            original_root = anchors.ROOT
+            try:
+                anchors.ROOT = root
+                errors, _ = anchors.lint(config, date(2026, 10, 7))
+            finally:
+                anchors.ROOT = original_root
+        self.assertEqual(['refs/rule.md: https://b.org/z has no source anchor'], errors)
+
     def test_url_mode_matches_without_fragment(self):
         registry = [{'files': ['refs/registry.md'], 'pattern': r'(https://osv\.dev)', 'mode': 'url'}]
         text = '### OSV\n- URL: https://osv.dev/#top\n- Quote: "A database."\n'

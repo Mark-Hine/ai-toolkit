@@ -6,8 +6,10 @@ user-invocable: false
 
 # iOS standards reference
 
-Use this to pick the authoritative source for a question, then fetch it with WebFetch. Do not answer deadline,
-deprecation, App Store requirement or version questions from memory.
+Use this to pick the authoritative source for a question. For a standard, quote its anchor in
+`references/source-anchors.md` instead of fetching the page. Look up deadlines, deprecations, App Store
+requirements and versions with WebFetch when you use them, because they change between anchor checks. Do not
+answer those from memory.
 
 | Question | Read |
 |---|---|

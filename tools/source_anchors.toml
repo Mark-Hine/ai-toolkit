@@ -4,7 +4,11 @@
 # Anchor files the tool reads and writes.
 anchors = [
   "claude/plugins/*/skills/*/references/source-anchors.md",
+  "shared/guidance/references/source-anchors.md",
 ]
+
+# URLs that are patterns or placeholders, not pages.
+skip_url_substrings = ["example.com", "localhost", "<", ">", "${", "$("]
 
 # Hosts that render their text client-side, read through headless Chrome.
 browser_hosts = ["m3.material.io", "docs.swift.org", "www.swift.org"]
@@ -18,8 +22,7 @@ retries = 3
 workers = 6
 
 # When true, every key or URL a registry below declares must have an anchor, or --lint fails.
-# Report-only until every registry is anchored.
-enforce = false
+enforce = true
 
 # Registries whose declared keys (mode "key", group 1 of the pattern is the key) or URLs (mode "url")
 # need an anchor. Added as each plugin is anchored.
@@ -35,3 +38,13 @@ mode = "key"
 files = ["claude/plugins/pr-review/skills/pr-review/references/platforms/*.md", "claude/plugins/pr-review/skills/pr-review/references/pci-dss.md"]
 pattern = '^\[[A-Za-z0-9.\-]+\]: (https://\S+)'
 mode = "url"
+
+[[registries]]
+# android-kit and ios-kit: every URL the official-docs registries cite.
+files = ["claude/plugins/android-kit/skills/standards/references/official-docs.md", "claude/plugins/ios-kit/skills/standards/references/official-docs.md"]
+mode = "url"
+
+[[registries]]
+# Rule files: every URL in a `sources:` list.
+files = ["claude/home/rules/**/*.md", "shared/guidance/*.md"]
+mode = "sources"

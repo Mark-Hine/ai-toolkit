@@ -37,6 +37,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from linkcheck import Checker  # noqa: E402
+from stamps import body_urls, stamp  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / 'tools/source_anchors.toml'
@@ -46,7 +47,8 @@ BROWSER_UA = ('Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/605.1.15
 CHROME_PATHS = ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
                 'google-chrome', 'google-chrome-stable', 'chromium', 'chromium-browser']
 # Text of the pages hosts serve instead of content when they block automated readers.
-BLOCK_MARKERS = ('Attention Required! | Cloudflare', 'Sorry, you have been blocked')
+BLOCK_MARKERS = ('Attention Required! | Cloudflare', 'Sorry, you have been blocked',
+                 'Please wait while we verify your browser')
 HEADING = re.compile(r'^### (\S+)\s*$')
 FIELD = re.compile(r'^- (URL|Quote|Confirmed|Fetch): (.*)$')
 CONFIRMED = re.compile(r'^(\d{4}-\d{2}-\d{2}) \((apple-json|html|browser)\)$')
@@ -124,14 +126,20 @@ def html_text(markup):
 
 
 def apple_text(payload):
-    """Every text node in an Apple documentation or HIG JSON page."""
+    """The title and every text string in an Apple documentation or HIG JSON page.
+
+    Prose lives in `text` nodes, inline code in `codeVoice` nodes, and a symbol's declaration in
+    `tokens`, which also carry their text under `text`.
+    """
     data = json.loads(payload)
-    out = []
+    out = [data.get('metadata', {}).get('title', '')]
 
     def walk(node):
         if isinstance(node, dict):
-            if node.get('type') in ('text', 'codeVoice') and isinstance(node.get('text', node.get('code')), str):
-                out.append(node.get('text', node.get('code')))
+            if isinstance(node.get('text'), str):
+                out.append(node['text'])
+            elif node.get('type') == 'codeVoice' and isinstance(node.get('code'), str):
+                out.append(node['code'])
             for value in node.values():
                 walk(value)
         elif isinstance(node, list):
@@ -291,14 +299,32 @@ def write_confirmed(results, today):
 
 
 def declared(config):
-    """{(registry file, key or URL)} that a registry declares and an anchor must cover."""
+    """{(registry file, mode, key or URL)} that a registry declares and an anchor must cover.
+
+    mode "key" takes group 1 of the registry's pattern. Mode "url" takes group 1 of the pattern when
+    one is given, else every URL in the body as the link checker finds them. Mode "sources" takes the
+    URLs in the file's `sources:` frontmatter.
+    """
     wanted = set()
+    skip = config.get('skip_url_substrings', [])
     for reg in config.get('registries', []):
-        pattern = re.compile(reg['pattern'], re.M)
+        mode = reg.get('mode', 'key')
+        pattern = re.compile(reg['pattern'], re.M) if reg.get('pattern') else None
         for glob in reg['files']:
             for path in ROOT.glob(glob):
-                for m in pattern.finditer(path.read_text(encoding='utf-8')):
-                    wanted.add((rel(path), reg.get('mode', 'key'), m.group(1)))
+                if mode == 'sources':
+                    _, found = stamp(path)
+                    found = found if isinstance(found, list) else []
+                    mode_out = 'url'
+                elif pattern:
+                    found = [m.group(1) for m in pattern.finditer(path.read_text(encoding='utf-8'))]
+                    mode_out = mode
+                else:
+                    found = body_urls(path.read_text(encoding='utf-8'))
+                    mode_out = 'url'
+                for value in found:
+                    if not any(s in value for s in skip):
+                        wanted.add((rel(path), mode_out, value))
     return wanted
 
 

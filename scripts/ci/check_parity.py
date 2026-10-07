@@ -68,6 +68,11 @@ def groups():
     yield ['shared/guidance/references/kotlin-rationale.md'] + [
         f'{base}/references/languages/kotlin.md' for base in PR_REVIEW.values()]
     yield from HOOK_GROUPS
+    # Source anchors are rewritten by tools/source_anchors.py --write, so the kit copies stay byte-identical.
+    for kit in ('android', 'ios'):
+        yield [f'claude/plugins/{kit}-kit/skills/standards/references/source-anchors.md',
+               f'codex/skills/{kit}-standards/references/source-anchors.md',
+               f'antigravity/plugins/{kit}-kit/skills/{kit}-standards/references/source-anchors.md']
     for rel in DESIGN_REFERENCE_FILES:
         yield [f'{base}/{rel}' for base in DESIGN_REFERENCES.values()]
     for rel in ITERATE_SCRIPT_FILES:

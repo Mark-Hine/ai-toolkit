@@ -7,8 +7,10 @@ Read the project AGENTS.md and applicable global guidance first. Fall back to CL
 
 # iOS standards reference
 
-Use this to pick the authoritative source for a question, then fetch it with web fetch. Do not answer deadline,
-deprecation, App Store requirement or version questions from memory.
+Use this to pick the authoritative source for a question. For a standard, quote its anchor in
+`references/source-anchors.md` instead of fetching the page. Look up deadlines, deprecations, App Store
+requirements and versions with web fetch when you use them, because they change between anchor checks. Do not
+answer those from memory.
 
 | Question | Read |
 |---|---|
