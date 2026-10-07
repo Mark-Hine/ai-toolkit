@@ -7,12 +7,13 @@ anchors = [
 ]
 
 # Hosts that render their text client-side, read through headless Chrome.
-browser_hosts = ["m3.material.io"]
+browser_hosts = ["m3.material.io", "docs.swift.org", "www.swift.org"]
 
 max_quote_chars = 300
 max_quote_sentences = 2
 timeout = 30
-browser_timeout = 60
+browser_timeout = 90
+browser_concurrency = 2
 retries = 3
 workers = 6
 
@@ -28,3 +29,9 @@ enforce = false
 files = ["claude/plugins/design-kit/skills/standards/references/sources.md"]
 pattern = '^\| (?!Key \|)([A-Za-z][A-Za-z0-9.\-]*) \|'
 mode = "key"
+
+[[registries]]
+# pr-review: every URL a platform pack or pci-dss.md defines for a [KEY].
+files = ["claude/plugins/pr-review/skills/pr-review/references/platforms/*.md", "claude/plugins/pr-review/skills/pr-review/references/pci-dss.md"]
+pattern = '^\[[A-Za-z0-9.\-]+\]: (https://\S+)'
+mode = "url"

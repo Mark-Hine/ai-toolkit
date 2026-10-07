@@ -20,6 +20,7 @@ PR_REVIEW = {
 PR_REVIEW_SHARED = [
     'references/output.md',
     'references/pci-dss.md',
+    'references/source-anchors.md',
     'references/protocol.md',
     'references/template.md',
     'references/platforms/android.md',

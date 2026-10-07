@@ -183,6 +183,11 @@ So: before a finding depends on one of these, look it up and cite what you found
 you can't verify it in the moment, downgrade the claim to a question for the author rather than
 stating it.
 
+This rule covers volatile facts only. The standards the packs grade against are anchored instead:
+[`source-anchors.md`](source-anchors.md) pins each cited key to the sentence it rests on, confirmed
+against the live page by a maintenance tool. Do not fetch a standards page to grade a finding. When
+a citation is disputed, quote its anchor, and treat a source marked `none (offline)` as unconfirmed.
+
 ## 14. `Unverified` is a valid grade, and "method, not vibes"
 
 Static reading cannot settle everything. A claim that would need a device trace, a profiler run, a

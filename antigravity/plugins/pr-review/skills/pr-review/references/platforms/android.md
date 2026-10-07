@@ -261,6 +261,9 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
 
 ## Source registry (canonical URLs for Refs lines)
 
+The sentence each key rests on, and the date it was last confirmed on the live page, are in
+[`../source-anchors.md`](../source-anchors.md). Quote the anchor when a citation is disputed.
+
 | Key | Source |
 |---|---|
 | [ARCH-GUIDE] | https://developer.android.com/topic/architecture |

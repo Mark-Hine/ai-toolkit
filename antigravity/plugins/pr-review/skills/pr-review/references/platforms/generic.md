@@ -138,6 +138,9 @@ what makes it expensive later.
 
 ## Source registry
 
+The sentence each key rests on, and the date it was last confirmed on the live page, are in
+[`../source-anchors.md`](../source-anchors.md). Quote the anchor when a citation is disputed.
+
 Fill this in per review with what you actually cited, with the project's own configs and docs first,
 then the canonical references for the stack. A few that apply broadly:
 

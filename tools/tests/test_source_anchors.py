@@ -125,6 +125,12 @@ class VerifyTest(Fixture):
         result = anchors.verify(self.by_key['M3-MOTION'], self.reader({}, chrome=None))
         self.assertEqual(('UNREACHABLE', 'browser'), (result['status'], result['method']))
 
+    def test_a_bot_block_page_is_unreachable_not_drifted(self):
+        block = b'<title>Attention Required! | Cloudflare</title><p>Sorry, you have been blocked.' + FILLER.encode() + b'</p>'
+        routes = {'https://developer.android.com/guide/topics/ui/accessibility/apps': (200, block)}
+        result = anchors.verify(self.by_key['AND-A11Y'], self.reader(routes))
+        self.assertEqual('UNREACHABLE', result['status'])
+
     def test_browser_host_reads_the_rendered_dom(self):
         dom = lambda url, chrome, timeout: '<main>The physics system has two preset motion schemes: expressive and standard.' + FILLER + '</main>'
         result = anchors.verify(self.by_key['M3-MOTION'], self.reader({}, chrome='/bin/chrome', dom=dom))
@@ -144,6 +150,11 @@ class VerifyTest(Fixture):
         self.assertEqual('CONFIRMED', anchors.verify(self.by_key['AND-A11Y'], reader)['status'])
         self.assertEqual('CONFIRMED', anchors.verify(twin, reader)['status'])
         self.assertEqual(1, len(calls))
+
+    def test_gzipped_body_is_decompressed(self):
+        import gzip
+        routes = {'https://developer.android.com/guide/topics/ui/accessibility/apps': (200, gzip.compress(ANDROID_HTML))}
+        self.assertEqual('CONFIRMED', anchors.verify(self.by_key['AND-A11Y'], self.reader(routes))['status'])
 
     def test_house_anchor_is_skipped(self):
         self.assertEqual('SKIPPED', anchors.verify(self.by_key['House'], self.reader({}))['status'])
@@ -189,6 +200,10 @@ class LintTest(unittest.TestCase):
                          'B still says "to fetch"', 'B is confirmed on a future date',
                          'C quote has more than 2 sentences', 'unknown anchor field'):
             self.assertIn(fragment, joined)
+
+    def test_a_quote_that_mentions_fetching_is_fine(self):
+        errors, _ = self.lint('### R\n- URL: https://react.dev/x\n- Quote: "Writing fetch calls is a popular way to fetch data."\n')
+        self.assertEqual([], errors)
 
     def test_coverage_is_a_warning_until_enforced(self):
         registry = [{'files': ['refs/registry.md'], 'pattern': r'^\[([A-Z0-9-]+)\]: https://', 'mode': 'key'}]
