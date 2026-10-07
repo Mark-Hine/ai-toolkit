@@ -30,8 +30,10 @@ Antigravity layers. One heading per key:
 
 - **URL** is the page, with an optional fragment.
 - **Quote** is verbatim text from the page, at most 300 characters and two sentences. Repeat the line
-  for a second passage. Use `none (house)`, `none (book)` or `none (offline)` for a source with no
-  page to check.
+  for a second passage. Use `none (house)` for this repo's own decisions, `none (book)` for a printed
+  source, and `none (offline)` for a page that blocks automated readers, such as Medium, whose bot
+  protection turns away both plain requests and headless Chrome. An offline source stays cited but
+  unconfirmed, so prefer an official page that says the same thing when one exists.
 - **Confirmed** is written by the tool. It records the date the quote was last found and how the page
   was read (`apple-json`, `html` or `browser`). A new anchor starts as `not yet`.
 - **Fetch** is optional and overrides how the page is read.

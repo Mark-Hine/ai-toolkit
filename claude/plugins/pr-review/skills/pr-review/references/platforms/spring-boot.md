@@ -144,6 +144,9 @@ git diff MERGE_BASE SOURCE_HEAD | grep -c '^-.*Copyright'
 
 ## Source registry (canonical URLs for Refs lines)
 
+The sentence each key rests on, and the date it was last confirmed on the live page, are in
+[`../source-anchors.md`](../source-anchors.md). Quote the anchor when a citation is disputed.
+
 | Key | Source |
 |---|---|
 | [BOOT-REF] | https://docs.spring.io/spring-boot/ (select the version line the repo pins) |

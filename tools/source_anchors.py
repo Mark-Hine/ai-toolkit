@@ -18,6 +18,7 @@ under .cache/sources/ for maintainers and never committed.
 registry declares has an anchor. Coverage gaps fail only when the config sets enforce = true.
 """
 import argparse
+import gzip
 import hashlib
 import html
 import json
@@ -44,6 +45,8 @@ BROWSER_UA = ('Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/605.1.15
               '(KHTML, like Gecko) Version/17.0 Safari/605.1.15')
 CHROME_PATHS = ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
                 'google-chrome', 'google-chrome-stable', 'chromium', 'chromium-browser']
+# Text of the pages hosts serve instead of content when they block automated readers.
+BLOCK_MARKERS = ('Attention Required! | Cloudflare', 'Sorry, you have been blocked')
 HEADING = re.compile(r'^### (\S+)\s*$')
 FIELD = re.compile(r'^- (URL|Quote|Confirmed|Fetch): (.*)$')
 CONFIRMED = re.compile(r'^(\d{4}-\d{2}-\d{2}) \((apple-json|html|browser)\)$')
@@ -173,6 +176,8 @@ class Reader:
         self.dom = chrome_dom
         self.memo = {}
         self.memo_lock = threading.Lock()
+        # Each headless Chrome is heavy, so only a few run at once.
+        self.browsers = threading.BoundedSemaphore(int(config.get('browser_concurrency', 2)))
 
     def method_for(self, anchor):
         if anchor.fetch:
@@ -224,11 +229,16 @@ class Reader:
             if method == 'browser':
                 if not self.chrome:
                     return method, None, 'needs headless Chrome, which was not found'
-                return method, html_text(self.dom(url, self.chrome, self.config.get('browser_timeout', 60))), ''
+                with self.browsers:
+                    return method, html_text(self.dom(url, self.chrome, self.config.get('browser_timeout', 60))), ''
             status, body = self.get(url)
             if status >= 400:
                 return method, None, f'HTTP {status}'
+            if body[:2] == b'\x1f\x8b':  # some hosts gzip the body even when not asked to
+                body = gzip.decompress(body)
             return method, html_text(body.decode('utf-8', errors='replace')), ''
+        except urllib.error.HTTPError as exc:
+            return method, None, f'HTTP {exc.code} after retries'
         except Exception as exc:  # noqa: BLE001
             return method, None, type(exc).__name__
 
@@ -245,6 +255,8 @@ def verify(anchor, reader, cache=None):
         (cache / f'{name}.txt').write_text(f'{anchor.url}\n\n{text}\n', encoding='utf-8')
     if not text or len(text) < 200:
         return dict(base, status='UNREACHABLE', detail=detail or 'no readable text', method=method)
+    if any(marker in text[:2000] for marker in BLOCK_MARKERS):
+        return dict(base, status='UNREACHABLE', detail='the host served a bot-block page', method=method)
     page = normalise(text)
     missing = [q for q in anchor.quotes if normalise(q) not in page]
     if missing:
@@ -312,7 +324,7 @@ def lint(config, today):
                     if len(a.quotes) > 1:
                         errors.append(f'{where}: {a.key} mixes "none" with quotes')
                     continue
-                if 'to fetch' in q.lower():
+                if q.strip().lower().startswith('to fetch'):
                     errors.append(f'{where}: {a.key} still says "to fetch"')
                 if len(q) > config.get('max_quote_chars', 300):
                     errors.append(f'{where}: {a.key} quote is {len(q)} characters, the cap is {config.get("max_quote_chars", 300)}')

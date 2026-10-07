@@ -1,5 +1,5 @@
 {
   "name": "pr-review",
   "description": "Formal written PR review with a standards-cited findings register for Android, iOS, Spring Boot, React/Next.js and generic repos.",
-  "version": "1.1.0"
+  "version": "1.2.0"
 }
