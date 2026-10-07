@@ -3,3 +3,4 @@ machine.md
 __pycache__/
 .DS_Store
 claude/plugins/*/evals/results/
+.cache/

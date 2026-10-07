@@ -3,8 +3,9 @@
 
 Scope: every tracked .md file, the developer_instructions strings in codex/agents/*.toml, and string
 literals in tracked .py files. Fenced code blocks, inline code spans, URLs and YAML frontmatter are
-skipped. scripts/ci/style-exceptions.txt lists `path: substring` pairs that are allowed, one per line,
-for quoted source text and for the files that define the banned words.
+skipped, and so are the `- Quote:` lines of source-anchors.md files, which hold verbatim third-party
+text (docs/source-anchors.md). scripts/ci/style-exceptions.txt lists `path: substring` pairs that are
+allowed, one per line, for quoted source text and for the files that define the banned words.
 """
 import re
 import subprocess
@@ -76,7 +77,10 @@ def prose_lines_py(text):
 
 def check(path, lines, rules, problems):
     rel = path.relative_to(ROOT).as_posix()
+    anchors = rel.endswith('/source-anchors.md')
     for lineno, prose in lines:
+        if anchors and prose.lstrip().startswith('- Quote:'):
+            continue
         for kind, found in (('dash', DASHES.search(prose)), ('banned word', BANNED.search(prose))):
             if found and not excepted(rel, prose, rules):
                 problems.append(f'{rel}:{lineno}: {kind} {found.group(0)!r}')

@@ -17,9 +17,11 @@ jobs:
       - name: Stamp ages
         id: freshness
         continue-on-error: true
-        run: python3 tools/freshness.py | tee freshness.txt
+        run: |
+          python3 tools/freshness.py | tee freshness.txt
+          if grep -Eq ' [1-9][0-9]* warnings' freshness.txt; then echo 'warn=true' >> "$GITHUB_OUTPUT"; fi
       - name: Open or update the freshness issue
-        if: steps.freshness.outcome == 'failure' || contains(steps.freshness.outputs.stdout, 'warn')
+        if: steps.freshness.outcome == 'failure' || steps.freshness.outputs.warn == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -28,7 +30,7 @@ jobs:
           existing="$(gh issue list --label freshness --state open --json number --jq '.[0].number')"
           if [ -n "$existing" ]; then gh issue edit "$existing" --body "$body"; else gh issue create --title "Standards need re-verification" --label freshness --body "$body"; fi
       - name: Close the freshness issue when clean
-        if: steps.freshness.outcome == 'success' && !contains(steps.freshness.outputs.stdout, 'warn')
+        if: steps.freshness.outcome == 'success' && steps.freshness.outputs.warn != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -60,3 +62,31 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           for n in $(gh issue list --label linkcheck --state open --json number --jq '.[].number'); do gh issue close "$n" --comment "Every cited URL resolves again."; done
+  anchors:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Confirm every source anchor against its page
+        id: anchors
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 tools/source_anchors.py --report anchors.md
+      - name: Open or update the anchors issue
+        if: steps.anchors.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create anchors --force --description "A source anchor drifted or its page could not be read" --color 5319E7
+          body="$(printf 'Run `python3 tools/source_anchors.py` from the checkout, then follow the Maintenance section of `docs/source-anchors.md`.\n\n%s\n' "$(cat anchors.md)")"
+          existing="$(gh issue list --label anchors --state open --json number --jq '.[0].number')"
+          if [ -n "$existing" ]; then gh issue edit "$existing" --body "$body"; else gh issue create --title "Source anchors need attention" --label anchors --body "$body"; fi
+      - name: Close the anchors issue when clean
+        if: steps.anchors.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for n in $(gh issue list --label anchors --state open --json number --jq '.[].number'); do gh issue close "$n" --comment "Every source anchor is confirmed again."; done
