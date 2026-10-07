@@ -23,15 +23,15 @@ antigravity = ["guidance/"]
 
 [[substitutions]]
 neutral = "{SKILL:standards}"
-claude = ["android-kit:standards", "ios-kit:standards", "design-kit:standards"]
-codex = ["$android-standards", "$ios-standards", "$design-standards", "android-standards", "ios-standards", "design-standards"]
-antigravity = ["/android-standards", "/ios-standards", "/design-standards", "android-standards", "ios-standards", "design-standards"]
+claude = ["android-kit:standards", "ios-kit:standards", "web-kit:standards", "design-kit:standards"]
+codex = ["$android-standards", "$ios-standards", "$web-standards", "$design-standards", "android-standards", "ios-standards", "web-standards", "design-standards"]
+antigravity = ["/android-standards", "/ios-standards", "/web-standards", "/design-standards", "android-standards", "ios-standards", "web-standards", "design-standards"]
 
 [[substitutions]]
 neutral = "{INVOKE}"
-claude = ["/android-kit:", "/ios-kit:", "/design-kit:", "/pr-review:pr-review", "/toolkit:audit", "/toolkit:check"]
-codex = ["$android-", "$ios-", "$design-", "$pr-review", "$toolkit-audit", "$toolkit-check"]
-antigravity = ["/android-", "/ios-", "/design-", "/pr-review", "/toolkit-audit", "/toolkit-check"]
+claude = ["/android-kit:", "/ios-kit:", "/web-kit:", "/design-kit:", "/pr-review:pr-review", "/toolkit:audit", "/toolkit:check"]
+codex = ["$android-", "$ios-", "$web-", "$design-", "$pr-review", "$toolkit-audit", "$toolkit-check"]
+antigravity = ["/android-", "/ios-", "/web-", "/design-", "/pr-review", "/toolkit-audit", "/toolkit-check"]
 
 [[substitutions]]
 neutral = "{FETCH}"
@@ -56,6 +56,7 @@ codex = "codex/skills/{p}-{s}/SKILL.md"
 antigravity = "antigravity/plugins/{p}-kit/skills/{p}-{s}/SKILL.md"
 items = [["android", "feature"], ["android", "bugfix"], ["android", "run-app"], ["android", "uplift-deps"], ["android", "standards"],
          ["ios", "feature"], ["ios", "bugfix"], ["ios", "run-app"], ["ios", "uplift-deps"], ["ios", "standards"],
+         ["web", "feature"], ["web", "bugfix"], ["web", "run-app"], ["web", "standards"],
          ["design", "iterate"]]
 
 [[groups]]
@@ -64,13 +65,21 @@ claude = "claude/plugins/{p}-kit/skills/standards/references/{f}.md"
 codex = "codex/skills/{p}-standards/references/{f}.md"
 antigravity = "antigravity/plugins/{p}-kit/skills/{p}-standards/references/{f}.md"
 items = [["android", "ui-events"], ["android", "official-docs"], ["android", "jetsnack"], ["android", "nia"], ["android", "testing"],
-         ["ios", "ui-events"], ["ios", "official-docs"], ["ios", "apple-samples"]]
+         ["ios", "ui-events"], ["ios", "official-docs"], ["ios", "apple-samples"],
+         ["web", "official-docs"]]
 
 [[groups]]
 name = "ios-template"
 claude = "claude/plugins/ios-kit/skills/standards/references/project-claude-md-template.md"
 codex = "codex/skills/ios-standards/references/project-agents-md-template.md"
 antigravity = "antigravity/plugins/ios-kit/skills/ios-standards/references/project-agents-md-template.md"
+items = [[]]
+
+[[groups]]
+name = "web-template"
+claude = "claude/plugins/web-kit/skills/standards/references/project-claude-md-template.md"
+codex = "codex/skills/web-standards/references/project-agents-md-template.md"
+antigravity = "antigravity/plugins/web-kit/skills/web-standards/references/project-agents-md-template.md"
 items = [[]]
 
 [[groups]]
@@ -107,4 +116,5 @@ claude = "claude/plugins/{p}/agents/{a}.md"
 codex = "codex/agents/{a}.toml"
 antigravity = "antigravity/plugins/{p}/agents/{a}.md"
 items = [["android-kit", "android-researcher"], ["android-kit", "android-reviewer"], ["android-kit", "android-verifier"],
-         ["ios-kit", "ios-researcher"], ["ios-kit", "ios-reviewer"], ["ios-kit", "ios-verifier"], ["design-kit", "ui-reviewer"]]
+         ["ios-kit", "ios-researcher"], ["ios-kit", "ios-reviewer"], ["ios-kit", "ios-verifier"],
+         ["web-kit", "web-researcher"], ["web-kit", "web-reviewer"], ["web-kit", "web-verifier"], ["design-kit", "ui-reviewer"]]

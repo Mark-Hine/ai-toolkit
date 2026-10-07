@@ -40,8 +40,8 @@ pattern = '^\[[A-Za-z0-9.\-]+\]: (https://\S+)'
 mode = "url"
 
 [[registries]]
-# android-kit and ios-kit: every URL the official-docs registries cite.
-files = ["claude/plugins/android-kit/skills/standards/references/official-docs.md", "claude/plugins/ios-kit/skills/standards/references/official-docs.md"]
+# android-kit, ios-kit and web-kit: every URL the official-docs registries cite.
+files = ["claude/plugins/android-kit/skills/standards/references/official-docs.md", "claude/plugins/ios-kit/skills/standards/references/official-docs.md", "claude/plugins/web-kit/skills/standards/references/official-docs.md"]
 mode = "url"
 
 [[registries]]

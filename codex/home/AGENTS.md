@@ -35,3 +35,5 @@ Read `~/.codex/machine.md` for local tool and device facts. If CODEX_HOME is set
 ## Web, React and TypeScript
 
 - Read matching guidance before editing. `guidance/web/typescript.md` applies to TypeScript files, `react.md` to React and Next.js components, and `testing.md` to tests. Project instructions take precedence, with CLAUDE.md and project .claude/rules as migration fallbacks where no Codex equivalent exists.
+- Use `$web-feature`, `$web-bugfix`, `$web-run-app` and `$web-standards` when relevant.
+- Delegate framework and package-version research to `web-researcher`, non-trivial web diff review to `web-reviewer`, and tests, type checks and Playwright captures to `web-verifier`. Use the model and reasoning settings in the installed role TOML. Give each a bounded task and re-check findings. If unavailable, work inline and disclose the limitation.

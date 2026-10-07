@@ -8,7 +8,7 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$HERE/.." && pwd)"
 CFG="${CLAUDE_CONFIG_DIR:-$HOME/.claude}"
 MARKET="${MARKETPLACE_SOURCE:-$REPO_ROOT}"
-PLUGINS=(guard-kit android-kit ios-kit pr-review design-kit toolkit)
+PLUGINS=(guard-kit android-kit ios-kit web-kit pr-review design-kit toolkit)
 for bin in claude git jq; do command -v "$bin" >/dev/null || { echo "missing: $bin"; exit 1; }; done
 mkdir -p "$CFG/rules"
 
@@ -80,8 +80,9 @@ cat <<MSG
 Done. Start a new Claude Code session and check:
   /memory   -> CLAUDE.md, rules/common.md, rules/writing-style.md, rules/design-standards.md
                (rules/kotlin.md, rules/design-assets.md, rules/android/*, rules/ios/* and rules/web/* load on matching files)
-  /agents   -> android-reviewer, android-researcher, android-verifier, ios-reviewer, ios-researcher, ios-verifier, ui-reviewer
-  /skills   -> android-kit:*, ios-kit:*, pr-review:pr-review, design-kit:iterate, design-kit:standards
+  /agents   -> android-reviewer, android-researcher, android-verifier, ios-reviewer, ios-researcher, ios-verifier,
+               web-reviewer, web-researcher, web-verifier, ui-reviewer
+  /skills   -> android-kit:*, ios-kit:*, web-kit:*, pr-review:pr-review, design-kit:iterate, design-kit:standards
 Edit $CFG/machine.md with your AVD names, simulator, CLI paths and ticket prefix.
 Plugin edits take effect at the next session or /reload-plugins when the marketplace is this checkout.
 When it is GitHub, bump the plugin version and run: claude plugin update <name>@ai-toolkit

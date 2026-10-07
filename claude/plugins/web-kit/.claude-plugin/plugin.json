@@ -1,0 +1,22 @@
+{
+  "name": "web-kit",
+  "version": "1.0.0",
+  "description": "Web playbooks for React, Next.js and TypeScript apps, a standards index, and researcher, reviewer and verifier agents for Claude Code",
+  "author": {
+    "name": "Mark Hine",
+    "url": "https://github.com/Mark-Hine"
+  },
+  "homepage": "https://github.com/Mark-Hine/ai-toolkit/tree/main/claude/plugins/web-kit",
+  "repository": "https://github.com/Mark-Hine/ai-toolkit",
+  "license": "MIT",
+  "keywords": [
+    "web",
+    "react",
+    "nextjs",
+    "typescript"
+  ],
+  "dependencies": [
+    "design-kit",
+    "guard-kit"
+  ]
+}

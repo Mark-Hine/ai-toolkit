@@ -1,6 +1,6 @@
 # Codex setup
 
-The Codex port of the Claude setup includes fifteen skills, seven specialist agents, personal instructions, Android, iOS, UI/UX and writing guidance, command permissions, and lifecycle hooks. The Claude setup remains available in `../claude/`.
+The Codex port of the Claude setup includes nineteen skills, ten specialist agents, personal instructions, Android, iOS, web, UI/UX and writing guidance, command permissions, and lifecycle hooks. The Claude setup remains available in `../claude/`.
 
 ## Install
 
@@ -46,12 +46,16 @@ Start a new Codex session, then open `/hooks` to review and trust the command gu
 | `$ios-uplift-deps` | Explicitly invoked Xcode/Swift/dependency uplift |
 | `$ios-run-app` | Explicitly invoked simulator build, install, launch and screenshots |
 | `$ios-standards` | Apple/Swift/Xcode docs, house patterns and a project instructions template |
+| `$web-feature` | Pattern discovery, scoped plan, implementation, tests and browser checks for React, Next.js and TypeScript |
+| `$web-bugfix` | Reproduction, root cause, minimal fix and regression evidence |
+| `$web-run-app` | Start the dev server and capture routes with Playwright |
+| `$web-standards` | React, Next.js, TypeScript and testing docs, companions and a project instructions template |
 | `$pr-review` | Formal JSON and Markdown review, release-promotion checks and re-review tracking |
 | `$design-iterate` | Design playbook: the `DESIGN.md` contract, before and after captures, rendered options on a blind board, the user's pick, then tokens and review |
 | `$design-standards` | Sources, rationale and platform APIs for the tiered design rules (HIG, Material 3, WCAG 2.2, house) |
-| `android-reviewer`, `ios-reviewer`, `ui-reviewer` | `gpt-6-astra`, high reasoning, read-only code and UI review |
-| `android-researcher`, `ios-researcher` | `gpt-6-sol`, medium reasoning, read-only official-source research |
-| `android-verifier`, `ios-verifier` | `gpt-6-sol`, medium reasoning, workspace writes for build/test outputs and device evidence |
+| `android-reviewer`, `ios-reviewer`, `web-reviewer`, `ui-reviewer` | `gpt-6-astra`, high reasoning, read-only code and UI review |
+| `android-researcher`, `ios-researcher`, `web-researcher` | `gpt-6-sol`, medium reasoning, read-only official-source research |
+| `android-verifier`, `ios-verifier`, `web-verifier` | `gpt-6-sol`, medium reasoning, workspace writes for build/test outputs and device evidence |
 
 Existing main-session model settings win. Fresh installations default to `gpt-6-astra` and high reasoning, `on-request` approvals, `workspace-write` sandboxing and live web search. Subagent concurrency is capped at three unless already configured. No login token, MCP credential or broad project trust is added.
 

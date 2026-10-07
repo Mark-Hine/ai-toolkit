@@ -191,7 +191,7 @@ class Installer:
         if (cfg / 'AGENTS.override.md').exists():
             print('AGENTS.override.md exists and takes precedence over AGENTS.md. Review it to activate toolkit guidance.')
         print('Start a new Codex session. Open /hooks to review and trust the installed hooks, including specialist hooks.')
-        print('Use /skills to confirm android-*, ios-* and pr-review.')
+        print('Use /skills to confirm android-*, ios-*, web-* and pr-review.')
 
 
 def main():

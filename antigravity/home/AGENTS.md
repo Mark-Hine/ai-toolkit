@@ -4,7 +4,7 @@ Read `~/.gemini/config/machine.md` for local tool and device facts. Read `~/.gem
 
 ## Plugins and subagents
 
-- The ai-toolkit plugins (`android-kit`, `ios-kit`, `pr-review`, `design-kit`) are linked under `~/.gemini/config/plugins/`. Each carries its skills, its rules (always on while the plugin is enabled), its hooks and its agents. Plugin agents load automatically and are invoked with `invoke_subagent`.
+- The ai-toolkit plugins (`android-kit`, `ios-kit`, `web-kit`, `pr-review`, `design-kit`) are linked under `~/.gemini/config/plugins/`. Each carries its skills, its rules (always on while the plugin is enabled), its hooks and its agents. Plugin agents load automatically and are invoked with `invoke_subagent`.
 - Research and official-source lookups use `model: flash` with read-only tools. Deep code reviews and judgements use `model: pro` with read-only tools. Verifiers collect build, test, simulator and emulator evidence with `model: flash` and run commands under the automatic policy.
 - Give every subagent a bounded task and re-check its findings before reporting them. If a subagent is unavailable, do the work inline and say so.
 
@@ -35,3 +35,9 @@ Read `~/.gemini/config/machine.md` for local tool and device facts. Read `~/.gem
 - The ios-kit rules load with the plugin. Each section names the file paths it applies to. Project instructions take precedence, with `CLAUDE.md` as a migration fallback where no `AGENTS.md` exists.
 - Use `/ios-feature`, `/ios-bugfix`, `/ios-uplift-deps`, `/ios-run-app` and `/ios-standards` when relevant. Discover optional SwiftUI skills and Xcode integrations before using them. Fall back to the bundled references, current official documentation and installed Xcode tools.
 - Delegate current platform research to `ios-researcher`, non-trivial Swift diff review to `ios-reviewer`, and tests and simulator evidence to `ios-verifier`.
+
+## Web, React and TypeScript
+
+- The web-kit rules load with the plugin. Each section names the file paths it applies to. Project instructions take precedence, with `CLAUDE.md` as a migration fallback where no `AGENTS.md` exists.
+- Use `/web-feature`, `/web-bugfix`, `/web-run-app` and `/web-standards` when relevant.
+- Delegate framework and package-version research to `web-researcher`, non-trivial web diff review to `web-reviewer`, and tests, type checks and Playwright captures to `web-verifier`.

@@ -47,7 +47,7 @@ class InstallTests(unittest.TestCase):
                 {'hooks': [{'type': 'command', 'command': 'custom-prompt'}]}])
             self.assertEqual(len(installed_hooks['PostToolUse']), 2)
             self.assertEqual(len(installed_hooks['PreToolUse']), 2)
-            self.assertEqual(len(list(skills.iterdir())), 15)
+            self.assertEqual(len(list(skills.iterdir())), 19)
             self.assertEqual((home / 'guidance/ios').resolve(), ROOT / 'home/guidance/ios')
             self.assertEqual((home / 'guidance/common.md').read_text(),
                              (ROOT.parent / 'shared/guidance/common.md').read_text())

@@ -6,9 +6,9 @@ My portable setup for AI coding agents. One folder per agent, with shared person
 
 | Folder | Agent | Status |
 | --- | --- | --- |
-| [`antigravity/`](antigravity/README.md) | Google Antigravity | Five plugins (`android-kit`, `ios-kit`, `pr-review`, `design-kit`, `toolkit`) carrying fifteen skills, seven specialist agents, rules generated from the Claude rules, and the shared guard and Swift lint hooks. Symlink installer |
-| [`claude/`](claude/README.md) | Claude Code | Android, iOS, and UI/UX design playbooks, standards indexes, reviewer/researcher/verifier agents, guard hooks, writing-style rules, global `CLAUDE.md`, one-command installer |
-| [`codex/`](codex/README.md) | OpenAI Codex | Fifteen skills, Android/iOS/UI specialist agents, global settings, scoped guidance, guard hooks, repeatable installer |
+| [`antigravity/`](antigravity/README.md) | Google Antigravity | Six plugins (`android-kit`, `ios-kit`, `web-kit`, `pr-review`, `design-kit`, `toolkit`) carrying nineteen skills, ten specialist agents, rules generated from the Claude rules, and the shared guard and Swift lint hooks. Symlink installer |
+| [`claude/`](claude/README.md) | Claude Code | Android, iOS, web and UI/UX design playbooks, standards indexes, reviewer/researcher/verifier agents, guard hooks, writing-style rules, global `CLAUDE.md`, one-command installer |
+| [`codex/`](codex/README.md) | OpenAI Codex | Nineteen skills, Android/iOS/web/UI specialist agents, global settings, scoped guidance, guard hooks, repeatable installer |
 
 `.claude-plugin/marketplace.json` at the repo root is required by Claude Code. It points at the plugins under `claude/plugins/`.
 
@@ -42,6 +42,7 @@ Plugins only, without the dotfiles layer:
 /plugin install guard-kit@ai-toolkit
 /plugin install android-kit@ai-toolkit
 /plugin install ios-kit@ai-toolkit
+/plugin install web-kit@ai-toolkit
 /plugin install pr-review@ai-toolkit
 /plugin install design-kit@ai-toolkit
 /plugin install toolkit@ai-toolkit
