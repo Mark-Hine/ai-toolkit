@@ -49,7 +49,8 @@ FIELD = re.compile(r'^- (URL|Quote|Confirmed|Fetch): (.*)$')
 CONFIRMED = re.compile(r'^(\d{4}-\d{2}-\d{2}) \((apple-json|html|browser)\)$')
 NO_QUOTE = re.compile(r'^none \((house|book|offline)\)$')
 METHODS = ('apple-json', 'html', 'browser')
-QUOTE_CHARS = str.maketrans({'‘': "'", '’': "'", '“': '"', '”': '"', ' ': ' '})
+# Curly quotes become straight, and soft hyphens (which some pages put inside words) disappear.
+QUOTE_CHARS = str.maketrans({'\u2018': "'", '\u2019': "'", '\u201c': '"', '\u201d': '"', '\u00a0': ' ', '\u00ad': ''})
 
 
 class Anchor:

@@ -90,6 +90,9 @@ class ParseAndMatchTest(Fixture):
         page = anchors.normalise('Respecting the safe\n area is essential to make sure system UI doesn\'t  obstruct content.')
         self.assertIn(anchors.normalise('Respecting the safe area is essential to make sure system UI doesn’t obstruct content.'), page)
 
+    def test_soft_hyphens_are_ignored(self):
+        self.assertIn(anchors.normalise('Aim for an average line length'), anchors.normalise('Aim for an av\u00aderage line length'))
+
     def test_extractors(self):
         self.assertIn("doesn't", anchors.apple_text(APPLE_JSON))
         text = anchors.html_text(ANDROID_HTML.decode())
