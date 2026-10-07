@@ -1,5 +1,5 @@
 ---
-verified: 2026-10-08
+verified: 2026-10-07
 sources:
   - https://react.dev/reference/rules/rules-of-hooks
   - https://react.dev/reference/rules/components-and-hooks-must-be-pure

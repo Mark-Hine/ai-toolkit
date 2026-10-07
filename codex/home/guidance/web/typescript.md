@@ -1,5 +1,5 @@
 ---
-verified: 2026-10-08
+verified: 2026-10-07
 sources:
   - https://www.typescriptlang.org/tsconfig/strict.html
   - https://www.typescriptlang.org/docs/handbook/2/narrowing.html
