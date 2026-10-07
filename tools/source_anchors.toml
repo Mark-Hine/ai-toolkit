@@ -1,0 +1,25 @@
+# Source anchors: one verbatim sentence or two per standards source key, confirmed against the live
+# page by tools/source_anchors.py. Format in docs/source-anchors.md.
+
+# Anchor files the tool reads and writes.
+anchors = [
+  "claude/plugins/*/skills/*/references/source-anchors.md",
+]
+
+# Hosts that render their text client-side, read through headless Chrome.
+browser_hosts = ["m3.material.io"]
+
+max_quote_chars = 300
+max_quote_sentences = 2
+timeout = 30
+browser_timeout = 60
+retries = 3
+workers = 6
+
+# When true, every key or URL a registry below declares must have an anchor, or --lint fails.
+# Report-only until every registry is anchored.
+enforce = false
+
+# Registries whose declared keys (mode "key", group 1 of the pattern is the key) or URLs (mode "url")
+# need an anchor. Added as each plugin is anchored.
+registries = []
