@@ -93,7 +93,8 @@ pr-review/
 │                             #  2a adversarial verification · 3 lead verification · 3.5 emit JSON ·
 │                             #  4 register · 5 twins · 6 render+deliver · R re-review)
     ├── scripts/
-    │   └── post_azdo.py      # findings.json → Azure DevOps PR threads + reviewer vote (stdlib-only)
+    │   ├── post_azdo.py      # findings.json → Azure DevOps PR threads + reviewer vote (stdlib-only)
+    │   └── check_ancestry.py # protocol §19: cited SHAs are ancestors of the published ref (stdlib-only)
     └── references/
         ├── protocol.md           # §1 to §12 rules of engagement (delta-only, severity vocabulary,
     │                         #  verification discipline, churn honesty, re-review rules);
@@ -104,6 +105,7 @@ pr-review/
     ├── template.md           # document section contract and default wording (rendered from JSON)
     ├── output.md             # findings.json schema (pr-review/v1) and rendering rules
     ├── ci.md                 # pipeline wiring: Azure DevOps example, gating, other CI systems
+    ├── pci-dss.md            # PCI DSS v4.0.1 orientation map, loaded for card-data changes
     └── platforms/
         ├── android.md        # architecture, state/Compose/coroutines, MASVS, a11y, standards block
         ├── ios.md            # SwiftUI/concurrency, MASVS, a11y, standards block, consensus cap

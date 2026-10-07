@@ -19,6 +19,7 @@ PR_REVIEW = {
 }
 PR_REVIEW_SHARED = [
     'references/output.md',
+    'references/pci-dss.md',
     'references/protocol.md',
     'references/template.md',
     'references/platforms/android.md',
@@ -27,6 +28,7 @@ PR_REVIEW_SHARED = [
     'references/platforms/spring-boot.md',
     'references/platforms/react-nextjs.md',
     'scripts/post_azdo.py',
+    'scripts/check_ancestry.py',
 ]
 # Hook modules. shared/hooks is canonical; the plugin and Codex copies must be byte-identical.
 HOOK_GROUPS = [
