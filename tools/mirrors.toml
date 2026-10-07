@@ -29,9 +29,9 @@ antigravity = ["/android-standards", "/ios-standards", "/design-standards", "and
 
 [[substitutions]]
 neutral = "{INVOKE}"
-claude = ["/android-kit:", "/ios-kit:", "/design-kit:", "/pr-review:pr-review", "/toolkit:audit"]
-codex = ["$android-", "$ios-", "$design-", "$pr-review", "$toolkit-audit"]
-antigravity = ["/android-", "/ios-", "/design-", "/pr-review", "/toolkit-audit"]
+claude = ["/android-kit:", "/ios-kit:", "/design-kit:", "/pr-review:pr-review", "/toolkit:audit", "/toolkit:check"]
+codex = ["$android-", "$ios-", "$design-", "$pr-review", "$toolkit-audit", "$toolkit-check"]
+antigravity = ["/android-", "/ios-", "/design-", "/pr-review", "/toolkit-audit", "/toolkit-check"]
 
 [[substitutions]]
 neutral = "{FETCH}"
@@ -91,6 +91,13 @@ name = "audit-skill"
 claude = "claude/plugins/toolkit/skills/audit/SKILL.md"
 codex = "codex/skills/toolkit-audit/SKILL.md"
 antigravity = "antigravity/plugins/toolkit/skills/toolkit-audit/SKILL.md"
+items = [[]]
+
+[[groups]]
+name = "check-skill"
+claude = "claude/plugins/toolkit/skills/check/SKILL.md"
+codex = "codex/skills/toolkit-check/SKILL.md"
+antigravity = "antigravity/plugins/toolkit/skills/toolkit-check/SKILL.md"
 items = [[]]
 
 [[groups]]

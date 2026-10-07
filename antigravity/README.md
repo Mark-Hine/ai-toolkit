@@ -1,6 +1,6 @@
 # Antigravity setup
 
-The Antigravity port of the portable AI toolkit. Five plugins carry fourteen skills, seven specialist subagents, generated rules and lifecycle hooks, in the layout the bundled Antigravity customization docs describe. The Claude Code setup is in `../claude/` and the OpenAI Codex setup in `../codex/`.
+The Antigravity port of the portable AI toolkit. Five plugins carry fifteen skills, seven specialist subagents, generated rules and lifecycle hooks, in the layout the bundled Antigravity customization docs describe. The Claude Code setup is in `../claude/` and the OpenAI Codex setup in `../codex/`.
 
 ## Install
 

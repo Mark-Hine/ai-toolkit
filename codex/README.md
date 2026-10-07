@@ -1,6 +1,6 @@
 # Codex setup
 
-The Codex port of the Claude setup includes fourteen skills, seven specialist agents, personal instructions, Android, iOS, UI/UX and writing guidance, command permissions, and lifecycle hooks. The Claude setup remains available in `../claude/`.
+The Codex port of the Claude setup includes fifteen skills, seven specialist agents, personal instructions, Android, iOS, UI/UX and writing guidance, command permissions, and lifecycle hooks. The Claude setup remains available in `../claude/`.
 
 ## Install
 

@@ -1,7 +1,7 @@
 {
   "name": "toolkit",
-  "version": "1.2.0",
-  "description": "Maintenance of the ai-toolkit repo itself. The audit skill re-checks every rule and reference against its cited source, classifies each rule, writes a findings register and proposes diffs without applying them.",
+  "version": "1.3.0",
+  "description": "Maintenance of the ai-toolkit repo itself. The audit skill re-checks every rule and reference against its cited source and proposes diffs without applying them. The check skill runs the pre-PR checks for the files a branch changes.",
   "author": { "name": "Mark Hine", "url": "https://github.com/Mark-Hine" },
   "homepage": "https://github.com/Mark-Hine/ai-toolkit/tree/main/claude/plugins/toolkit",
   "repository": "https://github.com/Mark-Hine/ai-toolkit",
