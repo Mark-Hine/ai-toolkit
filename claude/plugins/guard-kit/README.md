@@ -1,6 +1,6 @@
 # guard-kit
 
-One PreToolUse hook, shared with the Codex and Antigravity layers of this repo, that runs before every `Bash`, `Edit`, `Write` and `NotebookEdit` call. `android-kit` and `ios-kit` depend on it, so installing either installs this plugin.
+One PreToolUse hook, shared with the Codex and Antigravity layers of this repo, that runs before every `Bash`, `Edit`, `Write` and `NotebookEdit` call. `android-kit`, `ios-kit` and `web-kit` depend on it, so installing either installs this plugin.
 
 ## What it blocks
 
@@ -11,7 +11,7 @@ One PreToolUse hook, shared with the Codex and Antigravity layers of this repo, 
 | `timeout` | The `timeout` wrapper in command position, including behind `sudo`, `env`, `time`, `xargs`, `nice`, `caffeinate`, `eval`, `sh -c` and command substitution. macOS has no `timeout` binary |
 | Files | Secrets (`.env`, `.envrc`, `.env.*` except `.env.example` and friends, `secrets.properties`, `keystore.properties`, `local.properties`, `*Secrets*.swift|plist|xcconfig`), signing material (`.jks`, `.keystore`, `.p12`, `.p8`, `.pem`, `.key`, `.mobileprovision`, `.cer`, `.entitlements`, `ExportOptions.plist`), Firebase and network-security config, `app/libs/*.aar|jar`, `gradle-wrapper.jar`, `Podfile.lock`, `Package.resolved`, anything under `.git/` |
 | CI definitions | `.github/workflows/*` and `azure-pipelines*.yml` prompt for confirmation instead of blocking, because they run with pipeline credentials |
-| Agents | When the hook fires inside `android-researcher`, `android-verifier`, `ios-researcher` or `ios-verifier` (read from `agent_type` in the hook input), the command must be one of that agent's documented read-only or evidence commands, and edits are refused |
+| Agents | When the hook fires inside `android-researcher`, `android-verifier`, `ios-researcher`, `ios-verifier`, `web-researcher` or `web-verifier` (read from `agent_type` in the hook input), the command must be one of that agent's documented read-only or evidence commands, and edits are refused. The web verifier may run the `test`, `lint` and type-check package scripts and `vitest`, `jest`, `eslint`, `tsc --noEmit` and Playwright tests and screenshots, without autofix or snapshot-update flags. Reviewer agents may not edit |
 
 Nested shells (`sh -c`, `eval`, `$(...)`, backticks), `git -C` and quoted refs are parsed. Literal heredoc bodies are ignored. It is not a sandbox and does not parse scripts, aliases or computed commands.
 

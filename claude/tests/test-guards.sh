@@ -63,6 +63,9 @@ expect "verifier edit"           deny  "$(edit_payload '/x/journeys/a.xml')"    
 expect "ios researcher version"  allow "$(bash_payload 'xcodebuild -version')"             ios-kit:ios-researcher
 expect "ios researcher build"    deny  "$(bash_payload 'xcodebuild build')"                ios-kit:ios-researcher
 expect "ios verifier test"       allow "$(bash_payload 'xcodebuild test -scheme App')"     ios-kit:ios-verifier
+expect "web verifier test"       allow "$(bash_payload 'npx vitest run src/cart.test.ts')" web-kit:web-verifier
+expect "web verifier install"    deny  "$(bash_payload 'npm install left-pad')"           web-kit:web-verifier
+expect "web researcher view"     allow "$(bash_payload 'npm view next version')"          web-kit:web-researcher
 expect "ios verifier worktree"   deny  "$(bash_payload 'git worktree add --detach /tmp/pr-1 HEAD')" ios-kit:ios-verifier
 expect "ios verifier erase"      deny  "$(bash_payload 'xcrun simctl erase all')"          ios-kit:ios-verifier
 expect "Explore keeps bash"      allow "$(bash_payload './gradlew installDebug')"          Explore

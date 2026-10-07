@@ -19,9 +19,14 @@ import shlex
 import sys
 
 TOOLKIT_ROLES = {'android-researcher', 'android-reviewer', 'android-verifier',
-                 'ios-researcher', 'ios-reviewer', 'ios-verifier', 'ui-reviewer'}
+                 'ios-researcher', 'ios-reviewer', 'ios-verifier',
+                 'web-researcher', 'web-reviewer', 'web-verifier', 'ui-reviewer'}
+SHELL_LIMITED_ROLES = {'android-researcher', 'android-verifier', 'ios-researcher', 'ios-verifier',
+                       'web-researcher', 'web-verifier'}
 # Commands that set up a checkout. The calling session runs them, so a verifier gets a path instead.
 SETUP_COMMANDS = {'git', 'pod', 'swift', 'carthage', 'bundle', 'npm', 'pnpm', 'yarn', 'bun'}
+SETUP_REASON = ('Verifier agents do not run git or dependency installers. '
+                'Ask the calling session to prepare the checkout and pass its path.')
 SHELL_TOOLS = {'Bash', 'shell', 'shell_command', 'exec_command', 'run_command'}
 EDIT_TOOLS = {'apply_patch', 'Edit', 'Write', 'NotebookEdit',
               'write_to_file', 'replace_file_content', 'multi_replace_file_content'}
@@ -357,8 +362,54 @@ def ios_command_allowed(tokens, research=False):
     return False
 
 
+PACKAGE_MANAGERS = {'npm', 'pnpm', 'yarn', 'bun'}
+# Script names a verifier may run. The repo's CLAUDE.md or AGENTS.md names which of them exist.
+WEB_SCRIPT = re.compile(r'(test|lint|typecheck|type-check|check-types)(:[\w-]+)*')
+# Flags that rewrite files: lint autofix and snapshot updates.
+WEB_WRITE_FLAGS = {'--fix', '-u', '--update', '--updateSnapshot', '--update-snapshots', '--write'}
+
+
+def web_tool_allowed(tool, args):
+    """A test, lint, type-check or capture tool run directly, without flags that write to the workspace."""
+    if any(arg in WEB_WRITE_FLAGS or arg.startswith(('--fix=', '--update-snapshots=')) for arg in args):
+        return False
+    if tool in {'vitest', 'jest', 'eslint'}:
+        return True
+    if tool == 'tsc':
+        return '--noEmit' in args
+    if tool == 'playwright':
+        # A screenshot writes only the PNG it names.
+        return bool(args) and (args[0] in {'test', '--version'}
+                               or (args[0] == 'screenshot' and args[-1].endswith('.png')))
+    return False
+
+
+def web_command_allowed(tokens, research=False):
+    if not tokens:
+        return False
+    executable, args = tokens[0].rsplit('/', 1)[-1], tokens[1:]
+    if executable == 'node':
+        return args == ['--version']
+    if executable == 'sleep':
+        return not research and len(args) == 1 and re.fullmatch(r'\d+(?:\.\d+)?', args[0]) is not None
+    if executable not in PACKAGE_MANAGERS | {'npx'} or not args:
+        return False
+    if executable == 'npx' or (args[0] == 'exec' and executable != 'bun'):
+        rest = args if executable == 'npx' else args[1:]
+        rest = [arg for arg in rest if arg not in {'--', '--no-install', '--offline'}]
+        return not research and bool(rest) and web_tool_allowed(rest[0], rest[1:])
+    if research:
+        return args[0] in {'view', 'info', 'outdated', 'ls', 'list', 'why', '--version'}
+    if any(arg in WEB_WRITE_FLAGS for arg in args):
+        return False
+    if args[0] == 'test' or (args[0] == 'run' and len(args) > 1 and WEB_SCRIPT.fullmatch(args[1])):
+        return True
+    # pnpm, yarn and bun run a package script by name without `run`. `bun test` is bun's own runner.
+    return executable != 'npm' and WEB_SCRIPT.fullmatch(args[0]) is not None
+
+
 def role_reason(role, command):
-    if role not in {'android-researcher', 'android-verifier', 'ios-researcher', 'ios-verifier'}:
+    if role not in SHELL_LIMITED_ROLES:
         return None
     if re.search(r'[;&|<>`\n]|\$\(', command):
         return 'Specialist agents use single commands without shell chaining, redirection or substitution.'
@@ -368,9 +419,15 @@ def role_reason(role, command):
         return 'Specialist command could not be parsed.'
     if read_command(tokens):
         return None
-    if role.endswith('-verifier') and tokens and tokens[0].rsplit('/', 1)[-1] in SETUP_COMMANDS:
-        return ('Verifier agents do not run git or dependency installers. '
-                'Ask the calling session to prepare the checkout and pass its path.')
+    # The web verifier runs package-manager scripts, so its allowlist is checked before the setup message.
+    setup = role.endswith('-verifier') and bool(tokens) and tokens[0].rsplit('/', 1)[-1] in SETUP_COMMANDS
+    if role.startswith('web-'):
+        if web_command_allowed(tokens, role == 'web-researcher'):
+            return None
+        return SETUP_REASON if setup else (
+            'This web specialist only runs its documented package queries or test, lint, type-check and capture commands.')
+    if setup:
+        return SETUP_REASON
     if role.startswith('ios-'):
         return None if ios_command_allowed(tokens, role == 'ios-researcher') else (
             'This iOS specialist only runs its documented read-only queries or test/simulator evidence commands.')

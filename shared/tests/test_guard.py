@@ -130,8 +130,41 @@ class GuardTests(unittest.TestCase):
             with self.subTest(command=command):
                 self.assertIsNotNone(self.shell(command, 'ios-verifier'))
 
+    def test_web_verifier_evidence_commands(self):
+        for command in ('npm test', 'npm test -- --run src/cart', 'npm run lint', 'npm run test:e2e',
+                        'pnpm test', 'pnpm typecheck', 'pnpm run check-types', 'yarn lint', 'bun test',
+                        'npx vitest run src/cart.test.ts', 'npx jest --ci', 'npx tsc --noEmit -p .',
+                        'npx eslint src', 'npx playwright test e2e/checkout.spec.ts',
+                        'pnpm exec playwright test', 'npm exec -- vitest run',
+                        'npx playwright screenshot --channel chrome --viewport-size "390, 844" '
+                        'http://localhost:3000 /tmp/home.png', 'node --version', 'sleep 2'):
+            with self.subTest(command=command):
+                self.assertIsNone(self.shell(command, 'web-verifier'))
+        for command in ('npm install', 'npm ci', 'pnpm add left-pad', 'npm run build', 'npm run deploy',
+                        'npm start', 'yarn dev', 'npm run lint -- --fix', 'npx eslint --fix src',
+                        'npx vitest -u', 'npx jest --updateSnapshot', 'npx playwright test --update-snapshots',
+                        'npx playwright install', 'npx playwright screenshot http://localhost:3000 src/app.tsx',
+                        'npx tsc', 'npx prettier --write .', 'npx create-next-app', 'npm view react',
+                        'npm test; rm -rf src', 'git status', 'curl http://localhost:3000'):
+            with self.subTest(command=command):
+                self.assertIsNotNone(self.shell(command, 'web-verifier'))
+
+    def test_web_researcher_package_queries(self):
+        for command in ('npm view next version', 'npm outdated', 'pnpm outdated', 'npm ls react',
+                        'pnpm why react', 'yarn info react', 'node --version'):
+            with self.subTest(command=command):
+                self.assertIsNone(self.shell(command, 'web-researcher'))
+        for command in ('npm test', 'npm install', 'npx vitest run', 'pnpm update', 'sleep 2'):
+            with self.subTest(command=command):
+                self.assertIsNotNone(self.shell(command, 'web-researcher'))
+
+    def test_web_reviewer_cannot_edit(self):
+        event = {'tool_name': 'Edit', 'tool_input': {'file_path': 'src/app/page.tsx'}}
+        self.assertIsNotNone(guard.check(event, 'web-reviewer'))
+        self.assertEqual('web-verifier', guard.resolve_role({'agent_type': 'web-kit:web-verifier'}, ''))
+
     def test_verifier_setup_commands_name_the_caller(self):
-        for role in ('android-verifier', 'ios-verifier'):
+        for role in ('android-verifier', 'ios-verifier', 'web-verifier'):
             for command in ('git worktree add --detach /tmp/pr-1 abc123', 'pod install',
                             'swift package resolve', 'npm ci'):
                 with self.subTest(role=role, command=command):
@@ -201,7 +234,8 @@ class GuardTests(unittest.TestCase):
         self.assertIn('timeout 1 task', guard.shell_source("cat <<'EOF'\ntext\ntimeout 1 task"))
 
     def test_specialists_can_read_required_files(self):
-        for role in ('android-researcher', 'android-verifier', 'ios-researcher', 'ios-verifier'):
+        for role in ('android-researcher', 'android-verifier', 'ios-researcher', 'ios-verifier',
+                     'web-researcher', 'web-verifier'):
             for command in ('cat AGENTS.md', 'cat app/build.gradle.kts gradle/libs.versions.toml',
                             'cat ~/.agents/skills/android-standards/references/testing.md',
                             "cat 'journeys/login screen.xml'", 'ls -la journeys',
@@ -211,7 +245,8 @@ class GuardTests(unittest.TestCase):
                     self.assertIsNone(self.shell(command, role))
 
     def test_specialist_read_commands_cannot_execute_or_write(self):
-        for role in ('android-researcher', 'android-verifier', 'ios-researcher', 'ios-verifier'):
+        for role in ('android-researcher', 'android-verifier', 'ios-researcher', 'ios-verifier',
+                     'web-researcher', 'web-verifier'):
             for command in ('rg --pre ./rewrite.sh query app',
                             'rg --pre=./rewrite.sh query app',
                             'rg --hostname-bin=./rewrite.sh query app',
@@ -363,7 +398,8 @@ class GuardTests(unittest.TestCase):
                  '*** Begin Patch\n*** Add File: app/src/main/Main.kt\n+package app\n*** End Patch'}
         self.assertIsNone(guard.check(event))
         for role in ('android-researcher', 'android-reviewer', 'android-verifier',
-                     'ios-researcher', 'ios-reviewer', 'ios-verifier'):
+                     'ios-researcher', 'ios-reviewer', 'ios-verifier',
+                     'web-researcher', 'web-reviewer', 'web-verifier'):
             self.assertIsNotNone(guard.check(event, role))
 
     def test_hook_wire_response(self):
