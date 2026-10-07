@@ -72,7 +72,7 @@
     {
       "name": "toolkit",
       "source": "./claude/plugins/toolkit",
-      "description": "Maintenance of the ai-toolkit repo itself. The audit skill re-checks every rule and reference against its cited source, classifies each rule, writes a findings register and proposes diffs without applying them.",
+      "description": "Maintenance of the ai-toolkit repo itself. The audit skill re-checks every rule and reference against its cited source and proposes diffs without applying them. The check skill runs the pre-PR checks for the files a branch changes.",
       "keywords": [
         "audit",
         "maintenance",

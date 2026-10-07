@@ -1,5 +1,5 @@
 {
   "name": "toolkit",
-  "description": "Maintenance of the ai-toolkit repo itself. The toolkit-audit skill re-checks every rule and reference against its cited source and writes a findings register. Invoke it explicitly.",
-  "version": "1.1.0"
+  "description": "Maintenance of the ai-toolkit repo itself. The toolkit-audit skill re-checks every rule and reference against its cited source and writes a findings register. The toolkit-check skill runs the pre-PR checks for the files a branch changes. Invoke both explicitly.",
+  "version": "1.2.0"
 }

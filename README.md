@@ -6,9 +6,9 @@ My portable setup for AI coding agents. One folder per agent, with shared person
 
 | Folder | Agent | Status |
 | --- | --- | --- |
-| [`antigravity/`](antigravity/README.md) | Google Antigravity | Five plugins (`android-kit`, `ios-kit`, `pr-review`, `design-kit`, `toolkit`) carrying fourteen skills, seven specialist agents, rules generated from the Claude rules, and the shared guard and Swift lint hooks. Symlink installer |
+| [`antigravity/`](antigravity/README.md) | Google Antigravity | Five plugins (`android-kit`, `ios-kit`, `pr-review`, `design-kit`, `toolkit`) carrying fifteen skills, seven specialist agents, rules generated from the Claude rules, and the shared guard and Swift lint hooks. Symlink installer |
 | [`claude/`](claude/README.md) | Claude Code | Android, iOS, and UI/UX design playbooks, standards indexes, reviewer/researcher/verifier agents, guard hooks, writing-style rules, global `CLAUDE.md`, one-command installer |
-| [`codex/`](codex/README.md) | OpenAI Codex | Fourteen skills, Android/iOS/UI specialist agents, global settings, scoped guidance, guard hooks, repeatable installer |
+| [`codex/`](codex/README.md) | OpenAI Codex | Fifteen skills, Android/iOS/UI specialist agents, global settings, scoped guidance, guard hooks, repeatable installer |
 
 `.claude-plugin/marketplace.json` at the repo root is required by Claude Code. It points at the plugins under `claude/plugins/`.
 
@@ -55,6 +55,7 @@ Every rule file, standards reference and pr-review pack carries a `verified:` da
 - `tools/linkcheck.py` runs monthly over every cited URL, with per-host rules for pages that render client-side or block bots, and opens a `linkcheck` issue when a source is gone.
 - `tools/source_anchors.py` confirms that the one or two sentences each source key rests on are still on the live page (`docs/source-anchors.md`). Agents read these anchors and never fetch a page to grade a rule. CI lints the anchor files, and a monthly run opens an `anchors` issue when a quote drifts or a page cannot be read.
 - `/toolkit:audit` (`$toolkit-audit` in Codex, `/toolkit-audit` in Antigravity) re-reads each source, classifies every rule, writes `docs/audits/<date>-audit.md` with proposed diffs, and refreshes stamps only for files that pass and only after you confirm.
+- `/toolkit:check` (`$toolkit-check` in Codex, `/toolkit-check` in Antigravity) runs the pre-PR checks `AGENTS.md` requires for the files a branch changes and lists layers that may need mirroring. It edits nothing.
 
 Cadence. When the freshness job warns, run the audit from this checkout, land the fixes as small mirrored PRs, then let the skill refresh the stamps. `tools/mirror_parity.py` runs in CI and fails when the three layers drift apart between audits.
 
