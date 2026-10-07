@@ -127,6 +127,21 @@ class VerifyTest(Fixture):
         result = anchors.verify(self.by_key['M3-MOTION'], self.reader({}, chrome='/bin/chrome', dom=dom))
         self.assertEqual(('CONFIRMED', 'browser'), (result['status'], result['method']))
 
+    def test_a_page_is_read_once_for_many_anchors(self):
+        calls = []
+        base = opener_for(self.ROUTES)
+
+        def counting(url, method, headers, timeout):
+            calls.append(url)
+            return base(url, method, headers, timeout)
+        reader = anchors.Reader(CONFIG, opener=counting, sleep=lambda s: None)
+        twin = anchors.Anchor('AND-A11Y-2', self.path, 99)
+        twin.url = 'https://developer.android.com/guide/topics/ui/accessibility/apps#labels'
+        twin.quotes = ['at least 48dp']
+        self.assertEqual('CONFIRMED', anchors.verify(self.by_key['AND-A11Y'], reader)['status'])
+        self.assertEqual('CONFIRMED', anchors.verify(twin, reader)['status'])
+        self.assertEqual(1, len(calls))
+
     def test_house_anchor_is_skipped(self):
         self.assertEqual('SKIPPED', anchors.verify(self.by_key['House'], self.reader({}))['status'])
 

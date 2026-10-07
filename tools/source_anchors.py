@@ -26,6 +26,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import threading
 import tomllib
 import urllib.error
 import urllib.parse
@@ -169,6 +170,8 @@ class Reader:
         self.config = config
         self.chrome = chrome
         self.dom = chrome_dom
+        self.memo = {}
+        self.memo_lock = threading.Lock()
 
     def method_for(self, anchor):
         if anchor.fetch:
@@ -200,9 +203,17 @@ class Reader:
         raise last
 
     def text(self, anchor):
-        """(method, text or None, detail)."""
+        """(method, text or None, detail), reading each page once however many anchors cite it."""
         method = self.method_for(anchor)
         url = anchor.url.split('#', 1)[0]
+        with self.memo_lock:
+            slot = self.memo.setdefault((method, url), {'lock': threading.Lock()})
+        with slot['lock']:
+            if 'result' not in slot:
+                slot['result'] = self.read(method, url)
+        return slot['result']
+
+    def read(self, method, url):
         try:
             if method == 'apple-json':
                 status, body = self.get(self.checker.apple_json_url(url))
