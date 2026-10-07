@@ -27,6 +27,8 @@ link "$HERE/home/rules/ios" "$CFG/rules/ios"
 [ -f "$CFG/machine.md" ] || { cp "$HERE/home/machine.md.example" "$CFG/machine.md"; echo "created $CFG/machine.md (edit it)"; }
 
 # Merge settings: existing keys win for scalars; permissions.allow is unioned; hooks and skillOverrides merged.
+# An existing hook is replaced when it is one the snippet manages: same command, a statusMessage starting
+# "ai-toolkit: ", or the style echo from before that marker existed. So a reworded hook never runs twice.
 # includeCoAuthoredBy is deprecated in favour of attribution and is dropped when attribution is present.
 S="$CFG/settings.json"; [ -f "$S" ] || echo '{}' > "$S"
 cp "$S" "$S.bak.$(date +%s)"
@@ -40,7 +42,10 @@ jq -s '
   | .hooks = (reduce (((($cur.hooks // {}) | keys) + (($new.hooks // {}) | keys)) | unique)[] as $event ({};
       .[$event] = ([
         (($cur.hooks[$event] // [])[]
-          | .hooks = [.hooks[] | select(.command as $command | ($managed_commands | index($command)) == null)]
+          | .hooks = [.hooks[] | select(
+              (.command as $command | ($managed_commands | index($command)) == null)
+              and ((.statusMessage // "") | startswith("ai-toolkit: ") | not)
+              and ((.command // "") | startswith("echo '\''Style: follow ~/.claude/rules/writing-style.md") | not))]
           | select(.hooks | length > 0)),
         ($new.hooks[$event] // [])[]
       ] | unique)))

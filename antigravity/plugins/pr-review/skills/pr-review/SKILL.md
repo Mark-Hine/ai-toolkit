@@ -147,11 +147,29 @@ Before the lead touches the leads, send them to adversarial agents whose job is 
 them (protocol.md §21). Run them on the reviewer-tier model too. Batch about eight leads per agent. Each agent checks per lead: cited
 file/line exists at the pinned SHA, merge-base half is true (`git show MERGE_BASE:path`), anchored
 at the root cause rather than a symptom (§17), and not debug-only (§20). Where a runnable command settles
-it (a compile, a test, a grep), **run the command**, because a compile beats reading. Verdicts:
+it (a compile, a test, a grep), **run the command** in the scratch checkout described below,
+because a compile beats reading. Verdicts:
 **CONFIRMED / REFUTED (with counter-evidence) / WEAKENED**. Every agent's final line must assert
 "N of N verified". A batch that can't is re-dispatched. Drop REFUTED leads from the table but keep
 the refutations in the run's notes. Skip this phase only when the delta was reviewed inline with
 no fan-out.
+
+### Running a build or test
+
+A build or test runs in a scratch checkout of `SOURCE_HEAD` that this session prepares, never in
+the user's working tree:
+
+1. `git worktree add --detach <scratchpad>/pr-<id> SOURCE_HEAD`.
+2. Install dependencies there with the project's own command, such as `pod install`,
+   `xcodebuild -resolvePackageDependencies` or `npm ci`.
+3. Run the check yourself from the worktree. Hand a test run to `ios-verifier` only with absolute
+   paths for `-workspace` or `-project`, `-derivedDataPath` and `-resultBundlePath`.
+   `android-verifier` cannot address another checkout, so run Gradle yourself. The verifier
+   agents may not run git or installers, so never ask one to prepare the checkout.
+4. `git worktree remove <scratchpad>/pr-<id>` when the review is done. Record in the scope block
+   which checks ran and which could not.
+
+In CI mode the pipeline's checkout is already at `SOURCE_HEAD`, so skip steps 1 and 4.
 
 ## Phase 3: Personal verification
 
@@ -181,8 +199,7 @@ Untouched findings get no row. The framing sentence in the template covers them.
 
 ## Phase 5: Twin check *(when a paired repo was reviewed)*
 
-Look for a review of the equivalent change in the paired repo (`pr-review-*.md`, including the
-at its root). If
+Look for a review of the equivalent change at the paired repo's root (`pr-review-*.md`). If
 found, mark shared defects in the Finding cells and emit the twins table so each gets one
 coordinated fix. If not found, skip silently. Never characterise the other repo's status without
 having looked.
