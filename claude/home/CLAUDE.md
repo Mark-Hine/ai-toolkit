@@ -33,3 +33,7 @@ Shared Git and work preferences load from `~/.claude/rules/common.md`. Writing p
 - Read matching rules before editing. `~/.claude/rules/ios/swift-style.md` applies to Swift files, `swiftui.md` to SwiftUI screens and components, `ui-events.md` to models and presentation, and `testing.md` to tests. Project instructions and matching project rules take precedence.
 - Use the `/ios-kit:feature`, `/ios-kit:bugfix`, `/ios-kit:uplift-deps`, `/ios-kit:run-app` and `ios-kit:standards` playbooks when relevant. Discover optional SwiftUI skills and Xcode integrations before using them. Fall back to the bundled references, current official documentation and installed Xcode tools.
 - Delegate current platform research to `ios-researcher`, non-trivial Swift/iOS diff review to `ios-reviewer`, and tests and simulator evidence to `ios-verifier`. Use the model settings under Subagents. Give each a bounded task and re-check findings. If unavailable, work inline and disclose the limitation.
+
+## Web, React and TypeScript
+
+- Read matching rules before editing. `~/.claude/rules/web/typescript.md` applies to TypeScript files, `react.md` to React and Next.js components, and `testing.md` to tests. Project instructions and matching project rules take precedence.

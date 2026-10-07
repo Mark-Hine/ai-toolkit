@@ -46,7 +46,8 @@ name = "rules"
 claude = "claude/home/rules/{p}/{f}.md"
 codex = "codex/home/guidance/{p}/{f}.md"
 items = [["android", "compose"], ["android", "kotlin-style"], ["android", "testing"], ["android", "ui-events"],
-         ["ios", "swift-style"], ["ios", "swiftui"], ["ios", "testing"], ["ios", "ui-events"]]
+         ["ios", "swift-style"], ["ios", "swiftui"], ["ios", "testing"], ["ios", "ui-events"],
+         ["web", "typescript"], ["web", "react"], ["web", "testing"]]
 
 [[groups]]
 name = "playbooks"

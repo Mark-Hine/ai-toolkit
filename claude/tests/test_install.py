@@ -41,6 +41,9 @@ class InstallTests(unittest.TestCase):
                 self.assertEqual(json.loads((home / 'settings.json').read_text())['model'], 'personal-model')
                 self.assertEqual((home / 'machine.md').read_text(), 'Private facts.\n')
                 self.assertFalse((home / 'rules/references').exists(), 'Rationale stays in skill references')
+                web = home / 'rules/web'
+                self.assertTrue(web.is_symlink())
+                self.assertIn('"**/*.tsx"', (web / 'react.md').read_text())
 
 
 if __name__ == '__main__':

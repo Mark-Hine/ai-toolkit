@@ -24,6 +24,7 @@ link "$REPO_ROOT/shared/guidance/design-assets.md" "$CFG/rules/design-assets.md"
 link "$HERE/home/rules/writing-style.md" "$CFG/rules/writing-style.md"
 link "$HERE/home/rules/android" "$CFG/rules/android"
 link "$HERE/home/rules/ios" "$CFG/rules/ios"
+link "$HERE/home/rules/web" "$CFG/rules/web"
 [ -f "$CFG/machine.md" ] || { cp "$HERE/home/machine.md.example" "$CFG/machine.md"; echo "created $CFG/machine.md (edit it)"; }
 
 # Merge settings: existing keys win for scalars; permissions.allow is unioned; hooks and skillOverrides merged.
@@ -78,7 +79,7 @@ cat <<MSG
 
 Done. Start a new Claude Code session and check:
   /memory   -> CLAUDE.md, rules/common.md, rules/writing-style.md, rules/design-standards.md
-               (rules/kotlin.md, rules/design-assets.md, rules/android/* and rules/ios/* load on matching files)
+               (rules/kotlin.md, rules/design-assets.md, rules/android/*, rules/ios/* and rules/web/* load on matching files)
   /agents   -> android-reviewer, android-researcher, android-verifier, ios-reviewer, ios-researcher, ios-verifier, ui-reviewer
   /skills   -> android-kit:*, ios-kit:*, pr-review:pr-review, design-kit:iterate, design-kit:standards
 Edit $CFG/machine.md with your AVD names, simulator, CLI paths and ticket prefix.
