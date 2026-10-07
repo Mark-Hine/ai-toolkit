@@ -5,7 +5,7 @@ sources: inline
 
 # Official documentation registry
 
-Canonical URLs for WebFetch and citing. Apple pages render client-side. If a fetch returns nothing, retry via
+Canonical URLs for WebFetch and citing. The sentence each page is cited for, confirmed against the live page, is in `source-anchors.md`. Apple pages render client-side. If a fetch returns nothing, retry via
 `https://developer.apple.com/tutorials/data/documentation/<path>.json` or WebSearch the page title.
 
 ## Swift

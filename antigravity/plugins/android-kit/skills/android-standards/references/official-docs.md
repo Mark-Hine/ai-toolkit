@@ -5,7 +5,7 @@ sources: inline
 
 # Official documentation registry
 
-Canonical URLs. Prefer `android docs search "<term>"` first. Use these for web browsing fallback and for citing.
+Canonical URLs. Prefer `android docs search "<term>"` first. Use these for web browsing fallback and for citing. The sentence each page is cited for, confirmed against the live page, is in `source-anchors.md`.
 
 ## Architecture
 - Guide to app architecture: https://developer.android.com/topic/architecture

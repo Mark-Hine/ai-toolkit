@@ -7,8 +7,10 @@ Read the project AGENTS.md (or GEMINI.md) and applicable guidance first. Fall ba
 
 # iOS standards reference
 
-Use this to pick the authoritative source for a question, then fetch it with web search or fetch. Do not answer deadline,
-deprecation, App Store requirement or version questions from memory.
+Use this to pick the authoritative source for a question. For a standard, quote its anchor in
+`references/source-anchors.md` instead of fetching the page. Look up deadlines, deprecations, App Store
+requirements and versions with web search or fetch when you use them, because they change between anchor
+checks. Do not answer those from memory.
 
 | Question | Read |
 |---|---|
