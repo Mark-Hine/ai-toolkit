@@ -163,6 +163,15 @@ class GuardTests(unittest.TestCase):
         self.assertIsNotNone(guard.check(event, 'web-reviewer'))
         self.assertEqual('web-verifier', guard.resolve_role({'agent_type': 'web-kit:web-verifier'}, ''))
 
+    def test_verifier_setup_commands_name_the_caller(self):
+        for role in ('android-verifier', 'ios-verifier', 'web-verifier'):
+            for command in ('git worktree add --detach /tmp/pr-1 abc123', 'pod install',
+                            'swift package resolve', 'npm ci'):
+                with self.subTest(role=role, command=command):
+                    reason = self.shell(command, role)
+                    self.assertIsNotNone(reason)
+                    self.assertIn('prepare the checkout', reason)
+
     def test_timeout_wrappers(self):
         wrapper = 'timeout'
         for command in (f'{wrapper} 30 ./gradlew test', f'sudo {wrapper} 30 ./gradlew test',

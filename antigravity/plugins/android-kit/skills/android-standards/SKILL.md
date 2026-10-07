@@ -24,6 +24,7 @@ anchor checks. Do not answer those from memory.
 | Security controls, pinning, storage | `references/official-docs.md` §Security |
 | Play policy, target API, integrity | `references/official-docs.md` §Play |
 | Compose performance and API shape | `references/official-docs.md` §Compose |
+| A skill a playbook names is missing, or how to install it | `references/companions.md` |
 
 Guardrails when applying any reference to this repo:
 - target repos are often hybrid legacy apps (XML + Compose). Recommend the blueprint pattern for new code. Do not propose rewriting working
