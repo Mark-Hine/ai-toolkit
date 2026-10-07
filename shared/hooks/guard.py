@@ -20,6 +20,8 @@ import sys
 
 TOOLKIT_ROLES = {'android-researcher', 'android-reviewer', 'android-verifier',
                  'ios-researcher', 'ios-reviewer', 'ios-verifier', 'ui-reviewer'}
+# Commands that set up a checkout. The calling session runs them, so a verifier gets a path instead.
+SETUP_COMMANDS = {'git', 'pod', 'swift', 'carthage', 'bundle', 'npm', 'pnpm', 'yarn', 'bun'}
 SHELL_TOOLS = {'Bash', 'shell', 'shell_command', 'exec_command', 'run_command'}
 EDIT_TOOLS = {'apply_patch', 'Edit', 'Write', 'NotebookEdit',
               'write_to_file', 'replace_file_content', 'multi_replace_file_content'}
@@ -366,6 +368,9 @@ def role_reason(role, command):
         return 'Specialist command could not be parsed.'
     if read_command(tokens):
         return None
+    if role.endswith('-verifier') and tokens and tokens[0].rsplit('/', 1)[-1] in SETUP_COMMANDS:
+        return ('Verifier agents do not run git or dependency installers. '
+                'Ask the calling session to prepare the checkout and pass its path.')
     if role.startswith('ios-'):
         return None if ios_command_allowed(tokens, role == 'ios-researcher') else (
             'This iOS specialist only runs its documented read-only queries or test/simulator evidence commands.')
