@@ -1,5 +1,5 @@
 ---
-verified: 2026-10-08
+verified: 2026-10-07
 sources:
   - https://testing-library.com/docs/queries/about/
   - https://testing-library.com/docs/user-event/intro/
