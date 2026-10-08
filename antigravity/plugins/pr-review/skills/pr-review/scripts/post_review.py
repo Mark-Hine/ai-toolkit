@@ -80,6 +80,23 @@ def thread_mentions(thread, text):
     return any(text in (c or "") for c in thread.get("comments", []))
 
 
+# The poster's own status replies. A resolved thread whose latest poster reply resolved it was
+# resolved by the poster. Otherwise a person resolved it, which neither host's status records:
+# Azure DevOps sets the same `fixed` status whoever clicks Resolve, and an Actions GITHUB_TOKEN
+# cannot always say who it is.
+RESOLVING = ("Verified fixed at", "Retracted.")
+REOPENING = ("Still open at", "Regressed at", "Partial at")
+
+
+def resolved_by_poster(bodies):
+    for body in reversed(bodies):
+        if marker_of(body) and any(p in body for p in RESOLVING):
+            return True
+        if marker_of(body) and any(p in body for p in REOPENING):
+            return False
+    return False
+
+
 def plural(n, word):
     return f"{n} {word}" if n == 1 else f"{n} {word}s"
 
@@ -308,8 +325,8 @@ def first_env(*names):
 
 class AzureDevOps:
     API = "7.1"
-    STATUS_IN = {"active": ACTIVE, "pending": ACTIVE, "fixed": BOT_RESOLVED, "closed": BOT_RESOLVED,
-                 "wontFix": HUMAN_RESOLVED, "byDesign": HUMAN_RESOLVED}
+    OPEN_STATUSES = {"active", "pending"}
+    HUMAN_STATUSES = {"wontFix", "byDesign"}
     STATUS_OUT = {"active": "active", "resolved": "fixed", "closed": "closed"}
     VOTE = {"approve": 10, "approve_with_suggestions": 5, "waiting_for_author": -5, "reject": -10}
 
@@ -331,9 +348,17 @@ class AzureDevOps:
                 f"/pullrequest/{self.pr}?discussionId={thread_id}")
 
     def _normalise(self, raw):
-        return {"id": raw["id"], "status": self.STATUS_IN.get(raw.get("status"), ACTIVE),
-                "comments": [c.get("content") or "" for c in raw.get("comments", [])],
-                "url": self.thread_url(raw["id"]), "raw_status": raw.get("status")}
+        bodies = [c.get("content") or "" for c in raw.get("comments", [])]
+        status = raw.get("status") or "active"
+        if status in self.OPEN_STATUSES:
+            neutral = ACTIVE
+        elif status in self.HUMAN_STATUSES:
+            neutral = HUMAN_RESOLVED
+        else:
+            # `fixed` and `closed` are set by whoever resolves the thread, the poster or a person.
+            neutral = BOT_RESOLVED if resolved_by_poster(bodies) else HUMAN_RESOLVED
+        return {"id": raw["id"], "status": neutral, "comments": bodies,
+                "url": self.thread_url(raw["id"]), "raw_status": status}
 
     def threads(self):
         data = self.http.call("GET", f"{self.base}/threads?api-version={self.API}") or {}
@@ -389,11 +414,6 @@ class GitHub:
     API_VERSION = "2022-11-28"
     EVENT = {"approve": "APPROVE", "approve_with_suggestions": "APPROVE",
              "waiting_for_author": "REQUEST_CHANGES", "reject": "REQUEST_CHANGES"}
-    # The poster's own status replies. A resolved thread whose latest poster reply resolved it was
-    # resolved by the poster. Otherwise a human resolved it. This avoids asking GitHub who the
-    # token is, which an Actions GITHUB_TOKEN cannot always answer.
-    RESOLVING = ("Verified fixed at", "Retracted.")
-    REOPENING = ("Still open at", "Regressed at", "Partial at")
     THREADS_QUERY = """
 query($o:String!,$n:String!,$pr:Int!,$after:String){
   repository(owner:$o,name:$n){ pullRequest(number:$pr){
@@ -462,12 +482,7 @@ query($o:String!,$n:String!,$pr:Int!,$after:String){
     def _status(self, node, bodies):
         if not node.get("isResolved"):
             return ACTIVE
-        for body in reversed(bodies):
-            if any(p in body for p in self.RESOLVING) and marker_of(body):
-                return BOT_RESOLVED
-            if any(p in body for p in self.REOPENING) and marker_of(body):
-                break
-        return HUMAN_RESOLVED
+        return BOT_RESOLVED if resolved_by_poster(bodies) else HUMAN_RESOLVED
 
     def threads(self):
         out, after = [], None

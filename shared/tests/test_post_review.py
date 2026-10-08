@@ -171,6 +171,9 @@ class ReconcileTest(unittest.TestCase):
         self.assertEqual(['reply', 'status:active'], self.run_case(finding('B1', 'blocker', 'partial'), thread(1, BOT)))
         self.assertEqual([], self.run_case(finding('B1', 'blocker', 'fixed'), thread(1, BOT)))
 
+    def test_person_resolved_open_nit_is_left_alone(self):
+        self.assertEqual([], self.run_case(finding('N4', 'nit', 'open'), thread(1, HUMAN)))
+
     def test_human_resolution_is_never_reopened(self):
         self.assertEqual([], self.run_case(finding('M1', 'major', 'open'), thread(1, HUMAN)))
         self.assertEqual(['reply'], self.run_case(finding('M1', 'major', 'regressed'), thread(1, HUMAN)))
@@ -213,11 +216,21 @@ class AzureAdapterTest(unittest.TestCase):
         self.assertEqual('Bearer eyJa.b.c', self.make(token='eyJa.b.c')[1])
 
     def test_status_mapping_and_thread_url(self):
-        raw = {'value': [{'id': i, 'status': s, 'comments': [{'content': f'_pr-review M{i}_'}]}
-                         for i, s in enumerate(['active', 'fixed', 'closed', 'wontFix', 'byDesign'], 1)]}
+        def raw_thread(i, status, *replies):
+            bodies = [f'_pr-review M{i}_', *replies]
+            return {'id': i, 'status': status, 'comments': [{'content': c} for c in bodies]}
+        raw = {'value': [
+            raw_thread(1, 'active'),
+            raw_thread(2, 'fixed', 'Verified fixed at `abc` (criterion met). _pr-review M2_'),
+            raw_thread(3, 'closed', 'Retracted. This finding was wrong. _pr-review M3_'),
+            raw_thread(4, 'wontFix'),
+            raw_thread(5, 'byDesign'),
+            raw_thread(6, 'fixed'),  # a person clicked Resolve, which also sets `fixed`
+            raw_thread(7, 'fixed', 'Verified fixed at `a`. _pr-review M7_', 'Still open at `b`. _pr-review M7_'),
+        ]}
         ado, _ = self.make([raw])
         threads = ado.threads()
-        self.assertEqual([ACTIVE, BOT, BOT, HUMAN, HUMAN], [t['status'] for t in threads])
+        self.assertEqual([ACTIVE, BOT, BOT, HUMAN, HUMAN, HUMAN, HUMAN], [t['status'] for t in threads])
         self.assertTrue(threads[2]['url'].endswith('/Proj/_git/repo/pullrequest/5?discussionId=3'))
 
     def test_set_status_and_summary_edit(self):
