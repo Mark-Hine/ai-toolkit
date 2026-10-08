@@ -73,3 +73,5 @@ Machine-specific facts (AVD names, CLI paths, ticket prefix, default branch) liv
 MIT.
 
 The source anchors quote short passages from third-party documentation, such as Apple's Human Interface Guidelines, Material Design, the Android and Kotlin documentation, WCAG and MDN. Each quote is at most two sentences, names its page, and is there so a rule can cite the sentence it rests on. Copyright in quoted text stays with its owner, and no page text is committed.
+
+Scratch line for a pr-review poster test. This PR will be closed.
