@@ -30,8 +30,9 @@ the artifact staging directory (CI mode). The document contains:
 - a mandatory **Good in this delta** section, and
 - an appendix ranking the `file:line` clusters a human reviewer should read first.
 
-In local mode nothing is posted, committed, or sent. The human pastes the document into the PR.
-In CI mode the pipeline posts `findings.json` to the PR via `scripts/post_azdo.py`
+In local mode nothing is posted, committed, or sent unless the user asks. When they ask, Phase 7
+posts through one of the routes in [`references/posting.md`](references/posting.md). In CI mode the
+pipeline posts `findings.json` to the PR via `scripts/post_review.py`, on Azure DevOps or GitHub
 ([`references/ci.md`](references/ci.md)).
 
 ## Modes: local and CI
@@ -82,6 +83,7 @@ ambiguous, and echo the profile back before proceeding** so a wrong inference is
 | Ticket key | the most frequent `[A-Z][A-Z0-9]+-\d+` prefix across recent commit subjects | skip ticket reconciliation |
 | Quality register | glob for `assessment/**/*.csv`, `audit/**/*.csv`, `**/recommended-tasks.csv`, or an obvious findings table in `docs/` | skip that section and say so |
 | Reviewing team / org | the git remote's organisation | ask, or omit attribution |
+| PR host | `SYSTEM_COLLECTIONURI` or `TF_BUILD` ⇒ Azure DevOps · `GITHUB_ACTIONS` ⇒ GitHub · otherwise the `origin` URL: `dev.azure.com` or `visualstudio.com` ⇒ Azure DevOps, `github.com` ⇒ GitHub. Record it as `scope.host` | ask before posting |
 | Paired repo | only when the user names one, or an obvious sibling checkout exists next to this one | skip the twins section silently |
 
 Then:
@@ -99,7 +101,8 @@ Then:
    (protocol.md §7).
 4. **Re-review check:** a prior deliverable for this PR already exists (glob `pr-review-*.md`
    at the repo root, or, in CI, a prior `findings.json`
-   artifact or `[pr-review:` marker threads on the PR) and the head has moved ⇒ go to Phase R.
+   artifact or threads carrying a `pr-review` footer marker on the PR) and the head has moved ⇒
+   go to Phase R.
 5. If the working tree is dirty with changes you didn't make, note it and work from `origin/` refs.
 
 ## Phase 1: Promotion manifest verification *(promotion mode only)*
@@ -139,12 +142,15 @@ obey the pragmatism guardrails (protocol.md §15), cite the standard per finding
 **causal site** for each claim as distinct from its symptom sites (protocol.md §17), return
 structured leads as `file:line (causal) · claim · merge-base behaviour · proposed severity ·
 evidence quotes · symptom sites`, and close its report by **naming what it did NOT cover** as
-explicit exclusions, so uncovered ground is visible instead of assumed reviewed.
+explicit exclusions, so uncovered ground is visible instead of assumed reviewed. Give each agent a
+budget of about 20 tool calls and tell it to stop and report when the budget runs out. A partial
+report that marks unchecked ground Unverified beats none, and an agent with no budget can reach
+its turn limit before it writes anything.
 
 ## Phase 2a: Adversarial verification (second opinion)
 
 Before the lead touches the leads, send them to adversarial agents whose job is to **refute**
-them (protocol.md §21). Run them on the reviewer-tier model too. Batch about eight leads per agent. Each agent checks per lead: cited
+them (protocol.md §21). Run them on the reviewer-tier model too. Batch about eight leads per agent, with a budget of about 15 tool calls. Each agent checks per lead: cited
 file/line exists at the pinned SHA, merge-base half is true (`git show MERGE_BASE:path`), anchored
 at the root cause rather than a symptom (§17), and not debug-only (§20). Where a runnable command settles
 it (a compile, a test, a grep), **run the command** in the scratch checkout described below,
@@ -221,7 +227,15 @@ Check before delivering:
   the artifact staging directory, and the pipeline runs the poster (`references/ci.md`).
 
 Then (local mode) tell the user the verdict, the blockers in one line each, the proposed grades
-(protocol.md §23, severity is negotiable), and where the files are.
+(protocol.md §23, severity is negotiable), and where the files are. Offer Phase 7 in one line.
+
+## Phase 7: Post *(local mode, only when the user asks)*
+
+Post through a route in [`references/posting.md`](references/posting.md). Before anything is sent,
+confirm the PR head still equals `scope.source_head`, run a dry run and show the user the bodies.
+Cast no vote unless the user asks for one, because the vote lands under their name. Blockers,
+Questions and Majors get anchored threads. Nits go only in the summary comment, so they add no
+thread the author must resolve.
 
 ## Phase R: Re-review (prior review exists, head moved)
 

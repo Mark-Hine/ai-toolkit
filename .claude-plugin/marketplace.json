@@ -42,7 +42,7 @@
     {
       "name": "pr-review",
       "source": "./claude/plugins/pr-review",
-      "description": "Formal written PR review: standards-cited findings register, verdict, promotion-manifest checks, optional CI posting. Android, iOS, Spring Boot, React/Next.js and generic repos.",
+      "description": "Formal written PR review: standards-cited findings register, verdict, promotion-manifest checks, posting to Azure DevOps or GitHub. Android, iOS, Spring Boot, React/Next.js and generic repos.",
       "keywords": [
         "review",
         "pull-request",

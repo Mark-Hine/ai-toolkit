@@ -25,12 +25,14 @@ Two artifacts, JSON first:
 ## Modes
 
 - **Local (default):** interactive. It infers the repo profile, echoes it back, asks what stays
-  ambiguous. Nothing is posted. The human pastes the document into the PR.
+  ambiguous. Nothing is posted unless the user asks. Then Phase 7 posts through a PAT, an Entra
+  token, the `gh` CLI or an MCP server, as `references/posting.md` describes.
 - **CI (`PR_REVIEW_MODE=ci`):** headless. It never asks, ambiguity resolves to safe defaults, both
   artifacts go to the artifact staging directory, and the pipeline posts `findings.json` to the
-  PR via `scripts/post_azdo.py` (inline threads at `file:line`, a summary thread, a reviewer
-  vote, idempotent across re-runs). Wiring, an Azure DevOps example, and gating semantics:
-  `references/ci.md`.
+  PR via `scripts/post_review.py` on Azure DevOps or GitHub. That means anchored threads for
+  Blockers, Questions and Majors, one summary comment that also lists the nits, and a reviewer
+  vote, idempotent across re-runs. Wiring, Azure DevOps and GitHub Actions examples, and gating
+  semantics: `references/ci.md`.
 
 ## What it is not
 
@@ -91,9 +93,10 @@ pr-review/
 └── skills/pr-review/
     ├── SKILL.md              # phased protocol (0 setup/profile/mode · 1 manifest · 2 fan-out ·
 │                             #  2a adversarial verification · 3 lead verification · 3.5 emit JSON ·
-│                             #  4 register · 5 twins · 6 render+deliver · R re-review)
+│                             #  4 register · 5 twins · 6 render+deliver · 7 post on request · R re-review)
     ├── scripts/
-    │   ├── post_azdo.py      # findings.json → Azure DevOps PR threads + reviewer vote (stdlib-only)
+    │   ├── post_review.py    # findings.json → Azure DevOps or GitHub PR threads, summary + vote (stdlib-only)
+    │   ├── post_azdo.py      # alias for post_review.py --host azure
     │   └── check_ancestry.py # protocol §19: cited SHAs are ancestors of the published ref (stdlib-only)
     └── references/
         ├── protocol.md           # §1 to §12 rules of engagement (delta-only, severity vocabulary,
@@ -104,7 +107,8 @@ pr-review/
     │                         #  severity negotiation, CI conduct)
     ├── template.md           # document section contract and default wording (rendered from JSON)
     ├── output.md             # findings.json schema (pr-review/v1) and rendering rules
-    ├── ci.md                 # pipeline wiring: Azure DevOps example, gating, other CI systems
+    ├── ci.md                 # pipeline wiring: Azure DevOps and GitHub Actions examples, gating
+    ├── posting.md            # local posting routes: PAT, Entra token, gh CLI, MCP
     ├── pci-dss.md            # PCI DSS v4.0.1 orientation map, loaded for card-data changes
     └── platforms/
         ├── android.md        # architecture, state/Compose/coroutines, MASVS, a11y, standards block
