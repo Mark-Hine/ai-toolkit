@@ -114,6 +114,10 @@ waiting to happen.
   in real clones. Resolve the endpoint from the raw SHA instead (`git ls-remote` or
   `git rev-parse`), and record the workaround in the review's standards-basis line so the reader
   can reproduce your range exactly.
+- **Quote refs in shell commands.** Write `git show "${SHA}:${path}"` with braces, because zsh
+  reads `$S:a`, `$S:h` and `$S:t` as path modifiers and silently shows the wrong object. Count
+  matches with `git grep -c <pattern> <sha> -- '<glob>'` instead of looping over `git ls-tree`
+  output, which splits paths that contain spaces.
 
 ## 9. Mode detection
 
@@ -163,11 +167,12 @@ open and unaffected") is part of the scope boundary, so keep it.
   (promotion) or `pr-review-<branch-or-PR#>-YYYY-MM-DD.{json,md}` (feature). Local runs write them
   at the repo root, untracked, because the document gets pasted into the PR, not committed. CI runs write
   to the artifact staging directory instead.
-- **Local mode:** nothing is posted to the PR or sent anywhere by this skill. Posting is the
-  human's call.
-- **CI mode (§24):** the pipeline posts `findings.json` via the shipped adapter
-  (`scripts/post_azdo.py`). That posting is authorized by the pipeline's own configuration, not
-  by this skill deciding to.
+- **Local mode:** nothing is posted to the PR or sent anywhere unless the user asks. When they
+  ask, post through a route in `references/posting.md`, dry-run first, and cast no vote unless
+  the user asks for one.
+- **CI mode (§24):** the pipeline posts `findings.json` via the shipped poster
+  (`scripts/post_review.py`, for Azure DevOps or GitHub). That posting is authorized by the
+  pipeline's own configuration, not by this skill deciding to.
 - If the working tree carries modifications you didn't make, say so and review against
   `origin/<source>`, never the tree.
 

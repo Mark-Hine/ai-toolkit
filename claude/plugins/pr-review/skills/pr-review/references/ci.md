@@ -1,5 +1,5 @@
 ---
-verified: 2026-09-29
+verified: 2026-10-08
 sources: house
 ---
 
@@ -19,11 +19,14 @@ artifacts to the staging directory, and lets the pipeline post the findings JSON
 - **Outputs:** `pr-review-<PR#>-<YYYY-MM-DD>.json` and `pr-review-<PR#>-<YYYY-MM-DD>.md` in the
   artifact staging directory, published as build artifacts. The poster globs `pr-review-*.json`
   and expects exactly one.
-- **Posting:** the pipeline runs `scripts/post_azdo.py` from the installed skill. It creates inline threads
-  at `file:line`, a summary thread, a reviewer vote. Idempotent across re-runs via
-  `[pr-review:<ID>]` markers. Findings whose status is `open`, `regressed` or `partial` gate the
-  vote. A thread a human resolved as Won't Fix or By Design is never reopened, and a resolved
-  Question thread lifts that Question's gate.
+- **Posting:** the pipeline runs `scripts/post_review.py` from the installed skill, with
+  `--host azure` or `--host github`. It creates an anchored thread at `file:line` for each Blocker,
+  Question and Major, one summary comment that also lists the nits, and a reviewer vote. Re-runs
+  find their threads by the `pr-review <ID>` footer, so they update threads instead of duplicating
+  them. Findings whose status is `open`, `regressed` or `partial` gate the vote. A thread a human
+  resolved is never reopened, and a resolved Question thread lifts that Question's gate.
+  [`posting.md`](posting.md) shows what each comment contains. `scripts/post_azdo.py` still works
+  as an alias for `--host azure`.
 - **Gating:** the poster's `--fail-on-verdict` exits 1 when the computed vote is negative, so a
   branch policy can require the step. Prefer gating on the vote (a human resolving a Question
   thread in the PR UI lifts the gate without a re-run) over gating on the JSON's verdict field.
@@ -63,7 +66,7 @@ steps:
       claude plugin marketplace add "Mark-Hine/ai-toolkit#${AI_TOOLKIT_REF}"
       claude plugin install pr-review@ai-toolkit --scope user
       root="$(claude plugin list --json | jq -r '.[] | select(.id == "pr-review@ai-toolkit") | .installPath')"
-      test -f "$root/skills/pr-review/scripts/post_azdo.py"
+      test -f "$root/skills/pr-review/scripts/post_review.py"
       echo "##vso[task.setvariable variable=PR_REVIEW_SKILL_DIR]$root/skills/pr-review"
     displayName: Install Claude Code and pr-review
     env:
@@ -94,7 +97,7 @@ steps:
       shopt -s nullglob
       files=("$REVIEW_ARTIFACT_DIR"/pr-review-*.json)
       [ "${#files[@]}" -eq 1 ] || { echo "Expected one findings JSON, found ${#files[@]}"; exit 1; }
-      python3 "$PR_REVIEW_SKILL_DIR/scripts/post_azdo.py" "${files[0]}" --fail-on-verdict
+      python3 "$PR_REVIEW_SKILL_DIR/scripts/post_review.py" "${files[0]}" --host azure --fail-on-verdict
     displayName: Post findings to PR
     env:
       SYSTEM_ACCESSTOKEN: $(System.AccessToken)
@@ -116,14 +119,96 @@ Notes:
 - The poster rejects a findings file with an unknown severity or status, or with a gating Blocker
   under a verdict other than `request_changes`, before it sends anything.
 
-## Any other CI system
+## GitHub Actions
 
-The design is deliberately splittable: the skill produces the findings JSON (host-agnostic, see
-`references/output.md`). Only the poster is Azure DevOps-specific. For another host, publish the
-JSON as an artifact and gate on `verdict`, or write a small adapter against the same file. The
-poster's internals already separate the generic findings-to-actions core from the ADO REST calls.
+The workflow token needs `pull-requests: write`. A pull request from a fork gets a read-only token
+and no secrets, so the review and posting steps only run for branches in the same repository. An
+approval from `GITHUB_TOKEN` also needs the repository setting **Allow GitHub Actions to create and
+approve pull requests**. Without it, or on the author's own pull request, the poster leaves a
+comment review instead. Run the workflow once on a scratch pull request before requiring it.
+
 <!-- layer-specific:start -->
-A GitHub Actions sketch: run the same `claude -p` step, then map findings to
-`gh pr review --request-changes` or review comments via the GitHub API. Markers and idempotency
-carry over unchanged.
+```yaml
+# .github/workflows/pr-review.yml
+name: pr-review
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    env:
+      AI_TOOLKIT_REF: 'main'             # pin to a tag in production
+      REVIEW_ARTIFACT_DIR: ${{ runner.temp }}/pr-review
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      HEAD_REF: ${{ github.head_ref }}
+      BASE_REF: ${{ github.base_ref }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0                 # full history, the review needs the merge-base
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Claude Code and pr-review
+        env:
+          CLAUDE_CODE_VERSION: '2.1.284'   # the CLI version you tested
+          DISABLE_AUTOUPDATER: '1'
+        run: |
+          set -euo pipefail
+          npm install -g "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}"
+          claude plugin marketplace add "Mark-Hine/ai-toolkit#${AI_TOOLKIT_REF}"
+          claude plugin install pr-review@ai-toolkit --scope user
+          root="$(claude plugin list --json | jq -r '.[] | select(.id == "pr-review@ai-toolkit") | .installPath')"
+          test -f "$root/skills/pr-review/scripts/post_review.py"
+          echo "PR_REVIEW_SKILL_DIR=$root/skills/pr-review" >> "$GITHUB_ENV"
+
+      - name: Run PR review
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}   # scoped to this step only
+          PR_REVIEW_MODE: ci
+        run: |
+          set -euo pipefail
+          mkdir -p "$REVIEW_ARTIFACT_DIR"
+          printf -v today '%(%Y-%m-%d)T' -1
+          claude -p "/pr-review:pr-review ci: review PR $PR_NUMBER, source origin/$HEAD_REF, target origin/$BASE_REF. Write pr-review-$PR_NUMBER-$today.json and pr-review-$PR_NUMBER-$today.md to $REVIEW_ARTIFACT_DIR. Do not post." \
+            --add-dir "$REVIEW_ARTIFACT_DIR" --permission-mode dontAsk \
+            --allowedTools "Read,Grep,Glob,Write,Bash(git log *),Bash(git diff *),Bash(git show *),Bash(git rev-parse *),Bash(git merge-base *),Bash(git rev-list *),Bash(git ls-files *),Bash(git branch -r*),Bash(git cat-file *)"
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pr-review
+          path: ${{ env.REVIEW_ARTIFACT_DIR }}
+
+      - name: Post findings to PR
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          files=("$REVIEW_ARTIFACT_DIR"/pr-review-*.json)
+          [ "${#files[@]}" -eq 1 ] || { echo "Expected one findings JSON, found ${#files[@]}"; exit 1; }
+          python3 "$PR_REVIEW_SKILL_DIR/scripts/post_review.py" "${files[0]}" --host github --fail-on-verdict
+```
 <!-- layer-specific:end -->
+
+The poster reads the repository and pull request number from `GITHUB_REPOSITORY` and the event
+payload. It anchors each comment at `scope.source_head`. A finding on a line outside the diff goes
+into the summary under "Outside the diff", because GitHub anchors review comments only on diff
+lines. To warn instead of fail, drop `--fail-on-verdict`.
+
+## Any other host
+
+The findings JSON is host-neutral (`references/output.md`). For another host, publish it as an
+artifact and gate on `verdict`, or add an adapter class to `post_review.py` with the same methods
+as `AzureDevOps` and `GitHub`. The core decides what to create, reply to, resolve or reopen, and
+the adapter maps that onto the host's API.

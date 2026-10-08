@@ -6,7 +6,7 @@ sources: house
 # Canonical output: `findings.json` (schema `pr-review/v1`)
 
 The machine-readable review. Everything downstream reads this file: the markdown document is
-rendered from it (template.md), the CI poster consumes it (`scripts/post_azdo.py`,
+rendered from it (template.md), the poster consumes it (`scripts/post_review.py`,
 `references/ci.md`), and the next re-review walks it to know what to re-verify. The document and
 the JSON must stay in parity. Every finding ID in one appears in the other.
 
@@ -31,7 +31,8 @@ the artifact staging directory.
     "commits": 297,
     "files": 271,
     "churn_note": "~78% formatter sweep, verified with git diff -w",
-    "inferences": ["platform=android (settings.gradle.kts)", "ticket_key=ABC (211 hits)"]
+    "host": "azure",
+    "inferences": ["platform=android (settings.gradle.kts)", "ticket_key=ABC (211 hits)", "host=azure (origin URL)"]
   },
   "standards_basis": "<the pack's standards-basis paragraph, verbatim>",
   "manifest": {
@@ -81,9 +82,11 @@ Top level:
 | `run` | `initial` \| `re-review` |
 | `verdict` | `approve` \| `approve_with_comments` \| `request_changes`, by the same rule as the document: any open blocker or unanswered question ⇒ `request_changes` |
 | `scope` | the pinned range and counts. `inferences` lists every Phase-0 inference (mandatory in CI mode, protocol.md §24) |
+| `scope.host` | optional, `azure` or `github`: where the PR lives. The poster uses it when `--host` is not given |
 | `standards_basis` | the loaded pack's block, so the JSON is self-describing when the doc isn't at hand |
 | `manifest` | promotion mode only. Omit in feature mode |
 | `register_crossref` | only when a register exists. Omit otherwise |
+| `genuinely_good` | verified improvements, one line each. Posted in the PR summary under "Good in this delta" |
 
 Per finding:
 
@@ -92,8 +95,8 @@ Per finding:
 | `id` | `B1…`/`Q1…`/`M1…`/`N1…`, **stable forever** and never renumbered across re-reviews (protocol.md §10) |
 | `severity` | `blocker` \| `question` \| `major` \| `nit` |
 | `file`, `line` | the **causal site**, source-side at the pinned SHA (protocol.md §17) |
-| `symptom_sites` | other `file:line` manifestations, or an empty array when none |
-| `root_cause` | one sentence naming the mechanism at the causal site |
+| `symptom_sites` | other `file:line` manifestations, or an empty array when none. Posted as the thread's **Also at** line |
+| `root_cause` | one sentence naming the mechanism at the causal site. It is posted on the PR as the thread's **Why** line, so write it for the author |
 | `merge_base_behaviour` | the verified "the target branch had X" half (protocol.md §1), or an empty string when the finding isn't comparative |
 | `standard` | a registry key from the loaded pack (`ARCH-RECS`, `MASVS`, …) |
 | `finding`, `pr_comment` | the two table cells, verbatim. The JSON carries them so renderers never re-write them |
