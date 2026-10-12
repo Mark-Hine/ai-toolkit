@@ -76,6 +76,94 @@ class EngineTests(unittest.TestCase):
         self.assertEqual(engine.lint('Read {@project_file} and DESIGN.md.'), [])
 
 
+SKILL = '''---
+name: feature
+description: "Do the thing."
+argument_hint: "[ticket]"
+invocation: manual
+preamble: playbook
+metadata:
+  verified: 2026-10-01
+---
+
+# Feature: {@args}
+'''
+
+AGENT = '''---
+name: web-researcher
+description: Looks things up.
+role: researcher
+skills: [web-kit/standards]
+---
+
+# Researcher
+<!-- if: skills_preload -->
+Preloaded.
+<!-- else -->
+Read it.
+<!-- end -->
+'''
+
+
+def skill_project(root):
+    skill_dir = root / 'src/skills/web-kit/feature'
+    skill_dir.mkdir(parents=True)
+    (skill_dir / 'SKILL.md').write_text(SKILL)
+    (skill_dir / 'scripts').mkdir()
+    (skill_dir / 'scripts/run.sh').write_text('echo hi\n')
+    (skill_dir / 'scripts/run.sh').chmod(0o755)
+    agents = root / 'src/agents/web-kit'
+    agents.mkdir(parents=True)
+    (agents / 'web-researcher.md').write_text(AGENT)
+    return build.Project(root)
+
+
+class SkillAndAgentTests(unittest.TestCase):
+    def outputs(self, name):
+        with tempfile.TemporaryDirectory() as temp:
+            project = skill_project(Path(temp))
+            settings = {k: v for k, v in CONFIG['targets'][name].items() if k != 'rule_files'}
+            return {o.path: o for o in TARGETS[name](settings).outputs(project)}
+
+    def test_claude_skill_maps_neutral_keys(self):
+        out = self.outputs('claude')
+        text = out['claude/plugins/web-kit/skills/feature/SKILL.md'].content.decode()
+        self.assertTrue(text.startswith('---\nname: feature\ndescription: "Do the thing."\nargument-hint: "[ticket]"\n'
+                                        'disable-model-invocation: true\nmetadata:\n  verified: 2026-10-01\n---\n'))
+        self.assertIn('# Feature: $ARGUMENTS', text)
+        self.assertEqual(out['claude/plugins/web-kit/skills/feature/scripts/run.sh'].mode, 0o755)
+
+    def test_codex_skill_is_flat_with_preamble_and_policy(self):
+        out = self.outputs('codex')
+        text = out['codex/skills/web-feature/SKILL.md'].content.decode()
+        self.assertTrue(text.startswith('---\nname: web-feature\ndescription: "Do the thing."\nmetadata:\n'))
+        self.assertIn('---\n\nRead the project AGENTS.md', text)
+        self.assertIn('# Feature: the user request', text)
+        self.assertIn('codex/skills/web-feature/agents/openai.yaml', out)
+
+    def test_agents_render_per_target(self):
+        claude = self.outputs('claude')['claude/plugins/web-kit/agents/web-researcher.md'].content.decode()
+        self.assertIn('model: sonnet\neffort: medium\nmaxTurns: 15\nskills:\n  - web-kit:standards\ncolor: blue\n', claude)
+        self.assertIn('Preloaded.', claude)
+        codex = tomllib.loads(self.outputs('codex')['codex/agents/web-researcher.toml'].content.decode())
+        self.assertEqual((codex['model'], codex['sandbox_mode']), ('gpt-6-sol', 'read-only'))
+        self.assertTrue(codex['developer_instructions'].startswith('# Researcher\nRead it.\n'))
+        self.assertIn('~/.codex/guidance/web files', codex['developer_instructions'])
+        agy = self.outputs('antigravity')['antigravity/plugins/web-kit/agents/web-researcher.md'].content.decode()
+        self.assertIn('model: flash\n', agy)
+        self.assertIn('skills: [skills/web-standards]\n', agy)
+        self.assertIn('the web-kit rules, which load with this plugin', agy)
+
+    def test_unknown_skill_key_fails(self):
+        with tempfile.TemporaryDirectory() as temp:
+            project = skill_project(Path(temp))
+            path = Path(temp) / 'src/skills/web-kit/feature/SKILL.md'
+            path.write_text(SKILL.replace('preamble: playbook', 'colour: red'))
+            project = build.Project(Path(temp))
+            with self.assertRaises(engine.RenderError):
+                target('claude').outputs(project)
+
+
 class RepositoryTests(unittest.TestCase):
     def test_sources_pass_the_lint(self):
         self.assertEqual(build.lint_sources(build.Project()), [])

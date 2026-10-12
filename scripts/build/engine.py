@@ -12,6 +12,7 @@ render to each target's wording. Line-level blocks keep text for some targets on
 A condition is a comma-separated list, true when any item is. An item is a capability flag (`plan_mode`),
 a negated flag (`!plan_mode`), or a key and value (`target=codex`, `ci_cli=agy`). Blocks do not nest.
 """
+import json
 import re
 
 TOKEN = re.compile(r'\{@([a-z_]+)(?: ([^{}\n]+))?\}')
@@ -117,6 +118,44 @@ def split_frontmatter(text):
         if end != -1:
             return text[4:end], text[end + 5:]
     return '', text
+
+
+def parse_frontmatter(block):
+    """Ordered (key, raw) pairs. `raw` keeps the value text and any indented continuation lines verbatim, so
+    folded scalars, lists and nested maps survive a round trip. A YAML subset, not a YAML parser."""
+    entries = []
+    for line in block.split('\n'):
+        if line and not line[0].isspace() and ':' in line:
+            key, rest = line.split(':', 1)
+            entries.append([key.strip(), rest.strip()])
+        elif entries:
+            entries[-1][1] += '\n' + line
+        elif line.strip():
+            raise RenderError(f'frontmatter line before any key: {line!r}')
+    return [tuple(entry) for entry in entries]
+
+
+def scalar(raw):
+    """The string value of a one-line or folded scalar."""
+    first, _, rest = raw.partition('\n')
+    if first in ('>-', '>', '|', '|-'):
+        lines = [line.strip() for line in rest.split('\n') if line.strip()]
+        return ' '.join(lines) if first.startswith('>') else '\n'.join(lines)
+    if rest.strip():
+        raise RenderError(f'expected a scalar, got a block: {raw!r}')
+    if first.startswith('"'):
+        return json.loads(first)
+    if first.startswith("'") and first.endswith("'"):
+        return first[1:-1].replace("''", "'")
+    return first
+
+
+def string_list(raw):
+    """A flow list `[a, b]` or a block list of `- item` lines."""
+    raw = raw.strip()
+    if raw.startswith('['):
+        return [item.strip() for item in raw[1:-1].split(',') if item.strip()]
+    return [line.strip()[2:].strip() for line in raw.split('\n') if line.strip().startswith('- ')]
 
 
 def paths_of(text):

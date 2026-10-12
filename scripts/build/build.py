@@ -13,6 +13,7 @@ import argparse
 import os
 import sys
 import tomllib
+from dataclasses import dataclass, field
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -26,6 +27,23 @@ ROOT = HERE.parents[1]
 CONFIG = HERE / 'agents.toml'
 
 
+@dataclass
+class Skill:
+    kit: str
+    name: str
+    source: str
+    files: dict = field(default_factory=dict)  # path inside the skill -> (bytes, mode)
+
+
+@dataclass
+class Agent:
+    kit: str
+    name: str
+    role: str
+    source: str
+    text: str
+
+
 class Project:
     """Read access to the sources, relative to the repo root."""
 
@@ -33,6 +51,27 @@ class Project:
         self.root = Path(root)
         self.rules = {self.rel(p): p.read_text() for p in sorted((self.root / 'src/rules').glob('*/*.md'))
                       if p.parent.name != 'delegation'}
+        self.skills = [self.load_skill(d) for d in sorted((self.root / 'src/skills').glob('*/*/')) if d.is_dir()]
+        self.agents = [self.load_agent(p) for p in sorted((self.root / 'src/agents').glob('*/*.md'))]
+        self.agent_kits = sorted({a.kit for a in self.agents})
+
+    def load_skill(self, directory):
+        skill = Skill(directory.parent.name, directory.name, self.rel(directory))
+        for path in sorted(directory.rglob('*')):
+            if path.is_file() and '__pycache__' not in path.parts and path.name != '.DS_Store':
+                skill.files[path.relative_to(directory).as_posix()] = (path.read_bytes(), path.stat().st_mode & 0o777)
+        if 'SKILL.md' not in skill.files:
+            raise ValueError(f'{skill.source} has no SKILL.md')
+        return skill
+
+    def load_agent(self, path):
+        text = path.read_text()
+        block, _ = engine.split_frontmatter(text)
+        fields = dict(engine.parse_frontmatter(block))
+        name = engine.scalar(fields.get('name', ''))
+        if name != path.stem:
+            raise ValueError(f'{self.rel(path)}: name must be {path.stem}')
+        return Agent(path.parent.name, name, engine.scalar(fields.get('role', '')), self.rel(path), text)
 
     def rel(self, path):
         return Path(path).relative_to(self.root).as_posix()
@@ -73,10 +112,10 @@ def all_outputs(project, config):
     return outputs
 
 
-def owned_roots(config):
+def owned_roots(project, config):
     roots = []
     for target in load_targets(config):
-        roots += target.owned_roots()
+        roots += target.owned_roots(project)
     return roots
 
 
@@ -92,7 +131,7 @@ def lint_sources(project):
 def orphans(project, config, outputs):
     produced = {o.path for o in outputs}
     found = []
-    for root in owned_roots(config):
+    for root in owned_roots(project, config):
         base = project.root / root
         if not base.exists():
             continue

@@ -2,11 +2,29 @@
 # name in scripts/build/targets/. Tokens are plain text values. Capabilities drive `<!-- if: ... -->` blocks.
 
 [targets.claude.tokens]
+fetch_title = "WebFetch"
+shell = "Bash"
+guard_blocks = "The guard-kit hook blocks anything else."
+explore_sentence = "An Explore subagent"
+home = "~/.claude/"
 project_file = "CLAUDE.md"
 project_file_full = "`CLAUDE.md`"
 design_rules = "`~/.claude/rules/design-standards.md`"
+args = "$ARGUMENTS"
+explore = "an Explore subagent"
+fetch = "WebFetch"
+project_template = "project-claude-md-template.md"
+local_notes = "`CLAUDE.local.md`"
+
+# Tokens with an argument such as {@rule web/testing}. {platform} and {name} are the two halves of the argument.
+[targets.claude.formats]
+skill_named = "`{id}`"
+rule = "`~/.claude/rules/{platform}/{name}.md`"
+rules_dir = "`~/.claude/rules/{platform}/`"
+rules_in_scope = "every rule in `~/.claude/rules/` and the project's `.claude/rules/` whose `paths`"
 
 [targets.claude.capabilities]
+skills_preload = true
 plan_mode = true
 reviewer_runs_builds = true
 skill_allowlist = true
@@ -18,12 +36,62 @@ ci_cli = "claude"
 research = "sonnet"
 review = "opus"
 
+[targets.claude.file_names]
+"project-template.md" = "project-claude-md-template.md"
+
+# Claude frontmatter for each agent role, in output order. `skills = true` preloads the agent's skills there.
+[targets.claude.roles.researcher]
+tools = "Read, Grep, Glob, Bash, WebFetch, WebSearch"
+disallowedTools = "Edit, Write, NotebookEdit"
+model = "{@model research}"
+effort = "medium"
+maxTurns = 15
+skills = true
+color = "blue"
+
+[targets.claude.roles.reviewer]
+tools = "Read, Grep, Glob, Bash"
+disallowedTools = "Edit, Write, NotebookEdit"
+model = "{@model review}"
+effort = "high"
+maxTurns = 20
+skills = false
+color = "red"
+
+[targets.claude.roles.verifier]
+tools = "Read, Grep, Glob, Bash"
+disallowedTools = "Edit, Write, NotebookEdit"
+model = "{@model research}"
+effort = "medium"
+maxTurns = 25
+skills = true
+color = "green"
+
 [targets.codex.tokens]
+fetch_title = "Web fetch"
+shell = "shell tools"
+guard_blocks = "Anything else is blocked."
+explore_sentence = "An explorer subagent"
+reviewer_no_writes = "The read-only sandbox is intentional. Do not run installs or builds, or escalate for writes."
+home = "~/.codex/"
 project_file = "AGENTS.md"
 project_file_full = "`AGENTS.md`"
 design_rules = "`guidance/design-standards.md`"
+args = "the user request"
+explore = "an explorer subagent"
+fetch = "web fetch"
+project_template = "project-agents-md-template.md"
+local_notes = "`.local/agent-notes.md`"
+
+[targets.codex.formats]
+skill_named = "the `{id}` skill"
+agent_footer = "Read ~/.codex/machine.md and applicable ~/.codex/guidance/{platform} files. Read project AGENTS.md, falling back to CLAUDE.md if absent. Discover optional tools first. Do not claim unavailable checks ran. Use tool execution and polling controls rather than a shell timeout wrapper."
+rule = "`~/.codex/guidance/{platform}/{name}.md`"
+rules_dir = "`~/.codex/guidance/{platform}/`"
+rules_in_scope = "every rule in `~/.codex/guidance/` and the project's `.codex/guidance/` (or `.claude/rules/` during migration) whose `paths`"
 
 [targets.codex.capabilities]
+skills_preload = false
 plan_mode = false
 reviewer_runs_builds = false
 skill_allowlist = false
@@ -35,12 +103,52 @@ ci_cli = "codex"
 research = "gpt-6-sol"
 review = "gpt-6-astra"
 
+[targets.codex.file_names]
+"project-template.md" = "project-agents-md-template.md"
+
+[targets.codex.preambles]
+playbook = "Read the project AGENTS.md and applicable global guidance first. Fall back to CLAUDE.md if AGENTS.md is absent. Follow the global rules for optional tools, specialist agents and Git actions."
+
+[targets.codex.roles.researcher]
+model = "{@model research}"
+model_reasoning_effort = "medium"
+sandbox_mode = "read-only"
+
+[targets.codex.roles.reviewer]
+model = "{@model review}"
+model_reasoning_effort = "high"
+sandbox_mode = "read-only"
+
+[targets.codex.roles.verifier]
+model = "{@model research}"
+model_reasoning_effort = "medium"
+sandbox_mode = "workspace-write"
+
 [targets.antigravity.tokens]
+fetch_title = "Web fetch"
+shell = "shell tools"
+guard_blocks = "Anything else is blocked."
+explore_sentence = "A research subagent"
+reviewer_no_writes = "Your tool list has no write tools by design. Do not run installs or builds."
+home = "~/.gemini/config/"
 project_file = "AGENTS.md"
 project_file_full = "`AGENTS.md` (or `GEMINI.md`)"
 design_rules = "the design-kit rules (`~/.gemini/config/guidance/design-standards.md`)"
+args = "the user request"
+explore = "a research subagent"
+fetch = "web fetch"
+project_template = "project-agents-md-template.md"
+local_notes = "`.local/agent-notes.md`"
+
+[targets.antigravity.formats]
+skill_named = "the `{id}` skill"
+agent_footer = "Read `~/.gemini/config/machine.md` and the {platform}-kit rules, which load with this plugin. Read project `AGENTS.md`, falling back to `CLAUDE.md` if absent. Discover optional tools first. Do not claim unavailable checks ran."
+rule = "the {platform}-kit {name} rule"
+rules_dir = "the {platform}-kit rules"
+rules_in_scope = "the {platform}-kit rules (loaded with this plugin) and the project's rules whose paths"
 
 [targets.antigravity.capabilities]
+skills_preload = false
 plan_mode = false
 reviewer_runs_builds = false
 skill_allowlist = false
@@ -51,6 +159,36 @@ ci_cli = "agy"
 [targets.antigravity.models]
 research = "flash"
 review = "pro"
+
+[targets.antigravity.file_names]
+"project-template.md" = "project-agents-md-template.md"
+
+[targets.antigravity.preambles]
+playbook = "Read the project AGENTS.md (or GEMINI.md) and applicable guidance first. Fall back to CLAUDE.md if AGENTS.md is absent. Follow global rules for optional tools, specialist subagents and Git actions."
+
+[targets.antigravity.roles.researcher]
+model = "{@model research}"
+tools = ["view_file", "list_dir", "find_by_name", "grep_search", "search_web", "read_url_content", "run_command"]
+subagent = true
+mainAgent = false
+commandExecutionPolicy = "off"
+skills = true
+
+[targets.antigravity.roles.reviewer]
+model = "{@model review}"
+tools = ["view_file", "list_dir", "find_by_name", "grep_search", "run_command"]
+subagent = true
+mainAgent = false
+commandExecutionPolicy = "off"
+skills = true
+
+[targets.antigravity.roles.verifier]
+model = "{@model research}"
+tools = ["view_file", "list_dir", "find_by_name", "grep_search", "run_command"]
+subagent = true
+mainAgent = false
+commandExecutionPolicy = "auto"
+skills = true
 
 # Antigravity loads one always-on rules file per plugin. Order of sources is the order of sections.
 [[targets.antigravity.rule_files]]
