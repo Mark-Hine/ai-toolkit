@@ -22,6 +22,7 @@ Run the checks `AGENTS.md` requires for the files this branch changes, and repor
 | `codex/` | `python3 codex/scripts/validate.py` and `python3 -m unittest discover -s codex/tests` |
 | `antigravity/` | `python3 antigravity/scripts/validate.py` and `python3 -m unittest discover -s antigravity/tests` |
 | `tools/` | `python3 -m unittest discover -s tools/tests` |
+| `shared/install_common.py` | `python3 -m unittest discover -s shared/tests`, `python3 -m unittest discover -s codex/tests` and `python3 -m unittest discover -s antigravity/tests` |
 | `src/` or `scripts/build/` | `python3 scripts/build/build.py --check` and `python3 -m unittest discover -s scripts/build/tests` |
 
    Run each check as its own command from the repository root, without `cd` or chaining, so each failure points at one check.

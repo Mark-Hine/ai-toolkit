@@ -8,6 +8,9 @@ import tomllib
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(REPO_ROOT / 'shared'))
+
+from install_common import SHARED_GUIDANCE  # noqa: E402
 RULE_DECISIONS = {'allow', 'prompt', 'forbidden'}
 RULE_KEYWORDS = {'pattern', 'decision', 'justification', 'match', 'not_match'}
 SANDBOX_BY_ROLE = {'researcher': 'read-only', 'reviewer': 'read-only', 'verifier': 'workspace-write'}
@@ -109,7 +112,7 @@ def check_rules(root, errors):
             errors.append(f'{path}:{node.lineno}: decision must be one of {sorted(RULE_DECISIONS)}')
 
 # Guidance files the installer links under a different name than their source.
-INSTALLED_AS = {'writing-style.md': 'writing-style-brief.md'}
+INSTALLED_AS = {name: source for name, source in SHARED_GUIDANCE.items() if name != source}
 
 
 def check_home_references(root, repo_root, errors):

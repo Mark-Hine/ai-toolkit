@@ -15,6 +15,7 @@ Read by Codex directly, by Claude Code through `CLAUDE.md`, and by Antigravity t
 - `python3 scripts/build/build.py --check`, `python3 scripts/ci/check_repo.py`, `python3 scripts/ci/check_style.py` and `python3 tools/freshness.py` must pass on every change. A rule or reference you touch keeps its `verified:` date unless you re-read its sources. The style check enforces the dash and banned-word rules of `claude/home/rules/writing-style.md` on tracked prose. It checks sources and `scripts/build/agents.toml`, not generated files. Add a quoted source that needs a dash to `scripts/ci/style-exceptions.txt`.
 - `python3 -m unittest discover -s scripts/build/tests` must pass when anything under `scripts/build/` or `src/` changed.
 - `python3 codex/scripts/validate.py` and `python3 -m unittest discover -s codex/tests` must pass when anything under `codex/` changed.
+- `python3 -m unittest discover -s shared/tests`, `python3 -m unittest discover -s codex/tests` and `python3 -m unittest discover -s antigravity/tests` must pass when `shared/install_common.py` changed, because both installers import it.
 - `python3 antigravity/scripts/validate.py` and `python3 -m unittest discover -s antigravity/tests` must pass when anything under `antigravity/` changed.
 
 ## Generated files
