@@ -10,6 +10,7 @@ sys.path.insert(0, str(HERE))
 
 import build  # noqa: E402
 import engine  # noqa: E402
+import readme  # noqa: E402
 from targets import TARGETS  # noqa: E402
 
 CONFIG = tomllib.loads((HERE / 'agents.toml').read_text())
@@ -220,6 +221,41 @@ class OwnershipTests(unittest.TestCase):
             path.write_text(SKILL.replace('preamble: playbook', 'preamble: playbok'))
             with self.assertRaises(engine.RenderError):
                 targets['codex'].outputs(build.Project(Path(temp)))
+
+
+TABLE = """Intro
+
+<!-- plugin-versions:start -->
+| Kit | What it gives you | Version |
+| --- | --- | --- |
+| `web-kit` | Web playbooks | 0.9.0 |
+| `pr-review` | Reviews | |
+<!-- plugin-versions:end -->
+
+After
+"""
+
+
+class ReadmeVersionTests(unittest.TestCase):
+    def test_fills_the_version_column_only(self):
+        out = readme.render(TABLE, {'web-kit': '1.1.0', 'pr-review': '1.5.0'})
+        self.assertIn('| `web-kit` | Web playbooks | 1.1.0 |', out)
+        self.assertIn('| `pr-review` | Reviews | 1.5.0 |', out)
+        self.assertTrue(out.startswith('Intro\n\n') and out.endswith('\n\nAfter\n'))
+        self.assertEqual(readme.render(out, {'web-kit': '1.1.0', 'pr-review': '1.5.0'}), out)
+
+    def test_table_and_plugins_must_agree(self):
+        with self.assertRaises(ValueError):
+            readme.render(TABLE, {'web-kit': '1.1.0'})
+        with self.assertRaises(ValueError):
+            readme.render(TABLE, {'web-kit': '1.1.0', 'pr-review': '1.5.0', 'toolkit': '1.0.0'})
+        with self.assertRaises(ValueError):
+            readme.render('No table here\n', {})
+
+    def test_repository_readme_matches_plugin_versions(self):
+        project = build.Project()
+        current = (project.root / 'README.md').read_text()
+        self.assertEqual(readme.render(current, readme.plugin_versions(project)), current)
 
 
 class RepositoryTests(unittest.TestCase):

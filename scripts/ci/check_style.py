@@ -27,7 +27,8 @@ def generated():
     import tomllib
     import build
     config = tomllib.loads((ROOT / 'scripts/build/agents.toml').read_text())
-    return {output.path for output in build.all_outputs(build.Project(ROOT), config)}
+    # A file where the build rewrites only one section is still hand-written prose, so it is checked.
+    return {output.path for output in build.all_outputs(build.Project(ROOT), config) if not output.section}
 
 
 def tracked(patterns):

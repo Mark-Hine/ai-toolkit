@@ -13,10 +13,12 @@ PLATFORM_TITLES = {'android': 'Android', 'ios': 'iOS', 'web': 'web'}
 
 @dataclass(frozen=True)
 class Output:
-    """One generated file. `mode` is set for verbatim copies, which keep the source file's mode."""
+    """One generated file. `mode` is set for verbatim copies, which keep the source file's mode.
+    `section` marks a hand-written file where the build rewrites only one marked section."""
     path: str
     content: bytes
     mode: int | None = None
+    section: bool = False
 
 
 def emit(key, raw):

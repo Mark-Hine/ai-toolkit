@@ -4,15 +4,19 @@ My portable setup for AI coding agents. It gives Claude Code, OpenAI Codex and G
 
 ## What's in it
 
-| Kit | What it gives you |
-| --- | --- |
-| `android-kit` | Feature, bug-fix, dependency-uplift and run-app playbooks for Android, with researcher, reviewer and verifier agents |
-| `ios-kit` | The same for iOS and SwiftUI, plus SwiftFormat and SwiftLint on edit where a repo opts in |
-| `web-kit` | Feature, bug-fix and run-app playbooks for React, Next.js and TypeScript, with researcher, reviewer and verifier agents |
-| `design-kit` | Tiered UI design rules (HIG, Material 3, WCAG 2.2, house), a design playbook and a UI reviewer agent |
-| `pr-review` | A formal written PR review with a standards-cited findings register, posted to Azure DevOps or GitHub when asked |
-| `guard-kit` | A hook that blocks protected-branch and force pushes, destructive git and edits to secrets |
-| `toolkit` | Audit and pre-PR check skills for maintaining this repo |
+<!-- plugin-versions:start -->
+| Kit | What it gives you | Version |
+| --- | --- | --- |
+| `android-kit` | Feature, bug-fix, dependency-uplift and run-app playbooks for Android, with researcher, reviewer and verifier agents | 1.7.0 |
+| `ios-kit` | The same for iOS and SwiftUI, plus SwiftFormat and SwiftLint on edit where a repo opts in | 1.5.0 |
+| `web-kit` | Feature, bug-fix and run-app playbooks for React, Next.js and TypeScript, with researcher, reviewer and verifier agents | 1.1.0 |
+| `design-kit` | Tiered UI design rules (HIG, Material 3, WCAG 2.2, house), a design playbook and a UI reviewer agent | 1.9.0 |
+| `pr-review` | A formal written PR review with a standards-cited findings register, posted to Azure DevOps or GitHub when asked | 1.5.0 |
+| `guard-kit` | A hook that blocks protected-branch and force pushes, destructive git and edits to secrets | 1.3.0 |
+| `toolkit` | Audit and pre-PR check skills for maintaining this repo | 1.4.4 |
+<!-- plugin-versions:end -->
+
+Versions are the Claude Code plugin versions, which installs pin to. `scripts/build/build.py` keeps this column current.
 
 `shared/guidance/` holds the Git, Kotlin, design and writing preferences that every agent loads.
 
