@@ -11,7 +11,7 @@ My portable setup for AI coding agents. It gives Claude Code, OpenAI Codex and G
 | `ios-kit` | The same for iOS and SwiftUI, plus SwiftFormat and SwiftLint on edit where a repo opts in | 1.5.0 |
 | `web-kit` | Feature, bug-fix and run-app playbooks for React, Next.js and TypeScript, with researcher, reviewer and verifier agents | 1.1.0 |
 | `design-kit` | Tiered UI design rules (HIG, Material 3, WCAG 2.2, house), a design playbook and a UI reviewer agent | 1.9.0 |
-| `pr-review` | A formal written PR review with a standards-cited findings register, posted to Azure DevOps or GitHub when asked | 1.5.0 |
+| `pr-review` | A formal written PR review with a standards-cited findings register, posted to Azure DevOps or GitHub when asked | 1.5.1 |
 | `guard-kit` | A hook that blocks protected-branch and force pushes, destructive git and edits to secrets | 1.3.0 |
 | `toolkit` | Audit and pre-PR check skills for maintaining this repo | 1.4.4 |
 <!-- plugin-versions:end -->
@@ -65,6 +65,14 @@ git -C ~/ai-toolkit pull
 ```
 
 The rerun matters. Claude Code plugins are pinned to a version, and the Codex installer copies its agents and settings, so neither picks up a change until the installer runs again.
+
+## Releases
+
+When a plugin's version changes on `main`, CI tags it as `<plugin>--v<version>`, such as `pr-review--v1.5.1`, and publishes a GitHub Release listing the commits since that plugin's previous release. To pin a CI pipeline or a shared setup to a release, add the marketplace at that tag:
+
+```
+claude plugin marketplace add "Mark-Hine/ai-toolkit#pr-review--v1.5.1"
+```
 
 ## How it works
 

@@ -6,6 +6,7 @@ Read by Codex directly, by Claude Code through `CLAUDE.md`, and by Antigravity t
 - `main` is protected. Never commit on it or push to it. Every change goes on a branch named `type/short-slug` (`feat/`, `fix/`, `docs/`, `chore/`) and lands through a pull request that CI has passed.
 - One logical change per PR. Conventional Commits, no ticket scope needed here (`fix(android-kit): …`, `docs: …`).
 - No AI attribution in commits or PR text.
+- Never create plugin release tags by hand. When a merge to `main` changes a Claude plugin's version, `.github/workflows/release.yml` tags it as `<plugin>--v<version>` and publishes a GitHub Release.
 
 ## Before opening a PR
 - Run the validation checks required by the files changed. Report failed or unavailable checks in the PR.
