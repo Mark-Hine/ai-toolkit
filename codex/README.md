@@ -2,6 +2,8 @@
 
 The Codex port of the Claude setup includes nineteen skills, ten specialist agents, personal instructions, Android, iOS, web, UI/UX and writing guidance, command permissions, and lifecycle hooks. The Claude setup remains available in `../claude/`.
 
+The skills, agents, hook copies and the Android, iOS and web guidance in `home/guidance/` are generated from `../src/` and `../shared/` by `../scripts/build/build.py`. Edit the source and rebuild, not the files here.
+
 ## Install
 
 Requires Codex CLI and Python 3.11 or later. The installer itself needs no third-party Python packages, credentials or network access.

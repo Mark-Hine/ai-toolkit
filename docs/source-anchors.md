@@ -18,8 +18,8 @@ are used.
 
 ## Format
 
-Each plugin that cites sources keeps `references/source-anchors.md`, mirrored to the Codex and
-Antigravity layers. One heading per key:
+Each skill that cites sources keeps `references/source-anchors.md` under `src/skills/`, and the
+build copies it into each layer. One heading per key:
 
 ```
 ### HIG-LAYOUT

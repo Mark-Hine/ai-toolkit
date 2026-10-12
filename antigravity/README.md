@@ -2,6 +2,8 @@
 
 The Antigravity port of the portable AI toolkit. Six plugins carry nineteen skills, ten specialist subagents, generated rules and lifecycle hooks, in the layout the bundled Antigravity customization docs describe. The Claude Code setup is in `../claude/` and the OpenAI Codex setup in `../codex/`.
 
+The skills, agents, rules and hook copies in each plugin are generated from `../src/` and `../shared/` by `../scripts/build/build.py`. Edit the source and rebuild, not the files here.
+
 ## Install
 
 Requires Python 3.11 or later. The installer needs no third-party packages, credentials or network access.
