@@ -33,7 +33,7 @@ A new agent needs these pieces:
 1. An adapter in `scripts/build/targets/<agent>.py` that subclasses `Target` and says where skills and agents go and how their frontmatter looks. Register it in `scripts/build/targets/__init__.py`.
 2. A `[targets.<agent>]` table in `scripts/build/agents.toml` with its tokens, formats, capability flags, model tiers, preambles and agent roles. Add its hook script copies to the `[[copies]]` tables.
 3. A render branch for its hook output in `shared/hooks/guard.py`, with tests in `shared/tests/`, and its own hook registration.
-4. An `<agent>/` folder with its home instruction file, `machine.md.example`, installer, validator and tests, and a CI job that runs them.
+4. An `<agent>/` folder with its home instruction file, `machine.md.example`, installer, validator and tests, and a CI job that runs them. A Python installer can subclass `Installer` in `shared/install_common.py`, which handles dry runs, backups, the managed `AGENTS.md` block, `machine.md` and the shared guidance links.
 5. A `ci_cli` value and a block in `src/skills/pr-review/pr-review/references/ci.md` if pr-review should run in that agent's CI mode.
 
 ## Install (Antigravity)

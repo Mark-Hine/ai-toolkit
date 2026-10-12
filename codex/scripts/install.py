@@ -2,19 +2,18 @@
 """Install the portable Codex setup, preserving unrelated user configuration."""
 import argparse
 import copy
-from datetime import datetime, timezone
 import json
 import os
 from pathlib import Path
 import re
 import shlex
-import shutil
 import sys
-import tempfile
 import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
-MARKER = 'ai-toolkit'
+sys.path.insert(0, str(ROOT.parent / 'shared'))
+
+import install_common  # noqa: E402
 
 
 def merge_defaults(text, defaults):
@@ -52,16 +51,6 @@ def merge_defaults(text, defaults):
     return text
 
 
-def merged_guidance(existing, guidance):
-    start, end = '<!-- ai-toolkit:start -->', '<!-- ai-toolkit:end -->'
-    block = start + '\n' + guidance.rstrip() + '\n' + end
-    if start in existing or end in existing:
-        if existing.count(start) != 1 or existing.count(end) != 1 or existing.index(start) > existing.index(end):
-            raise ValueError('Malformed ai-toolkit instruction markers')
-        return existing[:existing.index(start)] + block + existing[existing.index(end) + len(end):]
-    return (existing.rstrip() + '\n\n' if existing.strip() else '') + block + '\n'
-
-
 def hook_group(command, label, matcher=None):
     group = {'hooks': [{'type': 'command', 'command': command, 'timeout': 10,
                         'statusMessage': 'ai-toolkit: ' + label}]}
@@ -88,58 +77,10 @@ def merged_hooks(existing, command, lint_command):
     return result
 
 
-class Installer:
+class Installer(install_common.Installer):
     def __init__(self, config_home, skills_home, dry_run=False):
-        self.config_home = config_home
+        super().__init__(config_home, dry_run)
         self.skills_home = skills_home
-        self.dry_run = dry_run
-        self.stamp = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S.%fZ')
-        self.backup_root = config_home / 'backups' / ('ai-toolkit-' + self.stamp)
-        self.backups = []
-
-    def backup(self, path):
-        if not os.path.lexists(path):
-            return
-        destination = self.backup_root / str(len(self.backups)) / path.name
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        if path.is_symlink():
-            destination.symlink_to(os.readlink(path), target_is_directory=path.is_dir())
-        elif path.is_dir():
-            shutil.copytree(path, destination)
-        else:
-            shutil.copy2(path, destination)
-        self.backups.append({'original': str(path), 'backup': str(destination)})
-        (self.backup_root / 'manifest.json').write_text(json.dumps(self.backups, indent=2) + '\n')
-
-    def write(self, path, content, mode=0o600):
-        if path.is_file() and not path.is_symlink() and path.read_text() == content:
-            return
-        print(('Would write ' if self.dry_run else 'Write ') + str(path))
-        if self.dry_run:
-            return
-        self.backup(path)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        with tempfile.NamedTemporaryFile(mode='w', dir=path.parent, delete=False) as stream:
-            stream.write(content)
-            temp = Path(stream.name)
-        temp.chmod(mode)
-        os.replace(temp, path)
-
-    def link(self, source, target):
-        if target.is_symlink() and target.resolve() == source.resolve():
-            return
-        print(('Would link ' if self.dry_run else 'Link ') + str(target))
-        if self.dry_run:
-            return
-        self.backup(target)
-        target.parent.mkdir(parents=True, exist_ok=True)
-        if target.is_dir() and not target.is_symlink():
-            # Preserve the complete displaced directory in the backup before replacing it.
-            displaced = self.backup_root / ('displaced-' + target.name)
-            target.rename(displaced)
-        elif os.path.lexists(target):
-            target.unlink()
-        target.symlink_to(source, target_is_directory=source.is_dir())
 
     def run(self):
         cfg = self.config_home
@@ -147,8 +88,7 @@ class Installer:
         original = config.read_text() if config.exists() else ''
         merged = merge_defaults(original, tomllib.loads((ROOT / 'home/config.defaults.toml').read_text()))
         instructions = cfg / 'AGENTS.md'
-        guidance = merged_guidance(instructions.read_text() if instructions.exists() else '',
-                                   (ROOT / 'home/AGENTS.md').read_text())
+        guidance = self.merge_instructions(instructions, ROOT / 'home/AGENTS.md')
         hook_file = cfg / 'hooks.json'
         old_hooks = json.loads(hook_file.read_text()) if hook_file.exists() else {}
         command = shlex.join([sys.executable, str(ROOT / 'hooks/guard.py'), '--agent', 'codex'])
@@ -168,13 +108,8 @@ class Installer:
         self.write(config, merged)
         self.write(instructions, guidance)
         self.write(hook_file, json.dumps(hooks, indent=2) + '\n')
-        if not (cfg / 'machine.md').exists():
-            self.write(cfg / 'machine.md', (ROOT / 'home/machine.md.example').read_text())
-        self.link(ROOT.parent / 'shared/guidance/writing-style-brief.md', cfg / 'guidance/writing-style.md')
-        self.link(ROOT.parent / 'shared/guidance/common.md', cfg / 'guidance/common.md')
-        self.link(ROOT.parent / 'shared/guidance/kotlin.md', cfg / 'guidance/kotlin.md')
-        self.link(ROOT.parent / 'shared/guidance/design-standards.md', cfg / 'guidance/design-standards.md')
-        self.link(ROOT.parent / 'shared/guidance/design-assets.md', cfg / 'guidance/design-assets.md')
+        self.create_machine_file(ROOT / 'home/machine.md.example')
+        self.link_shared_guidance()
         self.link(ROOT / 'home/guidance/android', cfg / 'guidance/android')
         self.link(ROOT / 'home/guidance/ios', cfg / 'guidance/ios')
         self.link(ROOT / 'home/guidance/web', cfg / 'guidance/web')
@@ -184,8 +119,7 @@ class Installer:
                 self.link(source, self.skills_home / source.name)
         for target, content in agents:
             self.write(target, content)
-        if self.backups:
-            print('Backups: ' + str(self.backup_root))
+        self.report()
         if tomllib.loads(merged).get('features', {}).get('hooks') is False:
             print('Existing features.hooks=false was preserved. Enable hooks before relying on the guards.')
         if (cfg / 'AGENTS.override.md').exists():
