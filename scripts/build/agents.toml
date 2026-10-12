@@ -2,6 +2,13 @@
 # name in scripts/build/targets/. Tokens are plain text values. Capabilities drive `<!-- if: ... -->` blocks.
 
 [targets.claude.tokens]
+research_tier = "`sonnet`"
+lens_launch = "Launch every lens agent with `model: opus`. In CI mode no personal instructions pin a subagent model, so the default falls back to `CLAUDE_CODE_SUBAGENT_MODEL` or the main model."
+lens_launch_again = "Launch them with `model: opus` too."
+research_subagent = "a research subagent pinned to `sonnet`"
+design_rules_abs = "`~/.claude/rules/design-standards.md`"
+design_rules_location = "are in `~/.claude/rules/design-standards.md`"
+design_pointer = "the `@DESIGN.md` pointer line for the project's `CLAUDE.md`"
 search = "WebSearch"
 browse = "WebFetch"
 preloaded = " preloaded in your context"
@@ -25,6 +32,8 @@ local_notes = "`CLAUDE.local.md`"
 
 # Tokens with an argument such as {@rule web/testing}. {platform} and {name} are the two halves of the argument.
 [targets.claude.formats]
+delegate = "`{arg}`"
+own_script = "`${{CLAUDE_SKILL_DIR}}/scripts/{arg}`"
 rule_clause = "the {title} {name} rule (`~/.claude/rules/{platform}/{name}.md`, or `references/{name}.md` in `{platform}-kit:standards` when the rule is not installed)"
 skill_named = "`{id}`"
 rule = "`~/.claude/rules/{platform}/{name}.md`"
@@ -32,6 +41,7 @@ rules_dir = "`~/.claude/rules/{platform}/`"
 rules_in_scope = "every rule in `~/.claude/rules/` and the project's `.claude/rules/` whose `paths`"
 
 [targets.claude.capabilities]
+bundled_rules = false
 skills_preload = true
 plan_mode = true
 reviewer_runs_builds = true
@@ -69,6 +79,9 @@ color = "red"
 [targets.claude.agents.android-verifier]
 maxTurns = 35
 
+[targets.claude.agents.ui-reviewer]
+color = "purple"
+
 [targets.claude.roles.verifier]
 tools = "Read, Grep, Glob, Bash"
 disallowedTools = "Edit, Write, NotebookEdit"
@@ -79,6 +92,13 @@ skills = true
 color = "green"
 
 [targets.codex.tokens]
+research_tier = "research-tier (`gpt-6-sol`)"
+lens_launch = "Run every lens agent on the reviewer-tier model (`gpt-6-astra` at high reasoning effort), as the toolkit's reviewer agents do. In CI mode no personal instructions choose it."
+lens_launch_again = "Run them on the reviewer-tier model too."
+research_subagent = "a read-only research subagent"
+design_rules_abs = "`~/.codex/guidance/design-standards.md`"
+design_rules_location = "are in `~/.codex/guidance/design-standards.md`"
+design_pointer = "the pointer line for the project's `AGENTS.md` from `design-contract.md`"
 search = "web search"
 browse = "web browsing"
 preloaded = ""
@@ -102,6 +122,8 @@ project_template = "project-agents-md-template.md"
 local_notes = "`.local/agent-notes.md`"
 
 [targets.codex.formats]
+delegate = "the `{arg}` agent"
+own_script = "`{arg}` in the `scripts/` folder beside this skill"
 rule_clause = "the {title} {name} guidance (`~/.codex/guidance/{platform}/{name}.md`, or `references/{name}.md` in the `{platform}-standards` skill when the guidance is not installed)"
 skill_named = "the `{id}` skill"
 agent_footer = "Read ~/.codex/machine.md and applicable ~/.codex/guidance/{platform} files. Read project AGENTS.md, falling back to CLAUDE.md if absent. Discover optional tools first. Do not claim unavailable checks ran. Use tool execution and polling controls rather than a shell timeout wrapper."
@@ -110,6 +132,7 @@ rules_dir = "`~/.codex/guidance/{platform}/`"
 rules_in_scope = "every rule in `~/.codex/guidance/` and the project's `.codex/guidance/` (or `.claude/rules/` during migration) whose `paths`"
 
 [targets.codex.capabilities]
+bundled_rules = false
 skills_preload = false
 plan_mode = false
 reviewer_runs_builds = false
@@ -126,6 +149,7 @@ review = "gpt-6-astra"
 "project-template.md" = "project-agents-md-template.md"
 
 [targets.codex.preambles]
+review = "Read the project AGENTS.md and applicable global guidance first. If AGENTS.md is absent, read CLAUDE.md as migration fallback. Discover optional skills before invoking them. If `using-chrisbanes-skills`, `android-cli`, or an official Android skill is unavailable, use the bundled android-standards references and current official documentation. Do not invent commands or claim that an absent skill ran. Use installed Android SDK tools when the optional Android CLI is missing. Commit and push only when the user has requested that action."
 playbook = "Read the project AGENTS.md and applicable global guidance first. Fall back to CLAUDE.md if AGENTS.md is absent. Follow the global rules for optional tools, specialist agents and Git actions."
 
 [targets.codex.roles.researcher]
@@ -144,6 +168,13 @@ model_reasoning_effort = "medium"
 sandbox_mode = "workspace-write"
 
 [targets.antigravity.tokens]
+research_tier = "research-tier (`flash`)"
+lens_launch = "Run every lens agent on the reviewer-tier model (`pro`), as the toolkit's reviewer agents do. In CI mode no personal instructions choose it."
+lens_launch_again = "Run them on the reviewer-tier model too."
+research_subagent = "a research subagent with `model: flash`"
+design_rules_abs = "the design-kit rules (`~/.gemini/config/guidance/design-standards.md`)"
+design_rules_location = "load with the design-kit plugin"
+design_pointer = "the pointer line for the project's `AGENTS.md` from `design-contract.md`"
 search = "web search"
 browse = "web browsing"
 preloaded = ""
@@ -167,6 +198,8 @@ project_template = "project-agents-md-template.md"
 local_notes = "`.local/agent-notes.md`"
 
 [targets.antigravity.formats]
+delegate = "`{arg}` through `invoke_subagent`"
+own_script = "`{arg}` in the `scripts/` folder beside this skill"
 rule_clause = "the {platform}-kit {name} rule"
 skill_named = "the `{id}` skill"
 agent_footer = "Read `~/.gemini/config/machine.md` and the {platform}-kit rules, which load with this plugin. Read project `AGENTS.md`, falling back to `CLAUDE.md` if absent. Discover optional tools first. Do not claim unavailable checks ran."
@@ -175,6 +208,7 @@ rules_dir = "the {platform}-kit rules"
 rules_in_scope = "the {platform}-kit rules (loaded with this plugin) and the project's rules whose paths"
 
 [targets.antigravity.capabilities]
+bundled_rules = true
 skills_preload = false
 plan_mode = false
 reviewer_runs_builds = false
@@ -191,6 +225,7 @@ review = "pro"
 "project-template.md" = "project-agents-md-template.md"
 
 [targets.antigravity.preambles]
+review = "Read the project AGENTS.md (or GEMINI.md) and applicable guidance first. If AGENTS.md is absent, read CLAUDE.md as migration fallback. Discover optional skills before invoking them. If `using-chrisbanes-skills`, `android-cli`, or an official Android skill is unavailable, use bundled android-standards references and current official documentation. Do not invent commands or claim that an absent skill ran. Use installed Android SDK tools when optional Android CLI is missing. Commit and push only when the user has requested that action."
 playbook = "Read the project AGENTS.md (or GEMINI.md) and applicable guidance first. Fall back to CLAUDE.md if AGENTS.md is absent. Follow global rules for optional tools, specialist subagents and Git actions."
 
 [targets.antigravity.roles.researcher]
@@ -217,7 +252,20 @@ mainAgent = false
 commandExecutionPolicy = "auto"
 skills = true
 
+# Sources that name every agent on purpose, exempt from the literal-wording lint. A `path:text` entry exempts
+# only the lines that contain the text.
+[lint]
+allow = [
+  "src/skills/design-kit/standards/references/design-contract.md",
+  "src/skills/toolkit/audit/references/sources.md",
+  "src/skills/pr-review/pr-review/references/platforms/",
+  "src/skills/toolkit/check/SKILL.md:AGENTS.md",
+]
+
 # Antigravity loads one always-on rules file per plugin. Order of sources is the order of sections.
+[targets.antigravity.agents.ui-reviewer]
+tools = ["view_file", "list_dir", "find_by_name", "grep_search", "read_url_content", "run_command"]
+
 [[targets.antigravity.rule_files]]
 kit = "android-kit"
 title = "Android and Kotlin rules"

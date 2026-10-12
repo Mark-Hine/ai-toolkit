@@ -166,7 +166,7 @@ class SkillAndAgentTests(unittest.TestCase):
 
 class RepositoryTests(unittest.TestCase):
     def test_sources_pass_the_lint(self):
-        self.assertEqual(build.lint_sources(build.Project()), [])
+        self.assertEqual(build.lint_sources(build.Project(), CONFIG.get('lint', {}).get('allow', [])), [])
 
     def test_committed_outputs_are_current(self):
         self.assertEqual(build.run(check=True), 0)

@@ -6,7 +6,7 @@ metadata:
   sources: references/sources.md
 ---
 
-# Design standards
+# Design standards: the user request
 
 The rules live in `~/.codex/guidance/design-standards.md`. This skill adds the sources, the reasons and the APIs. If that rule file is missing, grade against the Tier 1 sources in `references/sources.md` only and say so. To improve, redesign or extend a design, or to work on a logo or app icon, use `$design-iterate`. It adds the project's `DESIGN.md` contract, rendered options and the user's pick to these rules.
 
