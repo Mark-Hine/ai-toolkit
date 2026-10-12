@@ -18,7 +18,7 @@ paths:
 
 # One-shot model → UI events
 
-Canonical code and rationale: `$ios-standards` skill, `references/ui-events.md`.
+Canonical code and rationale: `ios-standards` skill, `references/ui-events.md`.
 
 - **Screen state** is one `enum State` (`loading` / `loaded(...)` / `error(...)`, `error` with cases when kinds differ)
   on a `@MainActor @Observable` model, `private(set)`, updated directly after `await`, with no `DispatchQueue.main.async`.

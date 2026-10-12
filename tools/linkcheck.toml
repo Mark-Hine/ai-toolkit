@@ -5,7 +5,8 @@ retries = 3
 
 # Files whose URLs are checked (sources lists plus body text).
 include = [
-  "claude/home/rules/**/*.md",
+  "src/rules/**/*.md",
+  "claude/home/rules/writing-style.md",
   "shared/guidance/*.md",
   "shared/guidance/references/*.md",
   "claude/plugins/*/skills/*/references/*.md",

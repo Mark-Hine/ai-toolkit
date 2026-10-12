@@ -46,5 +46,5 @@ mode = "url"
 
 [[registries]]
 # Rule files: every URL in a `sources:` list.
-files = ["claude/home/rules/**/*.md", "shared/guidance/*.md"]
+files = ["src/rules/**/*.md", "claude/home/rules/writing-style.md", "shared/guidance/*.md"]
 mode = "sources"

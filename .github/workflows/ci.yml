@@ -45,6 +45,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Generated layers are current
+        run: python3 scripts/build/build.py --check
+      - name: Build tests
+        run: python3 -m unittest discover -s scripts/build/tests -v
       - name: Repo structure
         run: python3 scripts/ci/check_repo.py
       - name: Mirror parity
@@ -84,8 +88,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Generated rules are current
-        run: python3 antigravity/scripts/sync_rules.py --check
       - name: Validate Antigravity assets
         run: python3 antigravity/scripts/validate.py
       - name: Test guards and installer

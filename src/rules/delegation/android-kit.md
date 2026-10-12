@@ -1,0 +1,4 @@
+- Delegate current platform research to `android-researcher` (`model: {@model research}`, read-only tools).
+- Delegate non-trivial diff review to `android-reviewer` (`model: {@model review}`, read-only tools).
+- Delegate test execution and emulator verification to `android-verifier` (`model: {@model research}`).
+- Plugin agents load with the plugin. Invoke them with `invoke_subagent`, give each a bounded task, and re-check findings before reporting them.

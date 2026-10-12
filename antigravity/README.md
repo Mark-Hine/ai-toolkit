@@ -26,7 +26,7 @@ An earlier version of this installer wrote `plugins.json`, `skills.json`, global
 | `../shared/guidance/kotlin.md` | `~/.gemini/config/guidance/kotlin.md` | Kotlin domain modeling and compatibility across platforms |
 | `../shared/guidance/design-standards.md` | `~/.gemini/config/guidance/design-standards.md` | Tiered design rules, also loaded by `design-kit` |
 | `../shared/guidance/design-assets.md` | `~/.gemini/config/guidance/design-assets.md` | Read before editing design contract, token, theme, SVG and icon files |
-| `home/writing-style.md` | `~/.gemini/config/guidance/writing-style.md` | Condensed writing preferences |
+| `../shared/guidance/writing-style-brief.md` | `~/.gemini/config/guidance/writing-style.md` | Condensed writing preferences, shared with Codex |
 | `home/machine.md.example` | `~/.gemini/config/machine.md`, created only if absent | Private machine facts |
 | `plugins/<name>/` | `~/.gemini/config/plugins/<name>` symlink | Skills, generated rules, hooks and agents per plugin |
 
@@ -46,7 +46,7 @@ Each plugin follows the documented shape: `plugin.json` (name, description, vers
 
 ### Rules are generated
 
-`scripts/sync_rules.py` builds each plugin's `rules/AGENTS.md` from the canonical Claude rules under `../claude/home/rules/` and `../shared/guidance/design-standards.md`, applying the Antigravity wording (`AGENTS.md`, `/android-feature`, `~/.gemini/config/`). Plugin rules are plain markdown with no frontmatter and are always on while the plugin is enabled, so each section carries a scope line naming the file paths it applies to. Never edit the generated files. `sync_rules.py --check` runs in CI and in the validator.
+`../scripts/build/build.py` builds each plugin's `rules/AGENTS.md` from the agent-neutral rules under `../src/rules/` and `../shared/guidance/design-standards.md`, rendering the Antigravity wording (`AGENTS.md`, `/android-feature`, `~/.gemini/config/`). Plugin rules are plain markdown with no frontmatter and are always on while the plugin is enabled, so each section carries a scope line naming the file paths it applies to. Never edit the generated files. `build.py --check` runs in CI and in the validator.
 
 ### Skills
 
@@ -96,7 +96,7 @@ The Swift lint hook in `ios-kit` runs SwiftFormat and SwiftLint on edited `.swif
 ## Validation
 
 ```bash
-python3 antigravity/scripts/sync_rules.py --check
+python3 scripts/build/build.py --check
 python3 antigravity/scripts/validate.py
 python3 -m unittest discover -s antigravity/tests -v
 python3 -m unittest discover -s shared/tests -v
