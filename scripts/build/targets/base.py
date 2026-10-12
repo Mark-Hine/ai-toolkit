@@ -8,6 +8,7 @@ from engine import RenderError, apply_tokens, parse_frontmatter, render, scalar,
 SKILL_KEYS = {'name', 'description', 'description_short', 'argument_hint', 'invocation', 'allowed_tools',
               'when_to_use', 'preamble', 'metadata'}
 AGENT_KEYS = {'name', 'description', 'role', 'skills'}
+PLATFORM_TITLES = {'android': 'Android', 'ios': 'iOS', 'web': 'web'}
 
 
 @dataclass(frozen=True)
@@ -63,7 +64,7 @@ class Target:
             platform, _, rest = (arg or '').partition('/')
             if not platform:
                 raise KeyError(name)
-            return self.formats[name].format(platform=platform, name=rest)
+            return self.formats[name].format(platform=platform, name=rest, title=PLATFORM_TITLES.get(platform, platform))
         if arg is not None:
             raise KeyError(name)
         return self.tokens[name]

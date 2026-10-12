@@ -15,6 +15,8 @@ include = [
 exclude = [
   # Generated from src/skills, which the include list scans once.
   "claude/plugins/web-kit/**/*.md",
+  "claude/plugins/android-kit/**/*.md",
+  "claude/plugins/ios-kit/**/*.md",
   "src/rules/delegation/*.md",
   "**/*template*.md",
   "claude/plugins/toolkit/skills/audit/references/register-template.md",

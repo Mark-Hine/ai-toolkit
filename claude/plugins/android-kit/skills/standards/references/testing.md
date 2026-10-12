@@ -24,7 +24,7 @@ Repositories and data sources are owned code with small interfaces. A fake exerc
 while a mock encodes call order and breaks on every internal change. Mocks stay for third-party SDKs and framework types.
 
 ## Journeys (Android CLI end-to-end)
-Format and evaluation rules: `~/.claude/skills/android-cli/references/journeys.md`. The agent drives the app with
+Format and evaluation rules: `references/journeys.md` relative to the discovered `android-cli` skill, when installed. The agent drives the app with
 `android layout` / `android screen capture` and adb, evaluates each `<action>` literally, and reports
 JSON with `PASSED` / `FAILED` / `SKIPPED` per action. Journeys are checked into the repo under `journeys/`.
 
@@ -57,3 +57,7 @@ Template:
 
 Running one: `/android-kit:run-app <avd> <flavour>`, then delegate to the `android-verifier` agent, which evaluates the
 journey per the android-cli reference and returns the JSON summary and screenshot paths for the task report.
+
+## SDK-only fallback
+
+When the optional Android CLI skill is absent, use the XML conventions above. Drive the installed device with `adb shell input`, inspect UI hierarchy with `adb shell uiautomator dump` and capture screenshots with `adb exec-out screencap -p` in the caller's scratch directory. Ask the caller to collect any artifact that the verifier's command guard does not allow. Return `{ "journey": "name", "results": [{ "action": "literal action", "status": "PASSED|FAILED|SKIPPED", "commands": [], "comment": "observed evidence" }] }`. A failed action stops the journey and all later actions are SKIPPED. Report missing devices or inputs as Unverified rather than claiming Android CLI verification.

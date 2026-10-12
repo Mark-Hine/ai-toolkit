@@ -2,6 +2,13 @@
 # name in scripts/build/targets/. Tokens are plain text values. Capabilities drive `<!-- if: ... -->` blocks.
 
 [targets.claude.tokens]
+search = "WebSearch"
+browse = "WebFetch"
+preloaded = " preloaded in your context"
+plan_heading = "**Plan (plan mode).**"
+plan_gate = "Get approval."
+uplift_gate = "Work in plan mode until step 4 is approved."
+readonly_boundary = ""
 fetch_title = "WebFetch"
 shell = "Bash"
 guard_blocks = "The guard-kit hook blocks anything else."
@@ -18,6 +25,7 @@ local_notes = "`CLAUDE.local.md`"
 
 # Tokens with an argument such as {@rule web/testing}. {platform} and {name} are the two halves of the argument.
 [targets.claude.formats]
+rule_clause = "the {title} {name} rule (`~/.claude/rules/{platform}/{name}.md`, or `references/{name}.md` in `{platform}-kit:standards` when the rule is not installed)"
 skill_named = "`{id}`"
 rule = "`~/.claude/rules/{platform}/{name}.md`"
 rules_dir = "`~/.claude/rules/{platform}/`"
@@ -58,6 +66,9 @@ maxTurns = 20
 skills = false
 color = "red"
 
+[targets.claude.agents.android-verifier]
+maxTurns = 35
+
 [targets.claude.roles.verifier]
 tools = "Read, Grep, Glob, Bash"
 disallowedTools = "Edit, Write, NotebookEdit"
@@ -68,6 +79,13 @@ skills = true
 color = "green"
 
 [targets.codex.tokens]
+search = "web search"
+browse = "web browsing"
+preloaded = ""
+plan_heading = "**Plan.**"
+plan_gate = "Proceed within the user-authorized scope. Ask only about unresolved scope or consequential choices."
+uplift_gate = "Write the step 4 plan before editing dependency versions. Existing authorization to perform the uplift is sufficient."
+readonly_boundary = "The read-only sandbox is intentional."
 fetch_title = "Web fetch"
 shell = "shell tools"
 guard_blocks = "Anything else is blocked."
@@ -84,6 +102,7 @@ project_template = "project-agents-md-template.md"
 local_notes = "`.local/agent-notes.md`"
 
 [targets.codex.formats]
+rule_clause = "the {title} {name} guidance (`~/.codex/guidance/{platform}/{name}.md`, or `references/{name}.md` in the `{platform}-standards` skill when the guidance is not installed)"
 skill_named = "the `{id}` skill"
 agent_footer = "Read ~/.codex/machine.md and applicable ~/.codex/guidance/{platform} files. Read project AGENTS.md, falling back to CLAUDE.md if absent. Discover optional tools first. Do not claim unavailable checks ran. Use tool execution and polling controls rather than a shell timeout wrapper."
 rule = "`~/.codex/guidance/{platform}/{name}.md`"
@@ -125,6 +144,13 @@ model_reasoning_effort = "medium"
 sandbox_mode = "workspace-write"
 
 [targets.antigravity.tokens]
+search = "web search"
+browse = "web browsing"
+preloaded = ""
+plan_heading = "**Plan.**"
+plan_gate = "Proceed within the user-authorized scope. Ask only about unresolved scope or consequential choices."
+uplift_gate = "Write the step 4 plan before editing dependency versions. Existing authorization to perform the uplift is sufficient."
+readonly_boundary = "The read-only boundary is intentional."
 fetch_title = "Web fetch"
 shell = "shell tools"
 guard_blocks = "Anything else is blocked."
@@ -141,6 +167,7 @@ project_template = "project-agents-md-template.md"
 local_notes = "`.local/agent-notes.md`"
 
 [targets.antigravity.formats]
+rule_clause = "the {platform}-kit {name} rule"
 skill_named = "the `{id}` skill"
 agent_footer = "Read `~/.gemini/config/machine.md` and the {platform}-kit rules, which load with this plugin. Read project `AGENTS.md`, falling back to `CLAUDE.md` if absent. Discover optional tools first. Do not claim unavailable checks ran."
 rule = "the {platform}-kit {name} rule"

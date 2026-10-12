@@ -6,7 +6,7 @@ sources: inline
 # Official documentation registry
 
 Canonical URLs for web fetch and citing. The sentence each page is cited for, confirmed against the live page, is in `source-anchors.md`. Apple pages render client-side. If a fetch returns nothing, retry via
-`https://developer.apple.com/tutorials/data/documentation/<path>.json` or web search the page title. Imported from the Claude reference dated 2026-09-04. Recheck version-sensitive claims against the linked sources before use.
+`https://developer.apple.com/tutorials/data/documentation/<path>.json` or web search the page title.
 
 ## Swift
 - API Design Guidelines: https://www.swift.org/documentation/api-design-guidelines/
