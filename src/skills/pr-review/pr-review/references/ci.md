@@ -51,7 +51,7 @@ pool:
 
 variables:
   CLAUDE_CODE_VERSION: '2.1.284'     # the CLI version you tested
-  AI_TOOLKIT_REF: 'main'             # pin to a tag such as pr-review--v1.1.0 in production
+  AI_TOOLKIT_REF: 'main'             # pin to a release tag such as pr-review--v1.5.1 in production
 
 steps:
   - checkout: self
