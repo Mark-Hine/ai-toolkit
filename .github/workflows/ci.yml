@@ -96,6 +96,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install Antigravity CLI
-        run: curl -fsSL https://antigravity.google/cli/install.sh | bash
+        # The CDN sometimes serves the script gzip-encoded without being asked, which bash cannot read.
+        run: curl -fsSL --compressed --retry 3 https://antigravity.google/cli/install.sh | bash
       - name: agy plugin validate
         run: for p in antigravity/plugins/*/; do "$HOME/.local/bin/agy" plugin validate "$p"; done
