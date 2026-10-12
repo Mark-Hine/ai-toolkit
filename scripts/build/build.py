@@ -20,6 +20,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
 import engine  # noqa: E402
+import readme  # noqa: E402
 from targets import TARGETS  # noqa: E402
 from targets.base import Output  # noqa: E402
 
@@ -111,7 +112,7 @@ def copy_outputs(project, config):
 
 
 def all_outputs(project, config):
-    outputs = copy_outputs(project, config)
+    outputs = copy_outputs(project, config) + readme.outputs(project)
     for target in load_targets(config):
         outputs += target.outputs(project)
     seen = {}
