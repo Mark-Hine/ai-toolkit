@@ -60,11 +60,16 @@ class Target:
             return self.invoke(*self.kit_skill(arg))
         if name == 'skill_named':
             return self.formats[name].format(id=self.skill_ref(*self.kit_skill(arg)))
+        if name == 'sibling':
+            return '../' + self.skill_dir(*self.kit_skill(arg)).rsplit('/', 1)[1]
+        if name == 'skill_dir':
+            return self.skill_dir_ref(*self.kit_skill(arg))
         if name in self.formats:
-            platform, _, rest = (arg or '').partition('/')
-            if not platform:
+            if not arg:
                 raise KeyError(name)
-            return self.formats[name].format(platform=platform, name=rest, title=PLATFORM_TITLES.get(platform, platform))
+            platform, _, rest = arg.partition('/')
+            return self.formats[name].format(arg=arg, platform=platform, name=rest,
+                                             title=PLATFORM_TITLES.get(platform, platform))
         if arg is not None:
             raise KeyError(name)
         return self.tokens[name]
@@ -94,6 +99,10 @@ class Target:
 
     def agent_path(self, kit, agent):
         raise NotImplementedError
+
+    def skill_dir_ref(self, kit, skill):
+        """How one skill's text points at another skill's folder."""
+        return '../' + self.skill_dir(kit, skill).rsplit('/', 1)[1]
 
     def file_name(self, rel):
         head, _, base = rel.rpartition('/')
@@ -183,7 +192,8 @@ class Target:
         """The rendered instructions, plus the target's closing paragraph when it has one."""
         text = render(body, self, agent.source)
         footer = self.formats.get('agent_footer')
-        if footer:
+        # The footer names the platform's guidance folder, which only the platform kits have.
+        if footer and agent.kit.removesuffix('-kit') in PLATFORM_TITLES:
             text = text.rstrip('\n') + '\n\n' + footer.format(platform=agent.kit.removesuffix('-kit')) + '\n'
         return text
 

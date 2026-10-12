@@ -24,7 +24,7 @@ Scope: <all | domain> <--stale-only>. Sources fetched on <date>. Nothing in this
 
 ## Proposed changes
 
-One unified diff per canonical file. List the mirror files the same change must touch, from `tools/mirrors.toml`.
+One unified diff per source file under `src/` or `shared/`. The build regenerates each layer's copy. List any hand-written per-agent file the same change must touch.
 
 ### <canonical path>
 

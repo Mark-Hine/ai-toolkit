@@ -7,17 +7,9 @@ include = [
   "shared/guidance/*.md",
   "shared/guidance/references/*.md",
   "src/skills/*/*/references/*.md",
-  "claude/plugins/*/skills/*/references/*.md",
-  "claude/plugins/pr-review/skills/pr-review/references/*.md",
-  "claude/plugins/pr-review/skills/pr-review/references/platforms/*.md",
-  "claude/plugins/pr-review/skills/pr-review/references/languages/*.md",
+  "src/skills/pr-review/pr-review/references/platforms/*.md",
 ]
 exclude = [
-  # Generated from src/skills, which the include list scans once.
-  "claude/plugins/web-kit/**/*.md",
-  "claude/plugins/android-kit/**/*.md",
-  "claude/plugins/ios-kit/**/*.md",
   "src/rules/delegation/*.md",
   "**/*template*.md",
-  "claude/plugins/toolkit/skills/audit/references/register-template.md",
 ]

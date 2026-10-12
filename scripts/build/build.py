@@ -54,6 +54,7 @@ class Project:
         self.skills = [self.load_skill(d) for d in sorted((self.root / 'src/skills').glob('*/*/')) if d.is_dir()]
         self.agents = [self.load_agent(p) for p in sorted((self.root / 'src/agents').glob('*/*.md'))]
         self.agent_kits = sorted({a.kit for a in self.agents})
+        self.skill_kits = sorted({s.kit for s in self.skills})
 
     def load_skill(self, directory):
         skill = Skill(directory.parent.name, directory.name, self.rel(directory))
@@ -119,12 +120,18 @@ def owned_roots(project, config):
     return roots
 
 
-def lint_sources(project):
+def lint_sources(project, allow=()):
+    """Literal agent wording outside blocks. `allow` entries are a source path, or `path:text` for lines
+    containing that text, for sources that name every agent on purpose."""
     problems = []
     for path in project.sources():
         rel = project.rel(path)
+        if rel in allow or any(entry.endswith('/') and rel.startswith(entry) for entry in allow):
+            continue
+        texts = [entry.split(':', 1)[1] for entry in allow if entry.startswith(rel + ':')]
         for number, line in engine.lint(path.read_text(), rel):
-            problems.append(f'{rel}:{number}: literal agent wording outside a block: {line}')
+            if not any(text in line for text in texts):
+                problems.append(f'{rel}:{number}: literal agent wording outside a block: {line}')
     return problems
 
 
@@ -159,7 +166,7 @@ def write(project, output):
 def run(check, root=ROOT, config_path=CONFIG):
     project = Project(root)
     config = tomllib.loads(Path(config_path).read_text())
-    errors = lint_sources(project)
+    errors = lint_sources(project, config.get('lint', {}).get('allow', []))
     if errors:
         for error in errors:
             print(f'::error::{error}')
