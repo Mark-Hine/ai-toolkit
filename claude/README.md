@@ -46,8 +46,8 @@ The script symlinks the dotfiles and shared personal preferences, creates `~/.cl
 ## Design principles
 
 - Shared content is platform-scoped, never repo-scoped. Repo breakage is documented in that repo, not enforced here.
-- Rules carry only the rule. Rationale and code samples live in skill references. The shared Kotlin rationale is mirrored into every PR review skill as `references/languages/kotlin.md`.
+- Rules carry only the rule. Rationale and code samples live in skill references. The build copies the shared Kotlin rationale into every PR review skill as `references/languages/kotlin.md`.
 - Subagents pin models. Research is cheap (sonnet), but review needs judgement (opus). Never `inherit`.
-- Guard hooks are deterministic and repo-agnostic. One Python module under `shared/hooks/` serves all three layers, and the plugin and Codex copies are kept identical by CI. Agent command limits come from the same module, keyed on the `agent_type` the hook input carries.
+- Guard hooks are deterministic and repo-agnostic. One Python module under `shared/hooks/` serves all three layers, and `scripts/build/build.py` writes the plugin and Codex copies. Agent command limits come from the same module, keyed on the `agent_type` the hook input carries.
 
 See the root README, "Keeping standards fresh", for the 90-day audit cadence and the `/toolkit:audit` skill.

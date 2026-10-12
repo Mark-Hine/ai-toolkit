@@ -1,16 +1,40 @@
 # ai-toolkit
 
-My portable setup for AI coding agents. One folder per agent, with shared personal preferences under `shared/`.
+My portable setup for AI coding agents. Skills, agents and rules are written once under `src/` and `shared/`, and `scripts/build/build.py` builds one folder per agent from them.
 
 [Kotlin guidance](shared/guidance/kotlin.md) applies across platforms through each home loader and installer. Its [source rationale](shared/guidance/references/kotlin-rationale.md) is bundled in each PR review skill and loaded by the Android, Spring Boot and generic packs.
 
 | Folder | Agent | Status |
 | --- | --- | --- |
-| [`antigravity/`](antigravity/README.md) | Google Antigravity | Six plugins (`android-kit`, `ios-kit`, `web-kit`, `pr-review`, `design-kit`, `toolkit`) carrying nineteen skills, ten specialist agents, rules generated from the Claude rules, and the shared guard and Swift lint hooks. Symlink installer |
+| [`antigravity/`](antigravity/README.md) | Google Antigravity | Six plugins (`android-kit`, `ios-kit`, `web-kit`, `pr-review`, `design-kit`, `toolkit`) carrying nineteen skills, ten specialist agents, rules generated from `src/rules/`, and the shared guard and Swift lint hooks. Symlink installer |
 | [`claude/`](claude/README.md) | Claude Code | Android, iOS, web and UI/UX design playbooks, standards indexes, reviewer/researcher/verifier agents, guard hooks, writing-style rules, global `CLAUDE.md`, one-command installer |
 | [`codex/`](codex/README.md) | OpenAI Codex | Nineteen skills, Android/iOS/web/UI specialist agents, global settings, scoped guidance, guard hooks, repeatable installer |
 
 `.claude-plugin/marketplace.json` at the repo root is required by Claude Code. It points at the plugins under `claude/plugins/`.
+
+## How the layers are built
+
+Each agent folder is part generated and part hand-written. Generated files are committed, because the installers and the Claude marketplace read them from this checkout. `.gitattributes` lists them, and CI fails when one no longer matches its source.
+
+| Source | What it holds | Built into |
+| --- | --- | --- |
+| `src/skills/<kit>/<skill>/` | Skills with their references and scripts | Each agent's skill folders |
+| `src/agents/<kit>/` | Reviewer, researcher and verifier agents | Claude and Antigravity Markdown agents, Codex TOML agents |
+| `src/rules/` | Path-scoped platform rules | `claude/home/rules/`, `codex/home/guidance/`, the Antigravity plugin rules |
+| `shared/hooks/`, `shared/guidance/references/kotlin-rationale.md` | Files used as they are | The hook and Kotlin copies in each layer |
+| `scripts/build/agents.toml` | Per-agent wording, capability flags, model tiers and agent frontmatter | Every generated file |
+
+Sources are Markdown with two additions. A token such as `{@project_file}` or `{@invoke web-kit/run-app}` renders each agent's wording. A block such as `<!-- if: plan_mode -->` keeps text only for agents with that capability. Edit a source, then run `python3 scripts/build/build.py`.
+
+## Adding an agent
+
+A new agent needs these pieces:
+
+1. An adapter in `scripts/build/targets/<agent>.py` that subclasses `Target` and says where skills and agents go and how their frontmatter looks. Register it in `scripts/build/targets/__init__.py`.
+2. A `[targets.<agent>]` table in `scripts/build/agents.toml` with its tokens, formats, capability flags, model tiers, preambles and agent roles. Add its hook script copies to the `[[copies]]` tables.
+3. A render branch for its hook output in `shared/hooks/guard.py`, with tests in `shared/tests/`, and its own hook registration.
+4. An `<agent>/` folder with its home instruction file, `machine.md.example`, installer, validator and tests, and a CI job that runs them.
+5. A `ci_cli` value and a block in `src/skills/pr-review/pr-review/references/ci.md` if pr-review should run in that agent's CI mode.
 
 ## Install (Antigravity)
 
@@ -56,9 +80,9 @@ Every rule file, standards reference and pr-review pack carries a `verified:` da
 - `tools/linkcheck.py` runs monthly over every cited URL, with per-host rules for pages that render client-side or block bots, and opens a `linkcheck` issue when a source is gone.
 - `tools/source_anchors.py` confirms that the one or two sentences each source key rests on are still on the live page (`docs/source-anchors.md`). Agents read these anchors and never fetch a page to grade a rule. CI lints the anchor files, and a monthly run opens an `anchors` issue when a quote drifts or a page cannot be read.
 - `/toolkit:audit` (`$toolkit-audit` in Codex, `/toolkit-audit` in Antigravity) re-reads each source, classifies every rule, writes `docs/audits/<date>-audit.md` with proposed diffs, and refreshes stamps only for files that pass and only after you confirm.
-- `/toolkit:check` (`$toolkit-check` in Codex, `/toolkit-check` in Antigravity) runs the pre-PR checks `AGENTS.md` requires for the files a branch changes and lists layers that may need mirroring. It edits nothing.
+- `/toolkit:check` (`$toolkit-check` in Codex, `/toolkit-check` in Antigravity) runs the pre-PR checks `AGENTS.md` requires for the files a branch changes and lists hand-written per-agent files that may need mirroring. It edits nothing.
 
-Cadence. When the freshness job warns, run the audit from this checkout, land the fixes as small mirrored PRs, then let the skill refresh the stamps. `tools/mirror_parity.py` runs in CI and fails when the three layers drift apart between audits.
+Cadence. When the freshness job warns, run the audit from this checkout, land each fix as a small PR against its source in `src/` or `shared/`, then let the skill refresh the stamps.
 
 ## Contributing
 

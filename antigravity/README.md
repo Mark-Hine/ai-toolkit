@@ -86,7 +86,7 @@ No specialist has a write tool. Hooks receive no agent identity on Antigravity, 
 
 ## Hooks
 
-The guard is the shared module `../shared/hooks/guard.py`, copied into `android-kit/hooks/` and `ios-kit/hooks/` and kept identical by CI. Each kit registers it under its own hook name, so both run when both kits are enabled, and both give the same answer. It runs as `python3 hooks/guard.py --agent antigravity` with the working directory at the plugin, as the hook docs specify.
+The guard is the shared module `../shared/hooks/guard.py`, which `../scripts/build/build.py` copies into `android-kit/hooks/` and `ios-kit/hooks/`. Each kit registers it under its own hook name, so both run when both kits are enabled, and both give the same answer. It runs as `python3 hooks/guard.py --agent antigravity` with the working directory at the plugin, as the hook docs specify.
 
 - On `PreToolUse` for `run_command`, `write_to_file`, `replace_file_content` and `multi_replace_file_content`, it answers `{"decision": "deny", "reason": ...}` for a blocked call and `{"decision": "ask"}` otherwise. `ask` keeps the normal permission prompt and its Always Allow cache. An empty object is treated as a denial and `allow` would skip the prompt, so neither is used.
 - It blocks protected-branch, force, bare and deletion pushes, `HEAD` as a push destination, destructive git, `timeout` wrappers behind any shell or wrapper, and edits to secrets, signing material, lock files and `.git/`. Edits to CI definitions are denied here because Antigravity hooks cannot ask for a specific call.

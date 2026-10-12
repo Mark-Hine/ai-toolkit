@@ -145,7 +145,7 @@ def check_hooks(errors):
         for name, shared in (('guard.py', shared_guard), ('swift_lint.py', shared_lint)):
             copy = path.parent / 'hooks' / name
             if copy.exists() and copy.read_bytes() != shared:
-                errors.append(f'{copy}: differs from shared/hooks/{name}, run scripts/ci/check_parity.py --write')
+                errors.append(f'{copy}: differs from shared/hooks/{name}, run scripts/build/build.py')
 
 
 def check_home(errors):

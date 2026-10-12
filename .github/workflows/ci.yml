@@ -51,8 +51,6 @@ jobs:
         run: python3 -m unittest discover -s scripts/build/tests -v
       - name: Repo structure
         run: python3 scripts/ci/check_repo.py
-      - name: Mirror parity
-        run: python3 scripts/ci/check_parity.py
       - name: Writing style
         run: python3 scripts/ci/check_style.py
       - name: Shared tests
@@ -61,8 +59,6 @@ jobs:
         run: python3 -m unittest discover -s tools/tests -v
       - name: Freshness of verified stamps
         run: python3 tools/freshness.py
-      - name: Mirror parity across layers
-        run: python3 tools/mirror_parity.py
       - name: Source anchor format
         run: python3 tools/source_anchors.py --lint
       - name: Plugin versions bumped

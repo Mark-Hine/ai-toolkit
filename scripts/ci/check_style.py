@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Writing-style lint for tracked prose. Fails on em dashes, en dashes and banned words.
 
-Scope: every tracked .md file, the developer_instructions strings in codex/agents/*.toml, and string
-literals in tracked .py files. Fenced code blocks, inline code spans, URLs and YAML frontmatter are
+Scope: every tracked .md file, string literals in tracked .py files and the per-agent wording in
+scripts/build/agents.toml. Files that scripts/build/build.py generates are skipped, because their prose
+comes from the sources and agents.toml, which are checked once here. Fenced code blocks, inline code spans, URLs and YAML frontmatter are
 skipped, and so are the `- Quote:` lines of source-anchors.md files, which hold verbatim third-party
 text (docs/source-anchors.md). scripts/ci/style-exceptions.txt lists `path: substring` pairs that are
 allowed, one per line, for quoted source text and for the files that define the banned words.
@@ -18,6 +19,15 @@ BANNED = re.compile(r'\b(honestly|load-bearing|crux|delve|delves|delving|robust|
 DASHES = re.compile('[–—]')
 INLINE_CODE = re.compile(r'`[^`]*`')
 URL = re.compile(r'https?://\S+')
+
+
+def generated():
+    """Repo-relative paths the build writes. Their prose is checked at the source."""
+    sys.path.insert(0, str(ROOT / 'scripts/build'))
+    import tomllib
+    import build
+    config = tomllib.loads((ROOT / 'scripts/build/agents.toml').read_text())
+    return {output.path for output in build.all_outputs(build.Project(ROOT), config)}
 
 
 def tracked(patterns):
@@ -61,12 +71,10 @@ def prose_lines_md(text):
 
 
 def prose_lines_toml(text):
-    """Only the developer_instructions strings carry prose."""
-    for m in re.finditer(r'developer_instructions\s*=\s*(?:"""(.*?)"""|"((?:[^"\\]|\\.)*)")', text, re.S):
-        body = m.group(1) if m.group(1) is not None else m.group(2).encode().decode('unicode_escape')
-        base = text[:m.start()].count('\n') + 1
-        for i, line in enumerate(body.splitlines()):
-            yield base + i, URL.sub('', INLINE_CODE.sub('', line))
+    """String values carry the per-agent wording. Comments and keys do not."""
+    for i, line in enumerate(text.splitlines(), 1):
+        if '"' in line and not line.lstrip().startswith('#'):
+            yield i, URL.sub('', INLINE_CODE.sub('', line))
 
 
 def prose_lines_py(text):
@@ -89,11 +97,16 @@ def check(path, lines, rules, problems):
 def main():
     rules = load_exceptions()
     problems = []
-    for path in tracked(['*.md']):
+    skip = generated()
+
+    def sources(patterns):
+        return [p for p in tracked(patterns) if p.relative_to(ROOT).as_posix() not in skip]
+
+    for path in sources(['*.md']):
         check(path, prose_lines_md(path.read_text(errors='replace')), rules, problems)
-    for path in tracked(['codex/agents/*.toml']):
+    for path in sources(['scripts/build/agents.toml']):
         check(path, prose_lines_toml(path.read_text(errors='replace')), rules, problems)
-    for path in tracked(['*.py']):
+    for path in sources(['*.py']):
         check(path, prose_lines_py(path.read_text(errors='replace')), rules, problems)
     for problem in problems:
         print(f'::error::{problem}')
