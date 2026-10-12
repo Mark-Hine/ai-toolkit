@@ -24,8 +24,8 @@ Require only inputs relevant to the requested check. If a required input is miss
 
 ## Procedure
 1. **Tests.** Run the command with `-resultBundlePath`. Summarise with
-   `xcrun xcresulttool get test-results summary --path <bundle>` and quote totals and first failing test with its
-   message. If the scheme does not compile and the project `AGENTS.md` lists that as pre-existing, report it as
+   `xcrun xcresulttool get test-results summary --path <bundle>` and quote the totals and the first failing test with its
+   message. If the scheme does not compile and the project `AGENTS.md` (or `GEMINI.md`) lists that as pre-existing, report it as
    pre-existing and continue.
 2. **Smoke check.** `xcrun simctl launch <udid> <bundle id>`, wait, then `xcrun simctl io <udid> screenshot
    <scratchpad>/<sim>-<scheme>-<n>.png` for each requested screen, opening deep links with `xcrun simctl openurl` when

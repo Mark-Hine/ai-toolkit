@@ -2,6 +2,8 @@
 
 The Antigravity port of the portable AI toolkit. Six plugins carry nineteen skills, ten specialist subagents, generated rules and lifecycle hooks, in the layout the bundled Antigravity customization docs describe. The Claude Code setup is in `../claude/` and the OpenAI Codex setup in `../codex/`.
 
+The skills, agents, rules and hook copies in each plugin are generated from `../src/` and `../shared/` by `../scripts/build/build.py`. Edit the source and rebuild, not the files here.
+
 ## Install
 
 Requires Python 3.11 or later. The installer needs no third-party packages, credentials or network access.
@@ -26,7 +28,7 @@ An earlier version of this installer wrote `plugins.json`, `skills.json`, global
 | `../shared/guidance/kotlin.md` | `~/.gemini/config/guidance/kotlin.md` | Kotlin domain modeling and compatibility across platforms |
 | `../shared/guidance/design-standards.md` | `~/.gemini/config/guidance/design-standards.md` | Tiered design rules, also loaded by `design-kit` |
 | `../shared/guidance/design-assets.md` | `~/.gemini/config/guidance/design-assets.md` | Read before editing design contract, token, theme, SVG and icon files |
-| `home/writing-style.md` | `~/.gemini/config/guidance/writing-style.md` | Condensed writing preferences |
+| `../shared/guidance/writing-style-brief.md` | `~/.gemini/config/guidance/writing-style.md` | Condensed writing preferences, shared with Codex |
 | `home/machine.md.example` | `~/.gemini/config/machine.md`, created only if absent | Private machine facts |
 | `plugins/<name>/` | `~/.gemini/config/plugins/<name>` symlink | Skills, generated rules, hooks and agents per plugin |
 
@@ -46,7 +48,7 @@ Each plugin follows the documented shape: `plugin.json` (name, description, vers
 
 ### Rules are generated
 
-`scripts/sync_rules.py` builds each plugin's `rules/AGENTS.md` from the canonical Claude rules under `../claude/home/rules/` and `../shared/guidance/design-standards.md`, applying the Antigravity wording (`AGENTS.md`, `/android-feature`, `~/.gemini/config/`). Plugin rules are plain markdown with no frontmatter and are always on while the plugin is enabled, so each section carries a scope line naming the file paths it applies to. Never edit the generated files. `sync_rules.py --check` runs in CI and in the validator.
+`../scripts/build/build.py` builds each plugin's `rules/AGENTS.md` from the agent-neutral rules under `../src/rules/` and `../shared/guidance/design-standards.md`, rendering the Antigravity wording (`AGENTS.md`, `/android-feature`, `~/.gemini/config/`). Plugin rules are plain markdown with no frontmatter and are always on while the plugin is enabled, so each section carries a scope line naming the file paths it applies to. Never edit the generated files. `build.py --check` runs in CI and in the validator.
 
 ### Skills
 
@@ -86,7 +88,7 @@ No specialist has a write tool. Hooks receive no agent identity on Antigravity, 
 
 ## Hooks
 
-The guard is the shared module `../shared/hooks/guard.py`, copied into `android-kit/hooks/` and `ios-kit/hooks/` and kept identical by CI. Each kit registers it under its own hook name, so both run when both kits are enabled, and both give the same answer. It runs as `python3 hooks/guard.py --agent antigravity` with the working directory at the plugin, as the hook docs specify.
+The guard is the shared module `../shared/hooks/guard.py`, which `../scripts/build/build.py` copies into `android-kit/hooks/` and `ios-kit/hooks/`. Each kit registers it under its own hook name, so both run when both kits are enabled, and both give the same answer. It runs as `python3 hooks/guard.py --agent antigravity` with the working directory at the plugin, as the hook docs specify.
 
 - On `PreToolUse` for `run_command`, `write_to_file`, `replace_file_content` and `multi_replace_file_content`, it answers `{"decision": "deny", "reason": ...}` for a blocked call and `{"decision": "ask"}` otherwise. `ask` keeps the normal permission prompt and its Always Allow cache. An empty object is treated as a denial and `allow` would skip the prompt, so neither is used.
 - It blocks protected-branch, force, bare and deletion pushes, `HEAD` as a push destination, destructive git, `timeout` wrappers behind any shell or wrapper, and edits to secrets, signing material, lock files and `.git/`. Edits to CI definitions are denied here because Antigravity hooks cannot ask for a specific call.
@@ -96,7 +98,7 @@ The Swift lint hook in `ios-kit` runs SwiftFormat and SwiftLint on edited `.swif
 ## Validation
 
 ```bash
-python3 antigravity/scripts/sync_rules.py --check
+python3 scripts/build/build.py --check
 python3 antigravity/scripts/validate.py
 python3 -m unittest discover -s antigravity/tests -v
 python3 -m unittest discover -s shared/tests -v

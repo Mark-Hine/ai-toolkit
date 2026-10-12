@@ -35,7 +35,7 @@ For a re-review, the caller also gives the prior findings table. Check each prio
      accessibility loosened, `UserDefaults` for tokens), data loss, or the task's requirement not met.
    - **Major**: correctness risk under realistic input, missing test for changed logic, unstructured `Task {}` in a view
      or view-model `init` where `.task` was required, state owned in two places, sentinel "loaded" state instead of
-     loading/empty/error cases, new SDK without a privacy manifest, breaks a `CLAUDE.md` or rule the author should have
+     loading/empty/error cases, new SDK without a privacy manifest, breaks a rule from `CLAUDE.md` or the rule files the author should have
      known, unverified claim in the author's summary.
    - **Nit**: everything else worth a sentence, including accessibility labels, Dynamic Type and 44 pt targets on new UI.
      Style only when a rule file or the repo's `.swiftlint.yml` states it.

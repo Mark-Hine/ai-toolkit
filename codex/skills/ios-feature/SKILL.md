@@ -17,11 +17,11 @@ come from the project's `AGENTS.md`. Never guess them.
    (composition root, `@Environment`), and tests. Note whether it is SwiftUI or UIKit and which test framework it uses.
    For a *modify* task also map every caller of the code you will change.
    If it changes UI, capture the touched screens now, the same way as step 7, and label them `before`.
-3. **Consult references.** Load `$ios-standards` for the house patterns (state ownership, one-shot events, design system).
+3. **Consult references.** Load the `ios-standards` skill for the house patterns (state ownership, one-shot events, design system).
    Ask `ios-researcher` only where guidance may have moved (navigation APIs, Liquid Glass, privacy manifests, deployment
    target behaviour, App Store requirements).
 4. **Plan.** Files to add or change, state model (one `enum State` per screen: `loading` / `loaded(...)` /
-   `error(...)`), where data code goes, DI wiring, test list, simulator checks. For UI changes, consult `$design-standards` (tiered design rules, screen states, accessibility). Follow the project's architecture rules. Proceed within the authorized scope. Ask only about unresolved scope or consequential choices.
+   `error(...)`), where data code goes, DI wiring, test list, simulator checks. For UI changes, consult `$design-standards` (tiered design rules, screen states, accessibility). Follow the project's architecture rules. Proceed within the user-authorized scope. Ask only about unresolved scope or consequential choices.
 5. **Implement** in small steps, running the project's build command after each. New UI is SwiftUI inside the project's
    design-system package and tokens, following the design rules (IOS-1 colours, IOS-3 safe area, TYP-1 Dynamic Type, A11Y-4 targets), split into a stateless `XContent(state, actions)` with `#Preview` and a stateful
    `XScreen` that owns the `@MainActor` model and wires presentation. Loading runs in `.task`, never `Task {}` in `onAppear`.

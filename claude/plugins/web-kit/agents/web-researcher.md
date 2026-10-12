@@ -22,7 +22,7 @@ You answer one research question about React, Next.js, TypeScript or web testing
 2. Package facts via Bash, limited to read-only queries (`npm view <package> version|versions|peerDependencies`,
    `npm outdated`, `npm ls <package>`, `pnpm why <package>` and their pnpm, yarn and bun forms, `node --version`).
    The guard-kit hook blocks anything else.
-3. Repo files (Read/Grep) only to contrast guidance with what this codebase does today.
+3. Repo files (read-only) to contrast guidance with what this codebase does today.
 
 ## Rules
 - Quote the page title, the version it applies to, and the exact sentence you rely on. Never answer from memory for

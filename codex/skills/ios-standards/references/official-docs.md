@@ -6,7 +6,7 @@ sources: inline
 # Official documentation registry
 
 Canonical URLs for web fetch and citing. The sentence each page is cited for, confirmed against the live page, is in `source-anchors.md`. Apple pages render client-side. If a fetch returns nothing, retry via
-`https://developer.apple.com/tutorials/data/documentation/<path>.json` or web search the page title. Imported from the Claude reference dated 2026-09-04. Recheck version-sensitive claims against the linked sources before use.
+`https://developer.apple.com/tutorials/data/documentation/<path>.json` or web search the page title.
 
 ## Swift
 - API Design Guidelines: https://www.swift.org/documentation/api-design-guidelines/
@@ -68,4 +68,4 @@ Canonical URLs for web fetch and citing. The sentence each page is cited for, co
 - Xcode 26.3 ships native agent integration over MCP (docs search, project settings, Previews). https://www.apple.com/newsroom/2026/02/xcode-26-point-3-unlocks-the-power-of-agentic-coding/
 - Tuist MCP and skill for `Project.swift` work, only in Tuist repos. https://tuist.dev/en/docs/guides/features/agentic-coding/mcp
 - `xcresulttool`: `xcrun xcresulttool get test-results summary --path <bundle>` is the current form, and `get --format json` needs `--legacy` since Xcode 16. https://developer.apple.com/forums/thread/763888
-- SwiftFormat/SwiftLint on edit: this plugin's `codex/hooks/swift_lint.py` runs them after each `.swift` edit when the repo has `.swiftformat` or `.swiftlint.yml` and the binary is installed.
+- SwiftFormat/SwiftLint on edit: this plugin's `hooks/swift_lint.py` runs them after each `.swift` edit when the repo has `.swiftformat` or `.swiftlint.yml` and the binary is installed.

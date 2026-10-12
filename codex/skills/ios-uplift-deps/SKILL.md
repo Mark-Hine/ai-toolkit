@@ -8,7 +8,7 @@ Read the project AGENTS.md and applicable global guidance first. Fall back to CL
 # Dependency uplift: the user request
 
 Repo facts (workspace, schemes, build/test commands, SwiftPM vs CocoaPods, deliberate pins) come from the project's
-`AGENTS.md`. State the plan before editing versions and proceed within the user-authorized scope.
+`AGENTS.md`. Write the step 4 plan before editing dependency versions. Existing authorization to perform the uplift is sufficient.
 
 1. **Baseline.** Clean `git status` on `feat/<ticket>-<slug>` (or the project's documented branch convention). Run the project's build and test commands and copy the
    lock files to the scratchpad: `Package.resolved` (workspace: `<ws>.xcworkspace/xcshareddata/swiftpm/Package.resolved`,
@@ -19,7 +19,7 @@ Repo facts (workspace, schemes, build/test commands, SwiftPM vs CocoaPods, delib
 3. **Research.** Send one `ios-researcher` per axis from step 4, in parallel, each asking for its inventory table. Ask for the latest stable of each item, its release notes, minimum Xcode/deployment target,
    privacy-manifest status, and the current App Store minimum Xcode/SDK requirement and date. For each pod, note whether the vendor also publishes a Swift package, and check trunk status on blog.cocoapods.org. Trunk accepts no new pods or versions from 2026-12-02, so a pod whose target version is not on trunk cannot be updated through CocoaPods.
 4. **Plan.** One commit per axis, ordered Xcode/SDK → deployment target → Swift toolchain/language mode → SwiftPM packages →
-   CocoaPods, only for versions already on trunk → third-party binaries. Moving a pod to SwiftPM is its own axis and usually its own ticket. Name the schemes you will build and the tests you will run. Proceed within the authorized scope. Ask only about unresolved scope or consequential choices.
+   CocoaPods, only for versions already on trunk → third-party binaries. Moving a pod to SwiftPM is its own axis and usually its own ticket. Name the schemes you will build and the tests you will run. Proceed within the user-authorized scope. Ask only about unresolved scope or consequential choices.
 5. **Apply each axis.** Edit versions only where the project declares them. SwiftPM: change the rule, then
    `xcodebuild -resolvePackageDependencies -workspace <ws> -scheme "<scheme>"`. CocoaPods: `pod update <Pod>` (never a
    bare `pod update`). If the version is not on trunk, stop and report the SwiftPM migration as a follow-up. Rebuild every scheme in `AGENTS.md`, plus one Release build

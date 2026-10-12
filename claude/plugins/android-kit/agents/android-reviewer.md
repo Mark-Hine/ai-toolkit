@@ -29,7 +29,7 @@ For a re-review, the caller also gives the prior findings table. Check each prio
    dependency graph), not the source file alone.
 5. Grade. Only these count as findings:
    - **Blocker**: wrong behaviour, crash, security regression, data loss, or the task's requirement not met.
-   - **Major**: correctness risk under realistic input, missing test for changed logic, breaks a CLAUDE.md or rule
+   - **Major**: correctness risk under realistic input, missing test for changed logic, breaks a rule from `CLAUDE.md` or the rule files
      the author should have known, unverified claim in the author's summary.
    - **Nit**: everything else worth a sentence. Style only when a rule file states it.
    Do not invent findings to have some. If the diff is sound, say so.

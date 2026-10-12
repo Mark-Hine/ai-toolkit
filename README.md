@@ -1,41 +1,40 @@
 # ai-toolkit
 
-My portable setup for AI coding agents. One folder per agent, with shared personal preferences under `shared/`.
+My portable setup for AI coding agents. It gives Claude Code, OpenAI Codex and Google Antigravity the same playbooks, specialist agents, standards and safety hooks. Everything is written once under `src/` and `shared/`, and a build script turns it into one folder per agent.
 
-[Kotlin guidance](shared/guidance/kotlin.md) applies across platforms through each home loader and installer. Its [source rationale](shared/guidance/references/kotlin-rationale.md) is bundled in each PR review skill and loaded by the Android, Spring Boot and generic packs.
+## What's in it
 
-| Folder | Agent | Status |
-| --- | --- | --- |
-| [`antigravity/`](antigravity/README.md) | Google Antigravity | Six plugins (`android-kit`, `ios-kit`, `web-kit`, `pr-review`, `design-kit`, `toolkit`) carrying nineteen skills, ten specialist agents, rules generated from the Claude rules, and the shared guard and Swift lint hooks. Symlink installer |
-| [`claude/`](claude/README.md) | Claude Code | Android, iOS, web and UI/UX design playbooks, standards indexes, reviewer/researcher/verifier agents, guard hooks, writing-style rules, global `CLAUDE.md`, one-command installer |
-| [`codex/`](codex/README.md) | OpenAI Codex | Nineteen skills, Android/iOS/web/UI specialist agents, global settings, scoped guidance, guard hooks, repeatable installer |
+| Kit | What it gives you |
+| --- | --- |
+| `android-kit` | Feature, bug-fix, dependency-uplift and run-app playbooks for Android, with researcher, reviewer and verifier agents |
+| `ios-kit` | The same for iOS and SwiftUI, plus SwiftFormat and SwiftLint on edit where a repo opts in |
+| `web-kit` | Feature, bug-fix and run-app playbooks for React, Next.js and TypeScript, with researcher, reviewer and verifier agents |
+| `design-kit` | Tiered UI design rules (HIG, Material 3, WCAG 2.2, house), a design playbook and a UI reviewer agent |
+| `pr-review` | A formal written PR review with a standards-cited findings register, posted to Azure DevOps or GitHub when asked |
+| `guard-kit` | A hook that blocks protected-branch and force pushes, destructive git and edits to secrets |
+| `toolkit` | Audit and pre-PR check skills for maintaining this repo |
 
-`.claude-plugin/marketplace.json` at the repo root is required by Claude Code. It points at the plugins under `claude/plugins/`.
+`shared/guidance/` holds the Git, Kotlin, design and writing preferences that every agent loads.
 
-## Install (Antigravity)
+## Install
 
-```bash
-./antigravity/install.sh
-```
+1. Clone the repo once and keep the checkout, because the installers link to it.
 
-The installer links the plugins into `~/.gemini/config/plugins/` and the shared guidance into `~/.gemini/config/guidance/`, and adds a managed block to `~/.gemini/config/AGENTS.md`. Hooks ship inside each plugin, nothing is registered globally. Restart Antigravity, then check with `agy agents`. See [Antigravity setup](antigravity/README.md).
+   ```bash
+   git clone https://github.com/Mark-Hine/ai-toolkit.git ~/ai-toolkit
+   ```
 
-## Install (Codex)
+2. Run the installer for each agent you use.
 
-```bash
-./codex/install.sh
-```
+   | Agent | Needs | Run | Then |
+   | --- | --- | --- | --- |
+   | Claude Code | `claude`, `git`, `jq` | `~/ai-toolkit/claude/install.sh` | Start a new session |
+   | Codex | Codex CLI, Python 3.11 | `~/ai-toolkit/codex/install.sh` | Start a new session and open `/hooks` to trust the hooks |
+   | Antigravity | `agy` or the IDE, Python 3.11 | `~/ai-toolkit/antigravity/install.sh` | Restart Antigravity and check with `agy agents` |
 
-Start a new Codex session and use `/hooks` to review and trust the installed hooks. See [Codex setup](codex/README.md) for migration details, settings, verification and backups.
+The installers keep your own settings, back up anything they replace, and create a `machine.md` for facts about your machine. Add `--dry-run` to the Codex or Antigravity installer to preview its changes. Each agent's README explains what its installer writes: [Claude Code](claude/README.md), [Codex](codex/README.md) and [Antigravity](antigravity/README.md).
 
-## Install (Claude Code)
-
-```bash
-git clone https://github.com/Mark-Hine/ai-toolkit.git ~/ai-toolkit
-~/ai-toolkit/claude/install.sh
-```
-
-Plugins only, without the dotfiles layer:
+To use only the Claude Code plugins, without the dotfiles layer, add the marketplace inside Claude Code and install the kits you want:
 
 ```
 /plugin marketplace add Mark-Hine/ai-toolkit
@@ -48,25 +47,67 @@ Plugins only, without the dotfiles layer:
 /plugin install toolkit@ai-toolkit
 ```
 
+The Android, iOS and web kits depend on `guard-kit` and `design-kit`. The marketplace file Claude Code reads is `.claude-plugin/marketplace.json`.
+
+## Update
+
+Pull the checkout, then rerun the installer for each agent you use:
+
+```bash
+git -C ~/ai-toolkit pull
+~/ai-toolkit/claude/install.sh
+~/ai-toolkit/codex/install.sh
+~/ai-toolkit/antigravity/install.sh
+```
+
+The rerun matters. Claude Code plugins are pinned to a version, and the Codex installer copies its agents and settings, so neither picks up a change until the installer runs again.
+
+## How it works
+
+Each agent folder is partly generated and partly hand-written. The generated files are committed, so installing never needs the build. `.gitattributes` lists them, and CI fails when one no longer matches its source.
+
+| Source | What it holds | Built into |
+| --- | --- | --- |
+| `src/skills/` | Skills with their references and scripts | Each agent's skill folders |
+| `src/agents/` | Researcher, reviewer and verifier agents | Claude and Antigravity Markdown agents, Codex TOML agents |
+| `src/rules/` | Path-scoped platform rules | `claude/home/rules/`, `codex/home/guidance/` and the Antigravity plugin rules |
+| `shared/hooks/` | The guard and Swift lint hooks | The hook copies in each agent folder |
+| `scripts/build/agents.toml` | Each agent's wording, capabilities, model tiers and agent settings | Every generated file |
+
+A source is Markdown with two additions. A token such as `{@project_file}` becomes each agent's wording, so it renders as `CLAUDE.md` for Claude and `AGENTS.md` for Codex. A block such as `<!-- if: plan_mode -->` keeps text only for agents with that capability. To change a skill, agent or rule, edit its source and run `python3 scripts/build/build.py`.
+
+Plugin manifests, hook registration, home instructions, settings and installers stay hand-written in each agent folder.
+
+## Adding an agent
+
+A new agent needs these pieces:
+
+1. An adapter in `scripts/build/targets/<agent>.py` that subclasses `Target`, registered in `scripts/build/targets/__init__.py`. It says where skills and agents go and how their frontmatter looks.
+2. A `[targets.<agent>]` table in `scripts/build/agents.toml` with its tokens, formats, capabilities, model tiers, preambles and agent roles, plus its hook copies in the `[[copies]]` tables.
+3. A render branch for its hook output in `shared/hooks/guard.py`, with tests in `shared/tests/`, and its own hook registration.
+4. An `<agent>/` folder with its home instructions, `machine.md.example`, installer, validator, tests and a CI job. A Python installer can subclass `Installer` in `shared/install_common.py` for dry runs, backups, the managed `AGENTS.md` block, `machine.md` and the shared guidance links.
+5. A `ci_cli` value and a block in `src/skills/pr-review/pr-review/references/ci.md` if pr-review should run in that agent's CI mode.
+
 ## Keeping standards fresh
 
-Every rule file, standards reference and pr-review pack carries a `verified:` date and a `sources:` list. Four mechanisms keep them honest.
+Every rule, standards reference and pr-review pack carries a `verified:` date and a `sources:` list. These tools keep them current:
 
-- `tools/freshness.py` runs in CI on every push and warns at 90 days, fails at 180. The monthly `scheduled` workflow opens or updates a `freshness` issue when anything is due.
-- `tools/linkcheck.py` runs monthly over every cited URL, with per-host rules for pages that render client-side or block bots, and opens a `linkcheck` issue when a source is gone.
-- `tools/source_anchors.py` confirms that the one or two sentences each source key rests on are still on the live page (`docs/source-anchors.md`). Agents read these anchors and never fetch a page to grade a rule. CI lints the anchor files, and a monthly run opens an `anchors` issue when a quote drifts or a page cannot be read.
-- `/toolkit:audit` (`$toolkit-audit` in Codex, `/toolkit-audit` in Antigravity) re-reads each source, classifies every rule, writes `docs/audits/<date>-audit.md` with proposed diffs, and refreshes stamps only for files that pass and only after you confirm.
-- `/toolkit:check` (`$toolkit-check` in Codex, `/toolkit-check` in Antigravity) runs the pre-PR checks `AGENTS.md` requires for the files a branch changes and lists layers that may need mirroring. It edits nothing.
+| Tool | Runs | What it does |
+| --- | --- | --- |
+| `tools/freshness.py` | Every push, and monthly | Warns at 90 days and fails at 180. The monthly `scheduled` workflow opens a `freshness` issue when anything is due |
+| `tools/linkcheck.py` | Monthly | Checks every cited URL and opens a `linkcheck` issue when a source is gone |
+| `tools/source_anchors.py` | Every push (lint), and monthly | Confirms that the sentence each source key rests on is still on the live page ([format](docs/source-anchors.md)), and opens an `anchors` issue when a quote drifts |
+| `/toolkit:audit` | By hand | Re-reads each source, writes `docs/audits/<date>-audit.md` with proposed fixes, and refreshes stamps only after you confirm |
 
-Cadence. When the freshness job warns, run the audit from this checkout, land the fixes as small mirrored PRs, then let the skill refresh the stamps. `tools/mirror_parity.py` runs in CI and fails when the three layers drift apart between audits.
+When the freshness job warns, run the audit from this checkout, land each fix as a small PR against its source, then let the audit refresh the stamps. In Codex the skills are `$toolkit-audit` and `$toolkit-check`, and in Antigravity `/toolkit-audit` and `/toolkit-check`.
 
 ## Contributing
 
-Branch, PR, green CI. The rules for changes to this repo are in `AGENTS.md` (Codex), `CLAUDE.md` (Claude Code), and `GEMINI.md` (Antigravity).
+Branch, open a PR and wait for green CI. `AGENTS.md` has the rules for this repo, and `CLAUDE.md` and `GEMINI.md` point to it. Run `/toolkit:check` before opening a PR. It runs the checks the changed files need and edits nothing.
 
 ## Privacy
 
-Machine-specific facts (AVD names, CLI paths, ticket prefix, default branch) live in `~/.claude/machine.md`. The installer creates it from `claude/home/machine.md.example` and never commits it. Codex machine facts live in `~/.codex/machine.md`. Antigravity machine facts live in `~/.gemini/config/machine.md`. Repo-specific facts belong in that repo's own `AGENTS.md`, `CLAUDE.md`, or `GEMINI.md`, and the playbooks read them from there rather than hardcoding them. CI runs gitleaks on every push to catch credentials.
+Machine facts such as emulator names, CLI paths, the ticket prefix and the default branch live in `machine.md` in each agent's config folder (`~/.claude/`, `~/.codex/` or `~/.gemini/config/`). The installers create it from a template and it is never committed. Facts about one repo belong in that repo's own `AGENTS.md`, `CLAUDE.md` or `GEMINI.md`. CI runs gitleaks on every push to catch credentials.
 
 ## Licence
 

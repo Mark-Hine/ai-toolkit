@@ -5,7 +5,6 @@ description: "Index of official Android/Kotlin/Gradle docs, Now in Android and J
 
 Read the project AGENTS.md and applicable global guidance first. Fall back to CLAUDE.md if AGENTS.md is absent. Follow the global rules for optional tools, specialist agents and Git actions.
 
-
 # Android standards reference
 
 Use this to pick the authoritative source for a question. For a standard, quote its anchor in

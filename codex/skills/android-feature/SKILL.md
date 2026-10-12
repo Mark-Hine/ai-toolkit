@@ -5,7 +5,6 @@ description: "Feature or feature-change playbook for Android apps: intake, patte
 
 Read the project AGENTS.md and applicable global guidance first. Fall back to CLAUDE.md if AGENTS.md is absent. Follow the global rules for optional tools, specialist agents and Git actions.
 
-
 # Feature work: the user request
 
 Repo facts (modules, build/test commands, design-system names, app id) come from the project's `AGENTS.md`. Never guess them.

@@ -9,21 +9,21 @@ Read the project AGENTS.md (or GEMINI.md) and applicable guidance first. Fall ba
 
 Use this to pick the authoritative source for a question. For a standard, quote its anchor in
 `references/source-anchors.md` instead of fetching the page. Look up deadlines, deprecations, App Store
-requirements and versions with web search or fetch when you use them, because they change between anchor
-checks. Do not answer those from memory.
+requirements and versions with web fetch when you use them, because they change between anchor checks. Do not
+answer those from memory.
 
 | Question | Read |
 |---|---|
-| State ownership, @Observable vs ObservableObject, environment | [official-docs.md](references/official-docs.md) §SwiftUI, then [apple-samples.md](references/apple-samples.md) |
-| One-shot model → UI events (navigation, alerts, toasts) | [ui-events.md](references/ui-events.md) (house pattern and how it differs from the Android rule) |
-| Too many closures on a view | [ui-events.md](references/ui-events.md) §Actions struct |
-| Design system, tokens, component API, previews | [apple-samples.md](references/apple-samples.md) |
-| Concurrency, @MainActor, Swift 6 language mode | [official-docs.md](references/official-docs.md) §Swift |
-| Testing (Swift Testing vs XCTest), accessibility | [official-docs.md](references/official-docs.md) §Testing, §Accessibility |
-| Xcode, SwiftPM, CocoaPods, App Store submission gates | [official-docs.md](references/official-docs.md) §Build |
-| Security controls, Keychain, ATS, privacy manifests | [official-docs.md](references/official-docs.md) §Security |
-| Starting a per-repo `AGENTS.md` | [project-agents-md-template.md](references/project-agents-md-template.md) |
-| MCP servers, community skills, lint hooks, xcresulttool | [official-docs.md](references/official-docs.md) §Community tooling |
+| State ownership, @Observable vs ObservableObject, environment | `references/official-docs.md` §SwiftUI, then `references/apple-samples.md` |
+| One-shot model → UI events (navigation, alerts, toasts) | `references/ui-events.md` (house pattern and how it differs from the Android rule) |
+| Too many closures on a view | `references/ui-events.md` §Actions struct |
+| Design system, tokens, component API, previews | `references/apple-samples.md` |
+| Concurrency, @MainActor, Swift 6 language mode | `references/official-docs.md` §Swift |
+| Testing (Swift Testing vs XCTest), accessibility | `references/official-docs.md` §Testing, §Accessibility |
+| Xcode, SwiftPM, CocoaPods, App Store submission gates | `references/official-docs.md` §Build |
+| Security controls, Keychain, ATS, privacy manifests | `references/official-docs.md` §Security |
+| Starting a per-repo `AGENTS.md` (or `GEMINI.md`) | `references/project-agents-md-template.md` |
+| MCP servers, community skills, lint hooks, xcresulttool | `references/official-docs.md` §Community tooling |
 
 Guardrails when applying any reference to this repo:
 - Target repos are often hybrid legacy apps (UIKit + SwiftUI, CocoaPods + SwiftPM). Recommend the blueprint pattern for new

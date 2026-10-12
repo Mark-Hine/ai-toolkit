@@ -8,6 +8,9 @@ import tomllib
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(REPO_ROOT / 'shared'))
+
+from install_common import SHARED_GUIDANCE  # noqa: E402
 RULE_DECISIONS = {'allow', 'prompt', 'forbidden'}
 RULE_KEYWORDS = {'pattern', 'decision', 'justification', 'match', 'not_match'}
 SANDBOX_BY_ROLE = {'researcher': 'read-only', 'reviewer': 'read-only', 'verifier': 'workspace-write'}
@@ -108,6 +111,9 @@ def check_rules(root, errors):
         if decision is not None and (not isinstance(decision, ast.Constant) or decision.value not in RULE_DECISIONS):
             errors.append(f'{path}:{node.lineno}: decision must be one of {sorted(RULE_DECISIONS)}')
 
+# Guidance files the installer links under a different name than their source.
+INSTALLED_AS = {name: source for name, source in SHARED_GUIDANCE.items() if name != source}
+
 
 def check_home_references(root, repo_root, errors):
     sources = [root / 'home/AGENTS.md', *(root / 'agents').glob('*.toml')]
@@ -115,7 +121,7 @@ def check_home_references(root, repo_root, errors):
     for source in sources:
         text = source.read_text()
         for ref in set(re.findall(r'(?:~/\.codex/)?guidance/([a-z0-9/_-]+\.md)', text)):
-            if not any((g / ref).exists() for g in guidance_roots):
+            if not any((g / INSTALLED_AS.get(ref, ref)).exists() for g in guidance_roots):
                 errors.append(f'{source}: references guidance/{ref} which does not exist')
         for ref in set(re.findall(r'~/\.agents/skills/([a-z0-9/_.-]+)', text)):
             if not (root / 'skills' / ref.rstrip('/')).exists():

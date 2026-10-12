@@ -19,9 +19,9 @@ Skills named below are optional companions. When one is missing, follow `referen
    If it changes UI, capture the touched routes now, the same way as step 7, and label them `before`.
 3. **Consult references.** Load the `web-standards` skill for the sources and house patterns. Ask `web-researcher` only where
    guidance may have moved (framework major versions, rendering and caching defaults, deprecations).
-4. **Plan (plan mode).** Files to add or change, the state model (one discriminated union per screen: `loading`,
+4. **Plan.** Files to add or change, the state model (one discriminated union per screen: `loading`,
    `loaded`, `empty` where the screen can be empty, and `error`), the server or client boundary of each new component,
-   where data code goes, the test list and the browser checks. For UI changes, consult `/design-standards` (tiered design rules, screen states, accessibility). Follow the project's architecture rules. Get approval.
+   where data code goes, the test list and the browser checks. For UI changes, consult `/design-standards` (tiered design rules, screen states, accessibility). Follow the project's architecture rules. Proceed within the user-authorized scope. Ask only about unresolved scope or consequential choices.
 5. **Implement** in small steps, running the project's type check after each. New UI uses the project's design-system components and tokens and follows the design rules (WEB-1 landmarks, A11Y-1 contrast, A11Y-5 targets, TYP-5 text spacing). Components stay pure. In the App Router, Server Components stay the default and `'use client'` goes on the smallest interactive component. Add no dependency without approval.
 6. **Tests.** Follow the web-kit testing rule, or the Testing section of `references/official-docs.md` in the `web-standards` skill when the rule is not installed. Hooks, data functions and component behaviour get unit or component tests with Testing Library. A new user journey gets a Playwright test when the repo already has Playwright. Otherwise capture it in step 7 and list the missing end-to-end test as a follow-up. Run the tests with a file filter and quote the summary.
 7. **Browser verification.** `/web-run-app` starts the app and captures the touched routes at phone and desktop

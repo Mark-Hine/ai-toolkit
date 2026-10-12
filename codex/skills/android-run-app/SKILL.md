@@ -5,7 +5,6 @@ description: "Build, install, launch and screenshot a house Android debug varian
 
 Read the project AGENTS.md and applicable global guidance first. Fall back to CLAUDE.md if AGENTS.md is absent. Follow the global rules for optional tools, specialist agents and Git actions.
 
-
 # Run the app: the user request
 
 Defaults: the default phone AVD named in `~/.codex/machine.md`, and the project's default debug flavour and application id

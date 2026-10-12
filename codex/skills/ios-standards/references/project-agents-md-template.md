@@ -1,7 +1,7 @@
 # Per-repo `AGENTS.md` template for iOS repos
 
 Copy to `<repo>/AGENTS.md`, replace every `<…>`, delete lines that do not apply. Keep it under ~60 lines with the hard
-rules in the first 40, repo facts only and no tutorials (the shared `ios-*` skills and `~/.codex/guidance/ios/` carry conventions).
+rules in the first 40, repo facts only and no tutorials (the shared `ios-kit` skills and `~/.codex/guidance/ios/` carry conventions).
 Personal or temporary notes go in `.local/agent-notes.md` (gitignored).
 
 ```markdown

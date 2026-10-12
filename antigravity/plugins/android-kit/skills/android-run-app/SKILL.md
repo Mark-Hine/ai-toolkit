@@ -7,20 +7,20 @@ Read the project AGENTS.md (or GEMINI.md) and applicable guidance first. Fall ba
 
 # Run the app: the user request
 
-Defaults: default phone AVD named in `~/.gemini/config/machine.md`, and project's default debug flavour and application id
-from its `AGENTS.md`. Load the `android-cli` skill if any command below is unfamiliar.
+Defaults: the default phone AVD named in `~/.gemini/config/machine.md`, and the project's default debug flavour and application id
+from its `AGENTS.md` (or `GEMINI.md`). Load the `android-cli` skill if any command below is unfamiliar.
 
 Skills named below are optional companions. When one is missing, follow `references/companions.md` in the `android-standards` skill and continue.
 
 1. `android info`, then confirm the compile SDK platform is installed (`ls $ANDROID_HOME/platforms`, because the `android sdk list` pattern filter misses `android-37.0`-style names).
 2. `android emulator list`. If the AVD is not running, `android emulator start <avd>` and wait until `adb devices` shows `device`.
-3. Build: `./gradlew :app:assemble<Flavour>Debug` (capitalise the flavour, and omit flavour segment if the project has none).
+3. Build: `./gradlew :app:assemble<Flavour>Debug` (capitalise the flavour, and omit the flavour segment if the project has none).
 4. Install and launch: `android run --apks <apk path from the build output> --device <serial>` (never `--debug`, because it makes
-   the app wait for a debugger and the screen shows "Waiting For Debugger"). If launch does not come to the foreground,
+   the app wait for a debugger and the screen shows "Waiting For Debugger"). If the launch does not come to the foreground,
    `adb shell monkey -p <applicationId> -c android.intent.category.LAUNCHER 1`. Flavoured apps suffix the id (e.g. `.sit`).
 5. On the first screen, `android screen`, then save the PNG to the session scratchpad as `<avd>-<flavour>-<screen>.png`.
    `android layout` when the caller needs the view tree.
 6. Report: device serial and AVD, variant, APK path, launch result, screenshot path(s), and the last 30 lines of
    `adb logcat -d -s AndroidRuntime` if anything crashed.
 
-Use configured approval policy for device commands. A request to run the app authorizes its normal build, install and launch steps.
+Use the configured approval policy for device commands. A request to run the app authorizes its normal build, install and launch steps.

@@ -2,7 +2,7 @@
 
 Copy to `<repo>/AGENTS.md`, replace every `<…>`, delete lines that do not apply. Keep it under about 60 lines with the
 hard rules in the first 40, repo facts only and no tutorials (the shared `web-kit` skills and `~/.codex/guidance/web/`
-carry conventions). Personal or temporary notes go in `AGENTS.override.md` (gitignored).
+carry conventions). Personal or temporary notes go in `.local/agent-notes.md` (gitignored).
 
 ```markdown
 # <repo-name>

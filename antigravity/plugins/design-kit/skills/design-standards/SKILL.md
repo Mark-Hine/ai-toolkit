@@ -6,9 +6,9 @@ metadata:
   sources: references/sources.md
 ---
 
-# Design standards
+# Design standards: the user request
 
-The rules live in `~/.gemini/config/guidance/design-standards.md`. This skill adds the sources, the reasons and the APIs. If that rule file is missing, grade against the Tier 1 sources in `references/sources.md` only and say so. To improve, redesign or extend a design, or to work on a logo or app icon, use `/design-iterate`. It adds the project's `DESIGN.md` contract, rendered options and the user's pick to these rules.
+The rules live in the design-kit rules (`~/.gemini/config/guidance/design-standards.md`). This skill adds the sources, the reasons and the APIs. If that rule file is missing, grade against the Tier 1 sources in `references/sources.md` only and say so. To improve, redesign or extend a design, or to work on a logo or app icon, use `/design-iterate`. It adds the project's `DESIGN.md` contract, rendered options and the user's pick to these rules.
 
 1. Read the project instructions file, the project's `DESIGN.md` when one exists (SYS-1), then the rule file. Note any T2 rule IDs the project opts in.
 2. Name the platform, and the tone and density the screen commits to (DIR-1).

@@ -15,7 +15,7 @@ paths:
 
 - Design system: screens use the project's design-system package (named in its `AGENTS.md`). Colours, type and spacing
   come from its tokens via `@Environment`, never `Color(red:…)`, hex or `.font(.system(size:))`. Project components and
-  `ButtonStyle`/`ViewModifier` variants come before raw SwiftUI controls. Reference shape: `$ios-standards` → `references/apple-samples.md`.
+  `ButtonStyle`/`ViewModifier` variants come before raw SwiftUI controls. Reference shape: `ios-standards` → `references/apple-samples.md`.
 - Split screen-level views into a stateful `XScreen` that owns or receives the model and wires presentation, and a
   stateless `XContent(state:, actions:)` that renders. `#Preview` targets the stateless one with fixture data, no network, no DI graph.
 - State ownership: one owner per value. Use `@State` for view-local UI state. The screen's `@MainActor @Observable` model is

@@ -7,7 +7,7 @@ allowed-tools: Bash(android info*), Bash(android emulator list*), Bash(android e
 
 # Run the app: $ARGUMENTS
 
-Defaults: the default phone AVD named in `~/.claude/CLAUDE.md`, and the project's default debug flavour and application id
+Defaults: the default phone AVD named in `~/.claude/machine.md`, and the project's default debug flavour and application id
 from its `CLAUDE.md`. Load the `android-cli` skill if any command below is unfamiliar.
 
 Skills named below are optional companions. When one is missing, follow `references/companions.md` in `android-kit:standards` and continue.

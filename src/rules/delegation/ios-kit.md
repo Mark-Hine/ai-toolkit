@@ -1,0 +1,4 @@
+- Delegate current platform research to `ios-researcher` (`model: {@model research}`, read-only tools).
+- Delegate non-trivial diff review to `ios-reviewer` (`model: {@model review}`, read-only tools).
+- Delegate tests and simulator evidence to `ios-verifier` (`model: {@model research}`).
+- Plugin agents load with the plugin. Invoke them with `invoke_subagent`, give each a bounded task, and re-check findings before reporting them.

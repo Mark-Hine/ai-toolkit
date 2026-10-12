@@ -2,6 +2,8 @@
 
 The Codex port of the Claude setup includes nineteen skills, ten specialist agents, personal instructions, Android, iOS, web, UI/UX and writing guidance, command permissions, and lifecycle hooks. The Claude setup remains available in `../claude/`.
 
+The skills, agents, hook copies and the Android, iOS and web guidance in `home/guidance/` are generated from `../src/` and `../shared/` by `../scripts/build/build.py`. Edit the source and rebuild, not the files here.
+
 ## Install
 
 Requires Codex CLI and Python 3.11 or later. The installer itself needs no third-party Python packages, credentials or network access.
@@ -24,7 +26,8 @@ Start a new Codex session, then open `/hooks` to review and trust the command gu
 | `../shared/guidance/kotlin.md` | `~/.codex/guidance/kotlin.md` | Kotlin domain modeling and compatibility across platforms |
 | `../shared/guidance/design-standards.md` | `~/.codex/guidance/design-standards.md` | Shared UI design standards |
 | `../shared/guidance/design-assets.md` | `~/.codex/guidance/design-assets.md` | Read before editing design contract, token, theme, SVG and icon files |
-| `home/guidance/` | `~/.codex/guidance/` | Writing preferences and scoped Android/iOS rules |
+| `../shared/guidance/writing-style-brief.md` | `~/.codex/guidance/writing-style.md` | Condensed writing preferences, shared with Antigravity |
+| `home/guidance/` | `~/.codex/guidance/` | Scoped Android, iOS and web rules, generated from `../src/rules/` by `scripts/build/build.py` |
 | `home/config.defaults.toml` | Merged into `~/.codex/config.toml` | Model, reasoning, approval, sandbox, web search and agent defaults |
 | `home/toolkit.rules` | `~/.codex/rules/ai-toolkit.rules` | Routine command escalation permissions |
 | `home/machine.md.example` | `~/.codex/machine.md`, created only if absent | Private machine facts |
@@ -78,7 +81,7 @@ The installer replaces only its managed instruction block and hooks, preserving 
 
 ## iOS migration
 
-The five skills, three specialists, four scoped rules and standards references mirror the Claude iOS toolkit. Claude-only metadata is replaced with Codex skill policies, role TOML and hooks. Optional Xcode integrations are discovered rather than required. Research and review remain read-only. Test artifacts are written by the verifier. Reviewer build requests go to the verifier. Simulator checks target the selected UDID and restore prior visual settings.
+The five skills, three specialists, four scoped rules and standards references are built from the same sources as the Claude iOS toolkit. Claude-only metadata is replaced with Codex skill policies, role TOML and hooks. Optional Xcode integrations are discovered rather than required. Research and review remain read-only. Test artifacts are written by the verifier. Reviewer build requests go to the verifier. Simulator checks target the selected UDID and restore prior visual settings.
 
 The Swift lint hook handles `apply_patch`, `Edit` and `Write`. It runs installed SwiftFormat/SwiftLint only when the edited file's repository has the corresponding config. It reports findings without rewriting files. Shell-based edits are outside this hook's coverage. Xcode, simulators and linters are not installed by the toolkit. Their live execution must be verified in an app repository.
 
@@ -86,7 +89,7 @@ Intentional differences remain. Its specialist commands are single invocations w
 
 ## Guard coverage
 
-The guard is the shared module `shared/hooks/guard.py`, copied here and into the Claude `guard-kit` plugin and kept identical by CI. The command hook blocks protected-branch pushes, force pushes, implicit pushes, branch deletion pushes, `HEAD` as a push destination, destructive Git operations (including `git checkout .` and `git restore .`) and `timeout` wrappers behind `sudo`, `env`, `time`, `xargs`, `nice`, `caffeinate`, `eval` and nested shells. Use an explicit remote and feature refspec when pushing. Edits to `.github/workflows/*` and `azure-pipelines*.yml` are denied here and prompt on Claude, because Codex hooks cannot ask. `.env.example` and similar templates are editable. The patch hook checks added, updated, deleted and moved paths for secrets (including `.envrc` and `keystore.properties`), signing files (including `.p8` keys), anything under `.git/`, Firebase/network configuration, generated binaries, iOS entitlements, export options and dependency lock files. Regenerate lock files with the package manager instead of editing them. Specialist hooks also block direct source edits and limit research or verification commands.
+The guard is the shared module `shared/hooks/guard.py`, which `scripts/build/build.py` copies here and into the Claude `guard-kit` plugin. The command hook blocks protected-branch pushes, force pushes, implicit pushes, branch deletion pushes, `HEAD` as a push destination, destructive Git operations (including `git checkout .` and `git restore .`) and `timeout` wrappers behind `sudo`, `env`, `time`, `xargs`, `nice`, `caffeinate`, `eval` and nested shells. Use an explicit remote and feature refspec when pushing. Edits to `.github/workflows/*` and `azure-pipelines*.yml` are denied here and prompt on Claude, because Codex hooks cannot ask. `.env.example` and similar templates are editable. The patch hook checks added, updated, deleted and moved paths for secrets (including `.envrc` and `keystore.properties`), signing files (including `.p8` keys), anything under `.git/`, Firebase/network configuration, generated binaries, iOS entitlements, export options and dependency lock files. Regenerate lock files with the package manager instead of editing them. Specialist hooks also block direct source edits and limit research or verification commands.
 
 Push flags are checked within their own shell segment, including combined force flags such as `-uf`.
 

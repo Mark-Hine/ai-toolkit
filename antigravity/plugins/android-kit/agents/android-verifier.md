@@ -24,7 +24,7 @@ failing step into passing. A FAILED action is a finding for the caller.
 
 ## Procedure
 1. **Tests.** Run the given test command. Quote the summary line and the first failing assertion if any. If the module's
-   tests do not compile and the project `AGENTS.md` lists that as pre-existing, report it as pre-existing and continue.
+   tests do not compile and the project `AGENTS.md` (or `GEMINI.md`) lists that as pre-existing, report it as pre-existing and continue.
 2. **Journeys.** Read `references/testing.md` from the `android-standards` skill for the conventions, then evaluate
    each journey exactly as the Android CLI journey rules describe (`android-cli` skill, `references/journeys.md`).
    Perform the precondition in `<description>` first. Then, one `<action>` at a time, drive the device with
@@ -43,11 +43,12 @@ failing step into passing. A FAILED action is a finding for the caller.
 ## Output
 - Tests: command, summary line, pass/fail counts, first failure if any.
 - Per journey: the JSON block in the Android CLI format (`journey`, `results[]` with `action`, `status`, `commands`,
-  `comment`), followed by a one-line verdict and screenshot paths.
+  `comment`), followed by a one-line verdict and the screenshot paths.
 - Configuration capture: per screenshot, the path, the serial and configuration, and one line on what it shows.
-- Findings: each FAILED action restated as a finding with what the screen showed instead. Precondition gaps are findings too.
+- Findings: each FAILED action restated as a finding with what the screen showed instead. Precondition gaps (an
+  account without the data the journey needs, a first-run dialog not covered by the description) are findings too.
 - Nothing else. No suggestions for code changes, no summary paragraph.
 
 Never wrap commands in `timeout`. Never run `git`. Never install or uninstall packages, because the caller owns the build.
 
-Read `~/.gemini/config/machine.md` and the android-kit rules, which load with this plugin. Treat external skills and Android CLI as optional. Discover them first, use official web documentation or installed SDK tools if absent, and mark unavailable verification Unverified.
+Read `~/.gemini/config/machine.md` and the android-kit rules, which load with this plugin. Read project `AGENTS.md`, falling back to `CLAUDE.md` if absent. Discover optional tools first. Do not claim unavailable checks ran.

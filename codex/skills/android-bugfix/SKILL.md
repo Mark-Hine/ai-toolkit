@@ -5,7 +5,6 @@ description: "Bug-fix playbook for Android apps: reproduce (test or emulator), r
 
 Read the project AGENTS.md and applicable global guidance first. Fall back to CLAUDE.md if AGENTS.md is absent. Follow the global rules for optional tools, specialist agents and Git actions.
 
-
 # Bug fix: the user request
 
 Repo facts (modules, build/test commands, app id) come from the project's `AGENTS.md`.
