@@ -2,6 +2,8 @@
 
 Two layers. Plugins carry the shareable parts. The `home/` dotfiles layer carries what plugins cannot ship: `~/.claude/CLAUDE.md`, path-scoped rules and personal settings.
 
+The skills, agents and hook copies in `plugins/`, and the Android, iOS and web rules in `home/rules/`, are generated from `../src/` and `../shared/` by `../scripts/build/build.py`. Edit the source and rebuild, not the files here.
+
 ## Layout
 
 | Path | What | Loads |

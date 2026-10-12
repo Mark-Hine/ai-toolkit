@@ -1,6 +1,6 @@
 ---
 name: toolkit-check
-description: "Runs the ai-toolkit pre-PR checks that AGENTS.md requires for the files changed on this branch, and lists the layers that may need mirroring. Run it from the ai-toolkit checkout before opening a PR. Never runs on its own."
+description: "Runs the ai-toolkit pre-PR checks that AGENTS.md requires for the files changed on this branch, and lists the hand-written per-agent files that may need mirroring. Run it from the ai-toolkit checkout before opening a PR. Never runs on its own."
 ---
 
 # Toolkit pre-PR checks: the user request
@@ -25,7 +25,7 @@ Run the checks `AGENTS.md` requires for the files this branch changes, and repor
 
    Run each check as its own command from the repository root, without `cd` or chaining, so each failure points at one check.
 4. **Generated files and mirroring.** `python3 scripts/build/build.py --check` fails when a generated file is stale, missing or edited by hand, so a change to a generated path must come from its source under `src/` or `shared/`. For the hand-written per-agent files, such as plugin manifests, hook registration, home instructions and installers, compare the changed paths across `claude/`, `codex/` and `antigravity/`, and list each layer that has no change where another layer does. The PR description must name anything not mirrored and why.
-5. **Report.** Give a table of check, result (pass, fail or not run) and, for a failure, the first lines of output that show the cause. A check that cannot run, such as one that needs a missing CLI, is "not run" with the reason. Then list the layers that may need mirroring and the uncommitted files.
+5. **Report.** Give a table of check, result (pass, fail or not run) and, for a failure, the first lines of output that show the cause. A check that cannot run, such as one that needs a missing CLI, is "not run" with the reason. Then list the hand-written per-agent files that may need mirroring and the uncommitted files.
 
 ## Rules of the check
 - Run the commands. Never report a check as passing from reading the code.
