@@ -30,10 +30,8 @@ class Antigravity(Target):
         return f'antigravity/plugins/{kit}/agents/{agent}.md'
 
     def owned_roots(self, project):
-        roots = [f'antigravity/plugins/{spec["kit"]}/rules' for spec in self.config.get('rule_files', [])]
-        roots += [f'antigravity/plugins/{kit}/agents' for kit in project.agent_kits]
-        roots += [f'antigravity/plugins/{kit}/skills' for kit in project.skill_kits]
-        return roots + super().owned_roots(project)
+        # The hooks folders hold only the shared hook copies. hooks.json sits at the plugin root.
+        return self.plugin_roots(project, 'antigravity/plugins', ('skills', 'agents', 'rules', 'hooks'))
 
     def outputs(self, project):
         rules = [self.rules_file(project, spec) for spec in self.config.get('rule_files', [])]

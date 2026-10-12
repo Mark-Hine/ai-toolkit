@@ -164,6 +164,64 @@ class SkillAndAgentTests(unittest.TestCase):
                 target('claude').outputs(project)
 
 
+def minimal_config(root):
+    """agents.toml without the Antigravity rule files and the copies, which need sources a scratch tree lacks."""
+    sections, keep = [], True
+    for line in (HERE / 'agents.toml').read_text().splitlines(keepends=True):
+        if line.startswith('['):
+            keep = not line.startswith(('[[targets.antigravity.rule_files]]', '[[copies]]'))
+        if keep:
+            sections.append(line)
+    path = root / 'agents.toml'
+    path.write_text(''.join(sections))
+    return path
+
+
+class OwnershipTests(unittest.TestCase):
+    def test_write_mode_removes_a_stray_file_once(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            skill_project(root)
+            config = minimal_config(root)
+            self.assertEqual(build.run(check=False, root=root, config_path=config), 0)
+            stray = root / 'claude/plugins/web-kit/skills/feature/stray.txt'
+            stray.write_text('old')
+            project = build.Project(root)
+            loaded = tomllib.loads(config.read_text())
+            self.assertEqual(build.orphans(project, loaded, build.all_outputs(project, loaded)),
+                             ['claude/plugins/web-kit/skills/feature/stray.txt'])
+            self.assertEqual(build.run(check=False, root=root, config_path=config), 0)
+            self.assertFalse(stray.exists())
+            self.assertEqual(build.run(check=True, root=root, config_path=config), 0)
+
+    def test_a_kit_without_sources_is_still_owned(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            skill_project(root)
+            config = minimal_config(root)
+            build.run(check=False, root=root, config_path=config)
+            for path in ('claude/plugins/pr-review/agents/old.md', 'antigravity/plugins/pr-review/agents/old.md'):
+                (root / path).parent.mkdir(parents=True, exist_ok=True)
+                (root / path).write_text('old')
+            (root / 'claude/plugins/web-kit/.DS_Store').write_text('finder')
+            self.assertEqual(build.run(check=True, root=root, config_path=config), 1)
+            build.run(check=False, root=root, config_path=config)
+            self.assertFalse((root / 'claude/plugins/pr-review/agents/old.md').exists())
+            self.assertEqual(build.run(check=True, root=root, config_path=config), 0)
+
+    def test_misspelled_values_fail(self):
+        targets = {t.name: t for t in build.load_targets(CONFIG)}
+        for text in ('<!-- if: ci_cli=codx -->\nx\n<!-- end -->', '<!-- if: target=codexx -->\nx\n<!-- end -->'):
+            with self.assertRaises(KeyError, msg=text):
+                engine.render(text, targets['claude'])
+        with tempfile.TemporaryDirectory() as temp:
+            skill_project(Path(temp))
+            path = Path(temp) / 'src/skills/web-kit/feature/SKILL.md'
+            path.write_text(SKILL.replace('preamble: playbook', 'preamble: playbok'))
+            with self.assertRaises(engine.RenderError):
+                targets['codex'].outputs(build.Project(Path(temp)))
+
+
 class RepositoryTests(unittest.TestCase):
     def test_sources_pass_the_lint(self):
         self.assertEqual(build.lint_sources(build.Project(), CONFIG.get('lint', {}).get('allow', [])), [])

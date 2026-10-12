@@ -43,6 +43,7 @@ def condition_holds(expr, target):
             raise RenderError(f'empty condition item in "{expr}"')
         if '=' in item:
             key, value = (s.strip() for s in item.split('=', 1))
+            target.check_value(key, value)
             if str(target.value(key)) == value:
                 return True
         elif item.startswith('!'):
