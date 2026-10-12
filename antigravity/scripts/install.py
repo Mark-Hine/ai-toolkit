@@ -4,7 +4,7 @@
 Layout after install (documented in the bundled agy-customizations docs and the plugin skill):
   ~/.gemini/config/AGENTS.md            managed ai-toolkit block, merged into the user's file
   ~/.gemini/config/machine.md           created from home/machine.md.example when absent
-  ~/.gemini/config/guidance/*.md        symlinks to shared/guidance and home/writing-style.md
+  ~/.gemini/config/guidance/*.md        symlinks to shared/guidance
   ~/.gemini/config/plugins/<name>       symlink to each plugin in this checkout
 Plugins are discovered from ~/.gemini/config/plugins/*/plugin.json by both the IDE and the CLI, and
 they are enabled by default. Hooks, rules and agents ship inside each plugin, so nothing is written
@@ -155,7 +155,7 @@ class Installer:
         self.link(REPO / 'shared/guidance/kotlin.md', cfg / 'guidance/kotlin.md')
         self.link(REPO / 'shared/guidance/design-standards.md', cfg / 'guidance/design-standards.md')
         self.link(REPO / 'shared/guidance/design-assets.md', cfg / 'guidance/design-assets.md')
-        self.link(ROOT / 'home/writing-style.md', cfg / 'guidance/writing-style.md')
+        self.link(REPO / 'shared/guidance/writing-style-brief.md', cfg / 'guidance/writing-style.md')
         for plugin_dir in sorted((ROOT / 'plugins').iterdir()):
             if plugin_dir.is_dir() and (plugin_dir / 'plugin.json').is_file():
                 self.link(plugin_dir, cfg / 'plugins' / plugin_dir.name)

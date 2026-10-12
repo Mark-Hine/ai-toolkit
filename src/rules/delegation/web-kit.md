@@ -1,0 +1,4 @@
+- Delegate framework and package-version research to `web-researcher` (`model: {@model research}`, read-only tools).
+- Delegate non-trivial diff review to `web-reviewer` (`model: {@model review}`, read-only tools).
+- Delegate tests, type checks, lint and Playwright captures to `web-verifier` (`model: {@model research}`).
+- Plugin agents load with the plugin. Invoke them with `invoke_subagent`, give each a bounded task, and re-check findings before reporting them.

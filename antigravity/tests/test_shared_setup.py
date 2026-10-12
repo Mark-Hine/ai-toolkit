@@ -25,7 +25,7 @@ class SharedSetupTests(unittest.TestCase):
         self.assertEqual(claude_plugins - {'guard-kit'}, agy_plugins)
 
     def test_generated_rules_are_current(self):
-        result = subprocess.run([sys.executable, str(ROOT / 'antigravity/scripts/sync_rules.py'), '--check'], capture_output=True, text=True)
+        result = subprocess.run([sys.executable, str(ROOT / 'scripts/build/build.py'), '--check'], capture_output=True, text=True)
         self.assertEqual(0, result.returncode, result.stdout + result.stderr)
 
     def test_hooks_are_the_shared_module(self):

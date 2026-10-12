@@ -149,7 +149,7 @@ def check_hooks(errors):
 
 
 def check_home(errors):
-    allowed = {'AGENTS.md', 'machine.md.example', 'writing-style.md'}
+    allowed = {'AGENTS.md', 'machine.md.example'}
     for path in (ROOT / 'home').iterdir():
         if path.name not in allowed:
             errors.append(f'{path}: not part of the documented layout (plugins carry rules, hooks and skills)')
@@ -177,9 +177,9 @@ def check_links(errors):
 
 
 def check_generated_rules(errors):
-    result = subprocess.run([sys.executable, str(ROOT / 'scripts/sync_rules.py'), '--check'], capture_output=True, text=True)
+    result = subprocess.run([sys.executable, str(ROOT.parent / 'scripts/build/build.py'), '--check'], capture_output=True, text=True)
     if result.returncode:
-        errors.append('generated rules are stale: ' + result.stdout.strip())
+        errors.append('generated files are stale: ' + result.stdout.strip())
 
 
 def main():

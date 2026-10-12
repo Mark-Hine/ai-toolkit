@@ -1,0 +1,96 @@
+# Per-target settings for scripts/build/build.py. Each [targets.<name>] table feeds the adapter of the same
+# name in scripts/build/targets/. Tokens are plain text values. Capabilities drive `<!-- if: ... -->` blocks.
+
+[targets.claude.tokens]
+project_file = "CLAUDE.md"
+project_file_full = "`CLAUDE.md`"
+design_rules = "`~/.claude/rules/design-standards.md`"
+
+[targets.claude.capabilities]
+plan_mode = true
+reviewer_runs_builds = true
+skill_allowlist = true
+auto_loads_rules = true
+invoke_subagent = false
+ci_cli = "claude"
+
+[targets.claude.models]
+research = "sonnet"
+review = "opus"
+
+[targets.codex.tokens]
+project_file = "AGENTS.md"
+project_file_full = "`AGENTS.md`"
+design_rules = "`guidance/design-standards.md`"
+
+[targets.codex.capabilities]
+plan_mode = false
+reviewer_runs_builds = false
+skill_allowlist = false
+auto_loads_rules = false
+invoke_subagent = false
+ci_cli = "codex"
+
+[targets.codex.models]
+research = "gpt-6-sol"
+review = "gpt-6-astra"
+
+[targets.antigravity.tokens]
+project_file = "AGENTS.md"
+project_file_full = "`AGENTS.md` (or `GEMINI.md`)"
+design_rules = "the design-kit rules (`~/.gemini/config/guidance/design-standards.md`)"
+
+[targets.antigravity.capabilities]
+plan_mode = false
+reviewer_runs_builds = false
+skill_allowlist = false
+auto_loads_rules = false
+invoke_subagent = true
+ci_cli = "agy"
+
+[targets.antigravity.models]
+research = "flash"
+review = "pro"
+
+# Antigravity loads one always-on rules file per plugin. Order of sources is the order of sections.
+[[targets.antigravity.rule_files]]
+kit = "android-kit"
+title = "Android and Kotlin rules"
+sources = ["src/rules/android/kotlin-style.md", "src/rules/android/compose.md",
+           "src/rules/android/ui-events.md", "src/rules/android/testing.md"]
+
+[[targets.antigravity.rule_files]]
+kit = "ios-kit"
+title = "iOS and Swift rules"
+sources = ["src/rules/ios/swift-style.md", "src/rules/ios/swiftui.md",
+           "src/rules/ios/ui-events.md", "src/rules/ios/testing.md"]
+
+[[targets.antigravity.rule_files]]
+kit = "web-kit"
+title = "Web, React and TypeScript rules"
+sources = ["src/rules/web/typescript.md", "src/rules/web/react.md", "src/rules/web/testing.md"]
+
+[[targets.antigravity.rule_files]]
+kit = "design-kit"
+title = "Design rules"
+sources = ["shared/guidance/design-standards.md"]
+
+# Files copied byte for byte, with their mode, from one canonical path to each target's copies.
+[[copies]]
+src = "shared/hooks/guard.py"
+claude = ["claude/plugins/guard-kit/hooks/guard.py"]
+codex = ["codex/hooks/guard.py"]
+antigravity = ["antigravity/plugins/android-kit/hooks/guard.py", "antigravity/plugins/ios-kit/hooks/guard.py",
+               "antigravity/plugins/web-kit/hooks/guard.py"]
+
+[[copies]]
+src = "shared/hooks/swift_lint.py"
+claude = ["claude/plugins/ios-kit/hooks/swift_lint.py"]
+codex = ["codex/hooks/swift_lint.py"]
+antigravity = ["antigravity/plugins/ios-kit/hooks/swift_lint.py"]
+
+[[copies]]
+src = "shared/guidance/references/kotlin-rationale.md"
+claude = ["claude/plugins/pr-review/skills/pr-review/references/languages/kotlin.md"]
+codex = ["codex/skills/pr-review/references/languages/kotlin.md"]
+antigravity = ["antigravity/plugins/pr-review/skills/pr-review/references/languages/kotlin.md"]

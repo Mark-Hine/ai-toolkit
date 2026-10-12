@@ -24,7 +24,8 @@ Start a new Codex session, then open `/hooks` to review and trust the command gu
 | `../shared/guidance/kotlin.md` | `~/.codex/guidance/kotlin.md` | Kotlin domain modeling and compatibility across platforms |
 | `../shared/guidance/design-standards.md` | `~/.codex/guidance/design-standards.md` | Shared UI design standards |
 | `../shared/guidance/design-assets.md` | `~/.codex/guidance/design-assets.md` | Read before editing design contract, token, theme, SVG and icon files |
-| `home/guidance/` | `~/.codex/guidance/` | Writing preferences and scoped Android/iOS rules |
+| `../shared/guidance/writing-style-brief.md` | `~/.codex/guidance/writing-style.md` | Condensed writing preferences, shared with Antigravity |
+| `home/guidance/` | `~/.codex/guidance/` | Scoped Android, iOS and web rules, generated from `../src/rules/` by `scripts/build/build.py` |
 | `home/config.defaults.toml` | Merged into `~/.codex/config.toml` | Model, reasoning, approval, sandbox, web search and agent defaults |
 | `home/toolkit.rules` | `~/.codex/rules/ai-toolkit.rules` | Routine command escalation permissions |
 | `home/machine.md.example` | `~/.codex/machine.md`, created only if absent | Private machine facts |
