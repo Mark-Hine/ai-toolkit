@@ -9,7 +9,7 @@ Run the checks `AGENTS.md` requires for the files this branch changes, and repor
 
 ## Procedure
 1. **Scope.** Confirm the working directory is the ai-toolkit checkout (`.claude-plugin/marketplace.json` has `"name": "ai-toolkit"`). The base ref is the argument, or `origin/main` when none is given. Run `git fetch origin`, `git diff --name-only <base>...HEAD` and `git status --porcelain`. The version check reads commits only, so list uncommitted files in the report.
-2. **Every change.** Run `python3 scripts/ci/check_repo.py`, `python3 scripts/ci/check_parity.py`, `python3 scripts/ci/check_style.py`, `python3 scripts/ci/check_plugin_versions.py --base <base>`, `python3 tools/freshness.py`, `python3 tools/mirror_parity.py` and `python3 tools/source_anchors.py --lint`.
+2. **Every change.** Run `python3 scripts/build/build.py --check`, `python3 scripts/ci/check_repo.py`, `python3 scripts/ci/check_style.py`, `python3 scripts/ci/check_plugin_versions.py --base <base>`, `python3 tools/freshness.py` and `python3 tools/source_anchors.py --lint`.
 3. **By changed path.** Add the checks this table names for each path the diff touches:
 
 | Changed path | Also run |

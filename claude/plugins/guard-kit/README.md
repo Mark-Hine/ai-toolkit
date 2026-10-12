@@ -21,4 +21,4 @@ If `python3` is missing or the guard crashes, the call is blocked with a message
 
 ## Source and tests
 
-The canonical module is `shared/hooks/guard.py`. This copy is kept identical by `scripts/ci/check_parity.py`. Unit tests are in `shared/tests/test_guard.py`, and `claude/tests/test-guards.sh` runs the real `hooks.json` command.
+The canonical module is `shared/hooks/guard.py`. `scripts/build/build.py` writes this copy. Unit tests are in `shared/tests/test_guard.py`, and `claude/tests/test-guards.sh` runs the real `hooks.json` command.

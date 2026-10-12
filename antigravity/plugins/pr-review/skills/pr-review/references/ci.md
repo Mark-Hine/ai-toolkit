@@ -41,7 +41,6 @@ artifacts to the staging directory, and lets the pipeline post the findings JSON
 The build identity needs **Contribute to pull requests** on the repo. The example below is a
 template. Run it once on a scratch pipeline before wiring it as a branch policy.
 
-<!-- layer-specific:start -->
 ```yaml
 # azure-pipelines.yml, PR review stage (wire as the PR build via branch policy)
 trigger: none                        # PR-triggered via branch policy, not CI trigger
@@ -92,7 +91,6 @@ steps:
       SYSTEM_ACCESSTOKEN: $(System.AccessToken)
       REVIEW_ARTIFACT_DIR: $(Build.ArtifactStagingDirectory)
 ```
-<!-- layer-specific:end -->
 
 Notes:
 
@@ -116,7 +114,6 @@ approval from `GITHUB_TOKEN` also needs the repository setting **Allow GitHub Ac
 approve pull requests**. Without it, or on the author's own pull request, the poster leaves a
 comment review instead. Run the workflow once on a scratch pull request before requiring it.
 
-<!-- layer-specific:start -->
 ```yaml
 # .github/workflows/pr-review.yml
 name: pr-review
@@ -179,7 +176,6 @@ jobs:
           [ "${#files[@]}" -eq 1 ] || { echo "Expected one findings JSON, found ${#files[@]}"; exit 1; }
           python3 "$PR_REVIEW_SKILL_DIR/scripts/post_review.py" "${files[0]}" --host github --fail-on-verdict
 ```
-<!-- layer-specific:end -->
 
 The poster reads the repository and pull request number from `GITHUB_REPOSITORY` and the event
 payload. It anchors each comment at `scope.source_head`. A finding on a line outside the diff goes

@@ -37,6 +37,7 @@ class Target:
         self.roles = config.get('roles', {})
         self.agent_overrides = config.get('agents', {})
         self.formats = config.get('formats', {})
+        self.known_values = None
 
     # Template hooks used by engine.render.
     def flag(self, name):
@@ -50,6 +51,10 @@ class Target:
         if key not in self.capabilities:
             raise KeyError(key)
         return self.capabilities[key]
+
+    def check_value(self, key, value):
+        if self.known_values is not None and value not in self.known_values.get(key, set()):
+            raise KeyError(f'{key}={value}')
 
     def token(self, name, arg):
         if name == 'model':
@@ -112,7 +117,14 @@ class Target:
     # Layout.
     def owned_roots(self, project):
         """Directories whose every file is build output for this target."""
-        return [self.skill_dir(s.kit, s.name) for s in project.skills]
+        return []
+
+    @staticmethod
+    def plugin_roots(project, plugins_dir, folders):
+        """The named folders of every plugin on disk, plus each kit that has sources but no plugin yet."""
+        kits = {p.name for p in (project.root / plugins_dir).glob('*/') if p.is_dir()}
+        kits |= set(project.skill_kits) | set(project.agent_kits)
+        return [f'{plugins_dir}/{kit}/{folder}' for kit in sorted(kits) for folder in folders]
 
     def outputs(self, project):
         """Every generated file for this target except the shared verbatim copies."""
@@ -151,7 +163,12 @@ class Target:
         if scalar(fields.get('name', '')) != skill.name:
             raise RenderError(f'{source}: name must be {skill.name}')
         lines = self.skill_frontmatter(skill, entries, fields)
-        preamble = self.preambles.get(fields['preamble']) if 'preamble' in fields else None
+        preamble = None
+        if 'preamble' in fields:
+            kind = scalar(fields['preamble'])
+            if self.preambles and kind not in self.preambles:
+                raise RenderError(f'{source}: unknown preamble {kind}')
+            preamble = self.preambles.get(kind)
         head = '---\n' + '\n'.join(lines) + '\n---\n'
         if preamble:
             head += '\n' + preamble + '\n'

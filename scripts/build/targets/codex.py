@@ -29,7 +29,7 @@ class Codex(Target):
         return f'codex/agents/{agent}.toml'
 
     def owned_roots(self, project):
-        return [f'codex/home/guidance/{p}' for p in RULE_PLATFORMS] + ['codex/skills', 'codex/agents']
+        return [f'codex/home/guidance/{p}' for p in RULE_PLATFORMS] + ['codex/skills', 'codex/agents', 'codex/hooks']
 
     def outputs(self, project):
         out = []

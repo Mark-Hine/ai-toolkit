@@ -24,6 +24,7 @@ from targets import TARGETS  # noqa: E402
 from targets.base import Output  # noqa: E402
 
 ROOT = HERE.parents[1]
+IGNORED_FILES = {'.DS_Store'}
 CONFIG = HERE / 'agents.toml'
 
 
@@ -59,7 +60,7 @@ class Project:
     def load_skill(self, directory):
         skill = Skill(directory.parent.name, directory.name, self.rel(directory))
         for path in sorted(directory.rglob('*')):
-            if path.is_file() and '__pycache__' not in path.parts and path.name != '.DS_Store':
+            if path.is_file() and '__pycache__' not in path.parts and path.name not in IGNORED_FILES:
                 skill.files[path.relative_to(directory).as_posix()] = (path.read_bytes(), path.stat().st_mode & 0o777)
         if 'SKILL.md' not in skill.files:
             raise ValueError(f'{skill.source} has no SKILL.md')
@@ -86,7 +87,15 @@ class Project:
 
 
 def load_targets(config):
-    return [TARGETS[name](settings) for name, settings in config['targets'].items()]
+    targets = [TARGETS[name](settings) for name, settings in config['targets'].items()]
+    # The values a `key=value` block condition may name, so a misspelling fails instead of rendering nothing.
+    known = {'target': set(config['targets'])}
+    for target in targets:
+        for key, value in target.capabilities.items():
+            known.setdefault(key, set()).add(str(value))
+    for target in targets:
+        target.known_values = known
+    return targets
 
 
 def copy_outputs(project, config):
@@ -137,15 +146,16 @@ def lint_sources(project, allow=()):
 
 def orphans(project, config, outputs):
     produced = {o.path for o in outputs}
-    found = []
+    found = set()
     for root in owned_roots(project, config):
         base = project.root / root
         if not base.exists():
             continue
-        for path in sorted(base.rglob('*')):
-            if path.is_file() and '__pycache__' not in path.parts and project.rel(path) not in produced:
-                found.append(project.rel(path))
-    return found
+        for path in base.rglob('*'):
+            if (path.is_file() and '__pycache__' not in path.parts and path.name not in IGNORED_FILES
+                    and project.rel(path) not in produced):
+                found.add(project.rel(path))
+    return sorted(found)
 
 
 def stale(project, output):

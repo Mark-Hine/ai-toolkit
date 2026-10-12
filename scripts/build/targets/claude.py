@@ -30,9 +30,8 @@ class Claude(Target):
 
     def owned_roots(self, project):
         roots = [f'claude/home/rules/{p}' for p in RULE_PLATFORMS]
-        roots += [f'claude/plugins/{kit}/agents' for kit in project.agent_kits]
-        roots += [f'claude/plugins/{kit}/skills' for kit in project.skill_kits]
-        return roots + super().owned_roots(project)
+        # Every plugin's skills and agents come from src/, so own them even when a kit has no sources left.
+        return roots + self.plugin_roots(project, 'claude/plugins', ('skills', 'agents'))
 
     def outputs(self, project):
         out = []

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """PreToolUse guard shared by the Claude Code, Codex and Antigravity layers of ai-toolkit.
 
-Canonical source: shared/hooks/guard.py. The copies inside the plugins and under codex/hooks are
-kept byte-identical by scripts/ci/check_parity.py. Advisory command parsing is not a shell sandbox.
+Canonical source: shared/hooks/guard.py. scripts/build/build.py writes the copies inside the plugins and
+under codex/hooks. Advisory command parsing is not a shell sandbox.
 
 Usage: guard.py [--agent claude|codex|antigravity] [role]
   stdin   the hook event as JSON
