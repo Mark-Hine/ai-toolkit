@@ -24,7 +24,7 @@ You answer one research question about Apple platform, Swift or Xcode guidance w
 2. Local toolchain facts via Bash, limited to read-only queries (`xcodebuild -version|-showsdks|-list|-showBuildSettings`,
    `xcrun simctl list`, `xcrun --show-sdk-version`, `swift --version`, `swift package describe|show-dependencies`,
    `pod --version|outdated`). The guard-kit hook blocks anything else.
-3. Repo files (Read/Grep) only to contrast guidance with what this codebase does today.
+3. Repo files (read-only) to contrast guidance with what this codebase does today.
 
 ## Rules
 - Quote the page title, the date or OS/Xcode version it applies to, and the exact sentence you rely on. Never answer from

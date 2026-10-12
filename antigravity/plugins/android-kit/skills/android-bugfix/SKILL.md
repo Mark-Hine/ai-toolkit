@@ -7,7 +7,7 @@ Read the project AGENTS.md (or GEMINI.md) and applicable guidance first. Fall ba
 
 # Bug fix: the user request
 
-Repo facts (modules, build/test commands, app id) come from the project's `AGENTS.md`.
+Repo facts (modules, build/test commands, app id) come from the project's `AGENTS.md` (or `GEMINI.md`).
 
 1. **Restate** the symptom, expected behaviour, and affected variant or device if known. Branch `fix/<ticket>-<slug>`.
 2. **Locate.** A research subagent returns the path from symptom to code (screen → ViewModel → use case/repository → API) as `file:line` entries.
@@ -24,5 +24,5 @@ Repo facts (modules, build/test commands, app id) come from the project's `AGENT
    emulator with a screenshot, and hand the screen's journey (if one exists) to the `android-verifier` agent and quote
    its results. A unit-only rerun stays in this session, because the reviewer checks the tests again.
 7. **Review.** `android-reviewer` with the symptom and root cause as the task statement. Confirm each Blocker and Major against the code first, and decline a refuted one with the counter-evidence. Fix the rest, then re-run the compile check and the affected tests. Send the same reviewer the finding IDs and their "Verified fixed when" criteria to re-review the fix delta. Stop after two re-review rounds and report anything still open.
-8. **Commit, only if asked.** Follow shared Git conventions. Do not push unless asked.
+8. **Commit, only if asked.** Follow the shared Git conventions. Do not push unless asked.
 9. **Report**: cause, fix, evidence (test before/after, screenshots), regression risk, pre-existing issues noticed.

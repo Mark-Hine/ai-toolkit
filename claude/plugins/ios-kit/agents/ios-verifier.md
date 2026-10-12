@@ -32,7 +32,7 @@ Require only inputs relevant to the requested check. If a required input is miss
 2. **Smoke check.** `xcrun simctl launch <udid> <bundle id>`, wait, then `xcrun simctl io <udid> screenshot
    <scratchpad>/<sim>-<scheme>-<n>.png` for each requested screen, opening deep links with `xcrun simctl openurl` when
    given. Repeat once at `xcrun simctl ui <udid> content_size accessibility-extra-large` when the caller asks for the
-   Dynamic Type check, then restore the recorded original value. Use the supplied simulator UDID throughout.
+   Dynamic Type check, then restore the recorded original value. Use the supplied simulator UDID throughout. Never target an arbitrary booted device.
 3. **Crash check.** `xcrun simctl spawn <udid> log show --last 3m --predicate 'processImagePath CONTAINS "<App>"' --style
    compact` and note any crash or fatal error. `xcrun simctl listapps <udid>` confirms the install if launch fails.
 4. **UI automation.** Plain `simctl` cannot tap or type. If the repo has an XCUITest target for the screen, run it with

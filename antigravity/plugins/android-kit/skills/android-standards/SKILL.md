@@ -9,7 +9,7 @@ Read the project AGENTS.md (or GEMINI.md) and applicable guidance first. Fall ba
 
 Use this to pick the authoritative source for a question. For a standard, quote its anchor in
 `references/source-anchors.md` instead of fetching the page. Look up deadlines, deprecations and versions
-when you use them (`android docs search` / `android docs fetch` or web search), because they change between
+when you use them (`android docs search` / `android docs fetch` or web browsing), because they change between
 anchor checks. Do not answer those from memory.
 
 | Question | Read |

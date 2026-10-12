@@ -5,7 +5,7 @@ sources: inline
 
 # Testing: expectations, tooling, journeys
 
-Rule: the android-kit rules, section "Tests" (loaded with the plugin). This file holds the reasoning, the pyramid, and the journey template.
+Rule: the android-kit testing rule. This file holds the reasoning, the pyramid, and the journey template.
 
 ## Pyramid per change
 

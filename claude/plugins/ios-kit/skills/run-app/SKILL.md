@@ -7,12 +7,12 @@ allowed-tools: Bash(xcodebuild -version*), Bash(xcodebuild -list *), Bash(xcodeb
 
 # Run the app: $ARGUMENTS
 
-Defaults: the simulator named in `~/.claude/CLAUDE.md` (fallback: the newest iPhone in `xcrun simctl list devices available`), and
+Defaults: the simulator named in `~/.claude/machine.md` or the project instructions, otherwise a compatible available iPhone from `xcrun simctl list devices available`, and
 the project's workspace, default debug scheme and bundle id from its `CLAUDE.md`. Never guess a scheme name. Quote `xcodebuild -list`.
 
 1. `xcodebuild -version`, then `xcodebuild -list -workspace <ws>` and confirm the scheme exists. CocoaPods repos: run `pod install`
    first when `Pods/` is missing or `Podfile.lock` changed. SwiftPM-only repos need nothing.
-2. `xcrun simctl list devices available`, then record the selected simulator UDID and use it throughout. If the simulator is not `Booted`, run `xcrun simctl boot <udid>`, then
+2. `xcrun simctl list devices available`, then record the selected simulator UDID and use it for every subsequent command. If the simulator is not `Booted`, run `xcrun simctl boot <udid>`, then
    `xcrun simctl bootstatus <udid> -b`. `open -a Simulator` when the caller wants to watch.
 3. Build: `xcodebuild build -workspace <ws> -scheme "<scheme>" -destination 'platform=iOS Simulator,id=<udid>'
    -derivedDataPath <scratchpad>/DerivedData -quiet`. On failure re-run without `-quiet` and quote the first `error:` lines.

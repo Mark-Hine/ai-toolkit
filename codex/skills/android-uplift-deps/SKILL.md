@@ -5,7 +5,6 @@ description: "Toolchain/dependency uplift playbook for Android apps: one axis pe
 
 Read the project AGENTS.md and applicable global guidance first. Fall back to CLAUDE.md if AGENTS.md is absent. Follow the global rules for optional tools, specialist agents and Git actions.
 
-
 # Dependency uplift: the user request
 
 Repo facts (modules, compile/assemble commands, catalog vs Groovy scripts, deliberate opt-outs) come from the project's

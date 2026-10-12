@@ -5,7 +5,7 @@ sources: inline
 
 # Apple sample apps as SwiftUI blueprints
 
-Apple ships no architecture guide. Its samples are the closest thing to a reference implementation. Imported from the Claude reference dated 2026-09-04. Recheck version-sensitive claims against the linked sources before use.
+Apple ships no architecture guide. Its samples are the closest thing to a reference implementation.
 
 | Sample | Source | Requires | Use it for |
 |---|---|---|---|
@@ -23,7 +23,7 @@ Apple ships no architecture guide. Its samples are the closest thing to a refere
   only view-local `@State`. Navigation state (`selection`, `path`) lives with the view that owns the `NavigationStack`/`NavigationSplitView`.
 - **Design-system layer**: `ButtonStyle`, `LabelStyle` and `ViewModifier` conformances plus `@ViewBuilder` slots instead
   of boolean appearance flags. Tokens read from the environment, asset-catalog colours have dark variants, and every component
-  has a `#Preview` with fixture data. This is the design-system package's shape too (named in each repo's `AGENTS.md`).
+  has a `#Preview` with fixture data. This is the design-system package's shape too (named in each repo's `AGENTS.md` (or `GEMINI.md`)).
 - **Navigation as data**: typed route values, `NavigationStack(path:)`, `navigationDestination(for:)`. Deep links construct
   the same values. A home-grown router is fine if it is typed and centralised.
 - **Liquid Glass (iOS 26)**: adopt system components and let the toolbar/tab bar render glass, and use custom glass only through
@@ -33,6 +33,6 @@ Apple ships no architecture guide. Its samples are the closest thing to a refere
 - Samples ship without unit tests and without networking or DI beyond the environment. Use the official docs
   (`official-docs.md`) for concurrency, testing and security. Use the sample for structure and SwiftUI API usage.
 - Each sample targets the OS it launched with. `@Observable` needs iOS 17, Swift Testing needs Xcode 16, Liquid Glass
-  needs iOS 26. Repos with a lower deployment target keep `ObservableObject`/`@StateObject` for those screens and say so in `AGENTS.md`.
+  needs iOS 26. Repos with a lower deployment target keep `ObservableObject`/`@StateObject` for those screens and say so in `AGENTS.md` (or `GEMINI.md`).
 - Samples are single-brand and single-environment. Multi-scheme environment config, Firebase plists per environment and
   CocoaPods interop are app-repo concerns the samples do not cover.
