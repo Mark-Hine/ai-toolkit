@@ -21,6 +21,8 @@ Base URL `https://developer.apple.com/design/human-interface-guidelines/`. Pages
 | HIG-APP-ICONS | `/app-icons` | 1024 by 1024 px layers in Icon Composer, the default, dark, clear and tinted appearances, effects the system adds, text only when essential |
 | HIG-LAYOUT | `/layout` | safe areas, layout margins, no spacing grid |
 | HIG-COLOR | `/color` | semantic colours, dark and increased-contrast variants |
+| HIG-WRITING | `/writing` | verbs on buttons and links, consistent capitalisation for each element type, error messages, avoiding "we" |
+| HIG-MOTION | `/motion` | motion added on purpose, no custom motion on frequent interactions, motion people can cancel |
 
 ## Material 3
 
@@ -32,6 +34,7 @@ Base URL `https://m3.material.io/`. Pages render client-side and return only a t
 | M3-TYPE | `/styles/typography/type-scale-tokens` | the type roles, cross-checked against the Compose Material 3 typography page |
 | M3-COLOR | `/styles/color/roles` | colour roles |
 | M3-MOTION | `/styles/motion/overview/how-it-works` | motion schemes, spatial and effects springs |
+| M3-WRITING | `/foundations/content-design/style-guide/ux-writing-best-practices` | sentence case for all UI text, including buttons |
 
 ## Android developer documentation
 

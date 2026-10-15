@@ -25,6 +25,10 @@ The 2026-09-29 audit found no external source for glow borders, pill badges or n
 
 Tuch and others showed people websites for 50 ms. Pages with low visual complexity and high prototypicality were rated the most appealing, where prototypicality means the page looks like what people expect of its kind. Anthropic's post shows that model output converges in the identity layer, through default fonts, palettes and motion. So distinctiveness belongs in type, colour, imagery, iconography and voice, while navigation, layout and controls stay familiar.
 
+## DIR-7 (HIG-MOTION, Anthropic-FDS)
+
+HIG says "Don’t add motion for the sake of adding motion", asks apps to avoid custom motion on frequent interactions, and asks that people can cancel motion. Anthropic's frontend-design skill adds that a fade-in on every section and a hover effect on every card read as AI-generated, and that one orchestrated moment lands better than scattered effects. Motion that answers a person's action is welcome in both. The rule is Tier 2 because HIG words it as advice. A11Y-9 and AND-5 still govern reduced motion and the Material motion scheme.
+
 ## Contract precedence and regressions (House)
 
 The design contract is the project's own decision record, so it outranks house taste and any skill's general advice. Anthropic's frontend-design skill tells an agent to create a compact token system and take aesthetic risk. In a project that already has a system, that advice is how continuity breaks. So the skill's advice applies only where the contract leaves a choice open. The contract never outranks a T1 rule, because a brand choice cannot waive contrast or target size.
@@ -52,6 +56,10 @@ Bringhurst gives 45 to 75 characters as the classic range. Butterick gives 45 to
 Hurff's UI Stack, from 2015, lists five states: Ideal, Empty, Error, Partial and Loading. His Partial means a screen with sparse content, such as one item in a list. The house renames Ideal to loaded and narrows Partial to cached or offline data, because no repo state model has a sparse case and cached data is where users get misled. Every repo state model already has loading, loaded, empty or error, so the canonical `HomeContent` samples in the Android and iOS references pass STA-1. The old "5-State Completeness Law" with a mandatory Degraded state was retired on 2026-09-29 because it contradicted those models.
 
 STA-3's skeleton loaders are house preference. Neither HIG nor Material 3 requires them. HIG's loading guidance asks for placeholders and for loading to finish before people notice.
+
+## COPY-1 to COPY-4 (HIG-WRITING, M3-WRITING, Anthropic-FDS)
+
+Interface copy had no rule, so native work got none of the writing guidance in Anthropic's frontend-design skill. HIG's Writing page asks for verbs on buttons and links, consistent labels through a flow, one capitalisation style for each element type, error messages placed near the problem that say how to fix it, and no "we". Material 3 asks for sentence case on all UI text, including buttons. The platforms differ on case, so COPY-3 follows each platform. The rules are Tier 2 because both sources phrase them as advice, and poor copy rarely blocks a task. They grade Nit unless a project opts in. The house writing style governs prose about the product, and these rules govern text inside it.
 
 ## A11Y-6 (WCAG-2.5.5)
 

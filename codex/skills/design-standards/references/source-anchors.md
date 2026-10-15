@@ -61,6 +61,19 @@ Quotes are verbatim and short, and each names its page. Copyright stays with the
 - Quote: "Each dynamic color is semantically defined by its purpose, rather than its appearance or color values."
 - Confirmed: 2026-10-07 (apple-json)
 
+### HIG-WRITING
+- URL: https://developer.apple.com/design/human-interface-guidelines/writing
+- Quote: "When labeling buttons and links, it’s almost always best to use a verb."
+- Quote: "Adopt capitalization rules that align with your app’s style, then apply them consistently."
+- Quote: "When an error message is necessary, display it as close to the problem as possible, avoid blame, and be clear about what someone can do to fix it."
+- Confirmed: 2026-10-15 (apple-json)
+
+### HIG-MOTION
+- URL: https://developer.apple.com/design/human-interface-guidelines/motion
+- Quote: "Don’t add motion for the sake of adding motion."
+- Quote: "In apps, generally avoid adding motion to UI interactions that occur frequently."
+- Confirmed: 2026-10-15 (apple-json)
+
 ## Material 3
 
 ### M3-SPACING
@@ -84,6 +97,11 @@ Quotes are verbatim and short, and each names its page. Copyright stays with the
 - Quote: "The physics system has two preset motion schemes: expressive and standard."
 - Quote: "The physics system is replacing the previous system based on easing and duration."
 - Confirmed: 2026-10-07 (browser)
+
+### M3-WRITING
+- URL: https://m3.material.io/foundations/content-design/style-guide/ux-writing-best-practices
+- Quote: "All text, including titles, headings, labels, menu items, navigation components, app bars, and buttons should use sentence-style capitalization."
+- Confirmed: 2026-10-15 (browser)
 
 ## Android developer documentation
 
@@ -225,6 +243,8 @@ Quotes are verbatim and short, and each names its page. Copyright stays with the
 - URL: https://raw.githubusercontent.com/anthropics/skills/main/skills/frontend-design/SKILL.md
 - Quote: "Visual structure is information."
 - Quote: "Spend your boldness in one place."
+- Quote: "Use non-user-triggered motion sparingly and deliberately, only to draw attention."
+- Quote: "A user manages notifications, not webhook config."
 - Confirmed: 2026-10-15 (html)
 
 ### Hurff
