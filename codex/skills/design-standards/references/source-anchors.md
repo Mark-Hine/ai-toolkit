@@ -1,5 +1,5 @@
 ---
-verified: 2026-10-07
+verified: 2026-10-15
 sources: inline
 ---
 
@@ -220,6 +220,12 @@ Quotes are verbatim and short, and each names its page. Copyright stays with the
 - URL: https://claude.com/blog/improving-frontend-design-through-skills
 - Quote: "Claude has strong design understanding, but distributional convergence obscures it without guidance."
 - Confirmed: 2026-10-07 (html)
+
+### Anthropic-FDS
+- URL: https://raw.githubusercontent.com/anthropics/skills/main/skills/frontend-design/SKILL.md
+- Quote: "Visual structure is information."
+- Quote: "Spend your boldness in one place."
+- Confirmed: 2026-10-15 (html)
 
 ### Hurff
 - URL: https://www.scotthurff.com/posts/why-your-user-interface-is-awkward-youre-ignoring-the-ui-stack/

@@ -80,6 +80,7 @@ W3C Recommendation, current edition dated 2024-12-12. One key per success criter
 | Key | Source |
 | --- | --- |
 | Anthropic-FD | https://claude.com/blog/improving-frontend-design-through-skills (2025-11-12), on distributional convergence in model-generated frontends |
+| Anthropic-FDS | https://raw.githubusercontent.com/anthropics/skills/main/skills/frontend-design/SKILL.md, Anthropic's frontend-design skill, on the looks models default to, structure as information and restraint |
 | Hurff | https://www.scotthurff.com/posts/why-your-user-interface-is-awkward-youre-ignoring-the-ui-stack/ (2015-08-17), the UI Stack |
 | Butterick | https://practicaltypography.com/line-length.html |
 | Bringhurst | The Elements of Typographic Style, a book with no URL |
