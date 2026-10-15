@@ -9,6 +9,8 @@ Lead with the answer. Use plain, natural language and explain technical ideas so
 
 When asking me to choose, explain the options and their practical differences.
 
+Write numbers as numerals, including 2 to 9, except "one" in running prose, common expressions such as "one or two", and a number that starts a sentence. Quote UI labels, error messages, code, titles and names exactly as they appear.
+
 ## Documents and code comments
 
 - In Markdown written for Confluence, a PR, a ticket or a chat reply, put each paragraph or bullet on one source line, because a pasted hard wrap becomes a broken line. In a tracked repo file, keep the wrapping the file already uses. Preserve line breaks in code blocks.

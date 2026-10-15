@@ -6,12 +6,13 @@ sources:
   - https://developers.google.com/style
   - https://learn.microsoft.com/en-us/style-guide/welcome/
   - https://www.nngroup.com/articles/how-users-read-on-the-web/
+  - https://www.nngroup.com/articles/web-writing-show-numbers-as-numerals/
   - https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing
 ---
 
 # Writing style
 
-Applies to responses, documents, PR text, commit bodies and code comments. These rules exist because my replies were hard to follow on first read, and most of them correct a specific habit of model prose. When a rule and a clever phrasing conflict, choose the plain phrasing. Source keys and rationale are in `shared/guidance/references/writing-style-rationale.md` in the ai-toolkit repo.
+Applies to responses, documents, PR text, commit bodies and code comments. These rules exist because my replies were hard to follow on first read, and most of them correct a specific habit of model prose. When a rule and a clever phrasing conflict, choose the plain phrasing. The rules govern my own prose, so text quoted or copied from a source keeps its exact wording, including UI labels, error messages, code, commands, titles, names and numbers. Source keys and rationale are in `shared/guidance/references/writing-style-rationale.md` in the ai-toolkit repo.
 
 ## Sentences
 - Make the actor the subject and the action the verb. Write "we validated the token" instead of "validation of the token was performed". Use the passive only when the actor does not matter. [Williams] [GOV.UK] [Google] [PLG]
@@ -21,7 +22,7 @@ Applies to responses, documents, PR text, commit bodies and code comments. These
 - Cut wasted words and keep the articles, connectives and reasoning steps. Replace an aphorism with the plain explanation it stands for. [Strunk] [Microsoft] [Claude tic]
 
 ## Punctuation
-- Use a comma, a full stop or a new sentence where an em dash or en dash would go. Write ranges with "to". Dashes are correct English, but model prose overuses them and readers now take them as a sign of machine text. [Claude tic] [Microsoft] [GOV.UK]
+- Use a comma, a full stop or a new sentence where an em dash or en dash would go. Write ranges with "to", or with a hyphen in a table cell. Dashes are correct English, but model prose overuses them and readers now take them as a sign of machine text. [Claude tic] [Microsoft] [GOV.UK]
 - Use a full stop where a semicolon would go. [GOV.UK] [Microsoft] [Google]
 - Use a colon to introduce a list, a table, a code block or a quotation, and after a short label in a heading or table cell. Inside a sentence, replace the "setup: payoff" pattern with two sentences or with because, so, but or and. [Microsoft] [Claude tic]
 - Keep parentheses for short glosses such as an abbreviation, a unit or a file path. Put anything the reader needs in the main sentence, because readers skip parentheses. [Google]
@@ -32,8 +33,9 @@ Applies to responses, documents, PR text, commit bodies and code comments. These
 - Introduce every list with a heading or with a sentence that says something specific, such as "Three endpoints fail after the upgrade:". Replace an empty announcement such as "The changes are as follows." with that kind of sentence. [Google] [Microsoft] [GOV.UK]
 - Use contrast only between real alternatives. Drop the "not X, but Y" rhythm when nobody holds view X. [Claude tic]
 - Use literal words. Use a metaphor only when it explains something, keep it to one per sentence and explain it in the same sentence. [Google] [Claude tic]
+- Write numbers as numerals, including 2 to 9, as in "3 options", "step 2" and "3 to 5". Write "one" in running prose unless it is a step, a date, a point in a list or a figure beside other numerals. Spell out a common expression such as "one or two", a vague quantity such as "thousands", and a number that starts a sentence. [GOV.UK] [NN/g]
 - Use the plain word in place of these tics:
-  - "use" for leverage [Google] [Microsoft] [GOV.UK]
+  - "use" for leverage as a verb [Google] [Microsoft] [GOV.UK]
   - "reliable", or the specific property, for robust [GOV.UK] [Claude tic]
   - a description of what works without extra steps for seamless [Claude tic]
   - "look at" for delve [Claude tic]
