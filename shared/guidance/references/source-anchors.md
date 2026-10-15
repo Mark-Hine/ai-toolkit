@@ -1,5 +1,5 @@
 ---
-verified: 2026-10-07
+verified: 2026-10-15
 sources: inline
 ---
 
@@ -62,7 +62,8 @@ Quotes are verbatim and short, and each names its page. Copyright stays with the
 ### A-TO-Z-STYLE-GUIDE
 - URL: https://guidance.publishing.service.gov.uk/writing-to-gov-uk-standards/style-guides/a-to-z-style-guide/
 - Quote: "Read the technical A to Z style guide for more information."
-- Confirmed: 2026-10-07 (html)
+- Quote: "Write all other numbers in numerals (including 2 to 9) except where it’s part of a common expression like ‘one or two of them’ where numerals would look strange."
+- Confirmed: 2026-10-15 (html)
 
 ### API-GUIDELINES-BACKWARD-COMPATIBILITY
 - URL: https://kotlinlang.org/docs/api-guidelines-backward-compatibility.html
@@ -98,6 +99,11 @@ Quotes are verbatim and short, and each names its page. Copyright stays with the
 - URL: https://www.nngroup.com/articles/how-users-read-on-the-web/
 - Quote: "Users detested "marketese"; the promotional writing style with boastful subjective claims ("hottest ever") that currently is prevalent on the Web."
 - Confirmed: 2026-10-07 (html)
+
+### WEB-WRITING-SHOW-NUMBERS-AS-NUMERALS
+- URL: https://www.nngroup.com/articles/web-writing-show-numbers-as-numerals/
+- Quote: "Among our discoveries was that numerals often stop the wandering eye and attract fixations, even when they're embedded within a mass of words that users otherwise ignore."
+- Confirmed: 2026-10-15 (html)
 
 ### TS-STRICT
 - URL: https://www.typescriptlang.org/tsconfig/strict.html

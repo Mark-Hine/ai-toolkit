@@ -21,7 +21,7 @@ The rule file exists because model replies were hard to follow on first read. Mo
 | Google | Google developer documentation style guide, pages on dashes, semicolons, colons, lists, parentheses, pronouns, text formatting, voice and tone | https://developers.google.com/style |
 | Microsoft | Microsoft Writing Style Guide, top ten tips, punctuation and scannable-content pages | https://learn.microsoft.com/en-us/style-guide/welcome/ |
 | PLG | Federal Plain Language Guidelines, 2011 edition | https://digital.gov/guides/plain-language |
-| NN/g | Nielsen Norman Group, how users read on the web, and the inverted pyramid | https://www.nngroup.com/articles/how-users-read-on-the-web/ and https://www.nngroup.com/articles/inverted-pyramid/ |
+| NN/g | Nielsen Norman Group, how users read on the web, the inverted pyramid, and showing numbers as numerals | https://www.nngroup.com/articles/how-users-read-on-the-web/, https://www.nngroup.com/articles/inverted-pyramid/ and https://www.nngroup.com/articles/web-writing-show-numbers-as-numerals/ |
 | Williams | Joseph Williams, Style: Lessons in Clarity and Grace, characters as subjects and actions as verbs | https://nysba.org/thoughts-on-legal-writing-from-the-greatest-of-them-all-joseph-m-williams-part-i/ |
 | Strunk | Strunk, The Elements of Style, rule 13 on omitting needless words and rule 14 on varied sentences | https://www.gutenberg.org/cache/epub/37134/pg37134.txt |
 | Claude tic | A habit of model prose with no style-guide backing either way. Evidence is the Wikipedia essay on signs of AI writing and the Link and Think catalogue of Claude clichés | https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing and https://www.linkandth.ink/p/catalog-of-claude-cliches |
@@ -58,7 +58,11 @@ The rule file exists because model replies were hard to follow on first read. Mo
 
 **Metaphors.** Google discourages figurative language and idioms. Anthropic's own prompt allows a metaphor that illustrates a point. The rule keeps that middle ground.
 
-**Word list.** Each word carries its evidence. "Leverage" is advised against by Google, Microsoft and GOV.UK. "Robust" is on the GOV.UK words-to-avoid list and Wikipedia's words to watch. "Delve" is a Wikipedia word to watch. "Seamless" appears only in Wikipedia's promotional-language examples, so its evidence is weak and it stays as a Claude tic. "Honestly" and "genuinely" are words Anthropic's own claude.ai prompt tells Claude to avoid. "Load-bearing" is tracked as a Claude habit in claude-code issue 53454. "Key" as an adjective is advised against by Google and GOV.UK. "Crux" has no source and is marked personal. Anthropic advises telling the model what to do instead of what not to do, so each entry names the replacement.
+**Numbers.** Microsoft and Google spell out zero to nine in body text. With no numbers rule, model prose followed them and turned "3 options" into "three options", which the user found harder to scan. GOV.UK says "Write all other numbers in numerals (including 2 to 9)" and keeps "one" in prose unless it is a step, a date or a point in a list. NN/g's eyetracking found that numerals stop the wandering eye, because the shape of digits stands out in peripheral vision. The rule takes GOV.UK's convention, which the user chose, including its spelled-out sentence starts. Ranges use "to" as GOV.UK does, and GOV.UK allows a hyphen in tables.
+
+**Quoted text.** The punctuation, number and word rules describe my own prose. Rewriting a quoted title, a UI label or an error message to satisfy them makes the quote wrong. Microsoft says to duplicate numbers in UI exactly as they appear, and `scripts/ci/check_style.py` already exempts quoted source text. The rule file now says the same.
+
+**Word list.** Each word carries its evidence. "Leverage" is advised against by Google, Microsoft and GOV.UK as a verb. The noun stays, because financial leverage is a term of art. "Robust" is on the GOV.UK words-to-avoid list and Wikipedia's words to watch. "Delve" is a Wikipedia word to watch. "Seamless" appears only in Wikipedia's promotional-language examples, so its evidence is weak and it stays as a Claude tic. "Honestly" and "genuinely" are words Anthropic's own claude.ai prompt tells Claude to avoid. "Load-bearing" is tracked as a Claude habit in claude-code issue 53454. "Key" as an adjective is advised against by Google and GOV.UK. "Crux" has no source and is marked personal. Anthropic advises telling the model what to do instead of what not to do, so each entry names the replacement.
 
 **Bold.** Google limits bold to UI elements and run-in headings. Wikipedia lists heavy bold as a sign of AI writing. Anthropic's sample prompt says to avoid bold in chat. The old file had two contradicting bold rules, which are now one.
 
@@ -86,10 +90,11 @@ The rule file exists because model replies were hard to follow on first read. Mo
 | List lead-ins | All three guides require one. The old rule banned them. | Required, but it must say something specific |
 | Bullets vs prose | Google and Microsoft favour lists for scanning. Anthropic prefers prose for technical explanation. | Bullets for parallel items, prose for cause and sequence |
 | Markdown wrapping | Google's Markdown guide wraps at 80. Confluence pasting breaks on hard wraps. | Scoped to pasted deliverables |
+| Numbers | Microsoft and Google spell out zero to nine. GOV.UK uses numerals from 2 and spells out sentence starts. NN/g uses numerals everywhere, even at a sentence start. | GOV.UK's convention |
 
 ## Maintenance
 
 - A new rule needs a source key or the [Personal] tag, and positive wording that says what to do.
-- Keep the rule file under 60 lines. Rationale and examples belong here.
+- Keep the rule file under 70 lines. Rationale and examples belong here.
 - Re-check the sources when the `verified` date is older than 90 days, and refresh the stamp only after re-reading them.
 - After a rule change, update the reminder line in `claude/home/settings.snippet.json` and the condensed Codex and Antigravity copies where the change applies to them.
