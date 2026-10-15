@@ -29,6 +29,7 @@ Rules for building and reviewing UI on Android, iOS and the web. Every rule has 
 - DIR-4 [T2 House, Anthropic-FDS] Structure carries information. Use numbered markers only for a real sequence, such as steps or a timeline, and a label, badge, divider or border only when it tells the reader something. Avoid template chrome such as a tracked-out capital label over every heading, one accented word in a headline, middle-dot meta strings, a monospace face for small labels and an arrow on every link. No decorative glow borders and no emoji used as bullets.
 - DIR-5 [T2 House] Do not nest cards inside cards. Group related content with spacing, type hierarchy and a background change before adding a container. A container gets one border or one elevation, with a radius from the design system.
 - DIR-6 [T2 Tuch-2012] Make a product distinctive through type, colour, imagery, iconography and voice. Keep navigation, layout and controls conventional for the platform, because people rate simple, familiar layouts as the most appealing.
+- DIR-7 [T2 HIG-MOTION, Anthropic-FDS] Add motion only to answer a person's action, to show what changed, or to mark one moment on a screen. Do not animate the entrance of every section or the hover and press state of every card, avoid custom motion on interactions that happen often, and never make people wait for an animation to finish.
 
 ## Design system
 
@@ -61,6 +62,13 @@ Rules for building and reviewing UI on Android, iOS and the web. Every rule has 
 - STA-5 [T2 House] Empty says why nothing is shown and offers the next action.
 - STA-6 [T2 House] Error says what failed in plain words and offers a recovery action such as Retry. No raw error codes or stack traces.
 - STA-7 [T2 House] Partial keeps the cached data on screen and shows a small banner or badge saying it may be out of date.
+
+## Copy
+
+- COPY-1 [T2 HIG-WRITING, Anthropic-FDS] Name things in the words people use for them, not in system terms, and keep one term for each thing across the product. Write "notifications", not "webhook config". Leave out jargon and the word "we".
+- COPY-2 [T2 HIG-WRITING, Anthropic-FDS] Label a button or link with a verb that says what happens, such as "Save changes" instead of "Submit" or "Click here". Keep the verb through the flow, so "Publish" ends in "Published", and label the steps of a multi-screen flow the same way.
+- COPY-3 [T2 M3-WRITING, HIG-WRITING] On Android, use sentence case for all UI text, including titles, menu items and buttons. On iOS, choose title or sentence case for each element type and apply it everywhere. On the web, follow the contract, and use sentence case when it says nothing.
+- COPY-4 [T2 HIG-WRITING] Show an error next to what caused it and say how to fix it, without blame or interjections such as "Oops". Write "Choose a password with at least 8 characters", not "Invalid password". STA-6 covers the error state itself.
 
 ## Accessibility
 

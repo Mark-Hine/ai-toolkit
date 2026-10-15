@@ -81,6 +81,8 @@ Apply the checklist to the before images and to each rendered option. It finds d
 | Contract | No value or component outside `DESIGN.md` unless the change class allows it | SYS-2 |
 | Defaults | None of the looks models default to, unless the brief or the contract asks for one | DIR-2, DIR-4 |
 | Restraint | One focal element per view, and every decoration serves the brief | Anthropic-FDS |
+| Copy | Labels use the user's words and verbs that say what happens, in the platform's case | COPY-1 to COPY-3 |
+| Motion | Motion answers an action or marks one moment, and nothing animates by default on every item | DIR-7 |
 | States | Loading, empty and error states exist where data drives the screen | STA-1 |
 | Consistency | Same words, icons and controls mean the same thing across screens | Nielsen heuristic 4 |
 | Craft | Alignment holds, nothing clips, and contrast and targets meet A11Y-1 to A11Y-5 | A11Y rules |
