@@ -24,9 +24,9 @@ Rules for building and reviewing UI on Android, iOS and the web. Every rule has 
 ## Direction
 
 - DIR-1 [T2 Anthropic-FD] Decide the purpose, tone and density of a screen before writing it. Dense utility screens and airy reading screens are both valid. Mixing the two by accident is the failure.
-- DIR-2 [T2 Anthropic-FD] Avoid the defaults that models converge on, such as purple or blue gradients on white or dark cards and one sans face for everything on the web.
+- DIR-2 [T2 Anthropic-FD, Anthropic-FDS] Avoid the looks that models converge on unless the brief or the contract asks for one. They include purple or blue gradients on white, one sans face for everything, warm cream with a high-contrast serif and a terracotta accent, near-black with one acid-green or vermilion accent, broadsheet hairlines with zero radius, identical rounded cards with one radius and one soft shadow, and a hero of a big number, a small label and a gradient.
 - DIR-3 [T2 House] Use a gradient only when the brand or the content motivates it, such as a brand surface in the design system or a scrim that keeps text legible over an image. Build it once as a design-system component and reuse it. JetSnack's gradient buttons and surfaces meet this rule.
-- DIR-4 [T2 House] No decorative glow borders, no pill badge or eyebrow label over every header, and no emoji used as bullets.
+- DIR-4 [T2 House, Anthropic-FDS] Structure carries information. Use numbered markers only for a real sequence, such as steps or a timeline, and a label, badge, divider or border only when it tells the reader something. Avoid template chrome such as a tracked-out capital label over every heading, one accented word in a headline, middle-dot meta strings, a monospace face for small labels and an arrow on every link. No decorative glow borders and no emoji used as bullets.
 - DIR-5 [T2 House] Do not nest cards inside cards. Group related content with spacing, type hierarchy and a background change before adding a container. A container gets one border or one elevation, with a radius from the design system.
 - DIR-6 [T2 Tuch-2012] Make a product distinctive through type, colour, imagery, iconography and voice. Keep navigation, layout and controls conventional for the platform, because people rate simple, familiar layouts as the most appealing.
 

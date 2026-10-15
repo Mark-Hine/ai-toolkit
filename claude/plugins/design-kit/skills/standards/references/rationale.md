@@ -11,13 +11,15 @@ One section per Tier 2 rule ID in `design-standards.md`. Each gives the origin, 
 
 Anthropic's post on improving frontend design says an unguided model "will almost always conform to Inter fonts, purple gradients on white backgrounds, and minimal animations", and calls this distributional convergence. That is the evidence for DIR-1 and DIR-2. The post also tells web frontends never to use Inter, Roboto, Open Sans, Lato or default system fonts. Native apps are asked by HIG and Material 3 to use the system type scale, so TYP-2 narrows the font advice to display faces chosen for a brand and shipped through the design system. The system face with defined roles is a deliberate choice, not a default.
 
+The frontend-design skill that grew out of the post (Anthropic-FDS, re-read on 2026-10-15) dropped the font ban for an instruction to choose typefaces deliberately. It lists the looks models now default to, such as warm cream with a serif and a terracotta accent, near-black with one acid accent, broadsheet hairlines and the identical-card kit. DIR-2 carries that list. The skill says each look is legitimate for some briefs, so DIR-2 yields when the brief or the contract asks for one.
+
 ## DIR-3 (House)
 
 The same post recommends layered gradients that match the overall aesthetic, so a blanket gradient ban would contradict its own source. The house bans only unmotivated gradients. JetSnack, the Android design-system blueprint this toolkit endorses, uses gradients as brand surfaces and buttons built once in its theme. It passes DIR-3.
 
-## DIR-4, DIR-5 (House)
+## DIR-4, DIR-5 (House, Anthropic-FDS)
 
-The 2026-09-29 audit found no external source for glow borders, pill badges or nested cards. They stay because they are the visible symptoms of the convergence DIR-2 describes, and they grade Nit by default.
+The 2026-09-29 audit found no external source for glow borders, pill badges or nested cards. They stay because they are the visible symptoms of the convergence DIR-2 describes, and they grade Nit by default. Anthropic's frontend-design skill now gives DIR-4 its principle. It says "Visual structure is information", and that numbered markers fit only content that is a sequence. Its list of template chrome supplies DIR-4's examples.
 
 ## DIR-6 (Tuch-2012)
 

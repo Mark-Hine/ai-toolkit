@@ -1,5 +1,5 @@
 ---
-verified: 2026-10-06
+verified: 2026-10-15
 sources:
   - https://github.com/anthropics/skills/tree/main/skills/frontend-design
   - https://github.com/vercel-labs/skills
@@ -20,7 +20,7 @@ Maintained tools and skills that design-kit uses when they are present. design-k
 
 | Companion | What it adds | Install |
 | --- | --- | --- |
-| Anthropic `frontend-design` | Aesthetic direction for web work: grounding in the product's subject, a plan reviewed against the brief before building, and a list of the looks models default to | Claude Code: `/plugin install frontend-design@claude-plugins-official`. Codex: `npx skills add anthropics/skills --skill frontend-design -a codex`. Antigravity: the same with `-a antigravity` |
+| Anthropic `frontend-design` | Aesthetic direction for web work: grounding in the product's subject, a plan reviewed against the brief before building, restraint, and a list of the looks models default to | Claude Code: `/plugin install frontend-design@claude-plugins-official`. Codex: `npx skills add anthropics/skills --skill frontend-design -a codex`. Antigravity: the same with `-a antigravity` |
 | Google `@google/design.md` | Lints, diffs and exports `DESIGN.md` | Nothing to install. It runs through `npx @google/design.md` when Node is present |
 | Playwright | Renders the capture matrix in `capture.md` | The project's own `@playwright/test`, or `npx playwright` with `--channel chrome` |
 
@@ -32,6 +32,8 @@ frontend-design tells an agent to create a compact token system and take aesthet
 - Apply its advice only where the contract leaves a choice open, such as the layout of a new section or the concept for a new mark.
 - Treat any change it suggests to a shared token, component or brand asset as a change under SYS-2, which needs a before and after board and the user's approval.
 - Never let it override a T1 rule.
+
+frontend-design writes for the web only. Its ideas that hold on every platform are bundled in DIR-2, DIR-4 and the option plan in `options.md`, so Android and iOS work gets them without the skill.
 
 ## Optional
 

@@ -1,5 +1,5 @@
 ---
-verified: 2026-10-06
+verified: 2026-10-15
 sources:
   - https://www.nngroup.com/articles/principles-visual-design/
   - https://www.nngroup.com/articles/ten-usability-heuristics/
@@ -27,6 +27,7 @@ Write the brief before any option, and show it on the board.
 - **Traits.** Three words the result must signal, such as calm, exact and warm.
 - **Fixed.** Tokens, components and decisions from `DESIGN.md` that stay as they are.
 - **Accepted when.** What the user will check before saying yes.
+- **Content.** The real or realistic words, names and numbers the screen will show. Options never use lorem ipsum, because placeholder copy hides how long text, empty fields and real data look.
 
 ## Anchors
 
@@ -48,8 +49,23 @@ Record each anchor in one line: the link, what it does well, the principle borro
 - Make three options for a screen, and three to five concepts for a brand mark.
 - Make each option differ from the others on at least two of type, colour, layout, density and shape.
 - Spend the distinctiveness on identity and keep structure conventional for the platform (DIR-6). People rate simple, familiar layouts as the most appealing, so a novel navigation pattern costs more than it earns.
-- Give each option a one-sentence concept tied to the brief, and its token changes or the words "within the contract" when nothing changes.
+- Give each option a plan, as the next section describes.
 - When two options converge on the same idea, replace one of them.
+
+## Option plan
+
+Write a plan for each option before rendering it, and keep it with the closed notes. A plan that only sets a mood is a hint, not a direction, so each plan commits to these parts:
+
+- **Concept.** One sentence tied to the brief.
+- **Mood.** 2 or 3 words.
+- **Colour.** 4 to 6 named colours with their roles, or "within the contract".
+- **Type.** The faces and their roles, or the platform type scale.
+- **Layout.** One sentence and an ASCII wireframe, with the alignment.
+- **Components.** Radii, borders or shadows, and the navigation treatment.
+- **Imagery.** Photography, illustration, icons or none, and the style.
+- **Focal element.** The one memorable thing. Everything around it stays quiet.
+
+Then check each plan against the default looks below. Ask whether the same plan would come out for any similar product, and revise each part that would. Note what changed and why. Render only after this check, because a render round costs more than a revised plan.
 
 ## Screening checklist
 
@@ -63,7 +79,8 @@ Apply the checklist to the before images and to each rendered option. It finds d
 | Type | At most two families, sizes from the scale, body lines of 45 to 75 characters | TYP-1, TYP-3 |
 | Colour | Each colour keeps the role `DESIGN.md` gives it, and the accent stays rare | the contract, AND-1, IOS-1 |
 | Contract | No value or component outside `DESIGN.md` unless the change class allows it | SYS-2 |
-| Defaults | None of the looks models default to, unless the brief or the contract asks for one | DIR-2, DIR-4, Anthropic frontend-design |
+| Defaults | None of the looks models default to, unless the brief or the contract asks for one | DIR-2, DIR-4 |
+| Restraint | One focal element per view, and every decoration serves the brief | Anthropic-FDS |
 | States | Loading, empty and error states exist where data drives the screen | STA-1 |
 | Consistency | Same words, icons and controls mean the same thing across screens | Nielsen heuristic 4 |
 | Craft | Alignment holds, nothing clips, and contrast and targets meet A11Y-1 to A11Y-5 | A11Y rules |
@@ -71,10 +88,12 @@ Apply the checklist to the before images and to each rendered option. It finds d
 
 The default looks to screen for, from Anthropic's frontend-design skill and DIR-2 and DIR-4:
 - Purple or blue gradients on white, and one sans face for everything.
-- A warm cream background with a high-contrast serif and a terracotta accent.
+- A warm cream background with a high-contrast serif and a terracotta or clay accent.
 - A near-black background with one acid-green or vermilion accent.
-- Content cut into identical rounded cards with the same soft shadow.
-- A tracked-out capital label over every heading, a single accented word in a headline, numbered markers on content that is not a sequence, and an arrow on every link.
+- A broadsheet layout with hairline rules, zero radius and dense columns.
+- Content cut into identical rounded cards, with one radius on everything and the same soft shadow under each.
+- A hero of a big number, a small label and a gradient accent.
+- Template chrome. That means a tracked-out capital label over every heading, a single accented word in a headline, numbered markers on content that is not a sequence, middle-dot meta strings, a monospace face for small labels and an arrow on every link.
 
 ## Board
 
