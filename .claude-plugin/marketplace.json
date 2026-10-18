@@ -83,8 +83,9 @@
     {
       "name": "toolkit",
       "source": "./claude/plugins/toolkit",
-      "description": "Maintenance of the ai-toolkit repo itself. The audit skill re-checks every rule and reference against its cited source and proposes diffs without applying them. The check skill runs the pre-PR checks for the files a branch changes.",
+      "description": "Multi-agent orchestration and maintenance of the ai-toolkit repo. The orchestrate skill coordinates parallel subagents with a compaction-safe ledger. The audit skill re-checks every rule and reference against its cited source, and the check skill runs the pre-PR checks for a branch.",
       "keywords": [
+        "orchestrate",
         "audit",
         "maintenance",
         "freshness",

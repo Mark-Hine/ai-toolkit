@@ -1,6 +1,6 @@
 # Antigravity setup
 
-The Antigravity port of the portable AI toolkit. Six plugins carry nineteen skills, ten specialist subagents, generated rules and lifecycle hooks, in the layout the bundled Antigravity customization docs describe. The Claude Code setup is in `../claude/` and the OpenAI Codex setup in `../codex/`.
+The Antigravity port of the portable AI toolkit. 6 plugins carry 20 skills, 10 specialist subagents, generated rules and lifecycle hooks, in the layout the bundled Antigravity customization docs describe. The Claude Code setup is in `../claude/` and the OpenAI Codex setup in `../codex/`.
 
 The skills, agents, rules and hook copies in each plugin are generated from `../src/` and `../shared/` by `../scripts/build/build.py`. Edit the source and rebuild, not the files here.
 
@@ -13,7 +13,7 @@ Requires Python 3.11 or later. The installer needs no third-party packages, cred
 ./antigravity/install.sh
 ```
 
-Then restart Antigravity (`agy` or the IDE). New plugin directories are discovered at startup. `agy agents` lists the ten specialists and `agy plugin validate antigravity/plugins/<name>` checks a plugin.
+Then restart Antigravity (`agy` or the IDE). New plugin directories are discovered at startup. `agy agents` lists the 10 specialists and `agy plugin validate antigravity/plugins/<name>` checks a plugin.
 
 Rerun the installer after pulling toolkit updates. Plugins are symlinked into place, so edits in this checkout are live at the next session. The installer preserves your own `config.json`, `hooks.json`, personal instructions and machine facts. Anything it replaces is backed up under `~/.gemini/config/backups/ai-toolkit-<timestamp>/` with a `manifest.json`. `ANTIGRAVITY_HOME` or `--gemini-home` selects the configuration directory (default `~/.gemini/config`).
 
@@ -40,9 +40,9 @@ Nothing is written to `config.json`, `hooks.json`, `plugins.json` or `skills.jso
 
 Each plugin follows the documented shape: `plugin.json` (name, description, version), `skills/`, `rules/AGENTS.md`, `agents/` and, where needed, `hooks.json` with its scripts under `hooks/`.
 
-- **`android-kit`**: five Android skills, generated Kotlin, Compose, UI-event and testing rules, the PreToolUse guard, and three specialists.
-- **`ios-kit`**: five iOS skills, generated Swift, SwiftUI, UI-event and testing rules, the PreToolUse guard, the Swift lint hooks, and three specialists.
-- **`web-kit`**: four web skills, generated TypeScript, React and testing rules, the PreToolUse guard, and three specialists.
+- **`android-kit`**: 5 Android skills, generated Kotlin, Compose, UI-event and testing rules, the PreToolUse guard, and 3 specialists.
+- **`ios-kit`**: 5 iOS skills, generated Swift, SwiftUI, UI-event and testing rules, the PreToolUse guard, the Swift lint hooks, and 3 specialists.
+- **`web-kit`**: 4 web skills, generated TypeScript, React and testing rules, the PreToolUse guard, and 3 specialists.
 - **`pr-review`**: the formal PR and release-promotion review skill with its platform packs and the Azure DevOps poster.
 - **`design-kit`**: the `design-iterate` playbook, the `design-standards` skill with sources, rationale, platform APIs and design references, the generated design rules, and `ui-reviewer`.
 
@@ -67,6 +67,7 @@ Each plugin follows the documented shape: `plugin.json` (name, description, vers
 | `/pr-review` | Formal JSON and Markdown review, release-promotion verification and re-review tracking |
 | `/design-iterate` | Design playbook: the `DESIGN.md` contract, before and after captures, rendered options on a blind board, the user's pick, then tokens and review |
 | `/design-standards` | Sources, rationale and platform APIs for the tiered design rules (HIG, Material 3, WCAG 2.2, house) |
+| `/toolkit-orchestrate` | Multi-agent coordinator with bounded briefs, write isolation and a compaction-safe ledger. Invoke it explicitly |
 
 Antigravity has no switch for implicit skill invocation, so the "invoke it explicitly" skills say so in their descriptions and nothing enforces it.
 
