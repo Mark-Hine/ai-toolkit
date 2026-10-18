@@ -1,6 +1,6 @@
 # Codex setup
 
-The Codex port of the Claude setup includes nineteen skills, ten specialist agents, personal instructions, Android, iOS, web, UI/UX and writing guidance, command permissions, and lifecycle hooks. The Claude setup remains available in `../claude/`.
+The Codex port of the Claude setup includes 20 skills, 10 specialist agents, personal instructions, Android, iOS, web, UI/UX and writing guidance, command permissions, and lifecycle hooks. The Claude setup remains available in `../claude/`.
 
 The skills, agents, hook copies and the Android, iOS and web guidance in `home/guidance/` are generated from `../src/` and `../shared/` by `../scripts/build/build.py`. Edit the source and rebuild, not the files here.
 
@@ -56,6 +56,7 @@ Start a new Codex session, then open `/hooks` to review and trust the command gu
 | `$pr-review` | Formal JSON and Markdown review, release-promotion checks and re-review tracking |
 | `$design-iterate` | Design playbook: the `DESIGN.md` contract, before and after captures, rendered options on a blind board, the user's pick, then tokens and review |
 | `$design-standards` | Sources, rationale and platform APIs for the tiered design rules (HIG, Material 3, WCAG 2.2, house) |
+| `$toolkit-orchestrate` | Explicitly invoked multi-agent coordinator with bounded briefs, write isolation and a compaction-safe ledger |
 | `android-reviewer`, `ios-reviewer`, `web-reviewer`, `ui-reviewer` | `gpt-6-astra`, high reasoning, read-only code and UI review |
 | `android-researcher`, `ios-researcher`, `web-researcher` | `gpt-6-sol`, medium reasoning, read-only official-source research |
 | `android-verifier`, `ios-verifier`, `web-verifier` | `gpt-6-sol`, medium reasoning, workspace writes for build/test outputs and device evidence |

@@ -24,3 +24,10 @@ sources: house
 - Decide routine matters and state useful assumptions. Ask about unresolved scope, destructive work, secrets, signing or network-security changes when existing authorization does not cover the action.
 - Support build, test and rendering claims with the command and observed result. Cite code as `file:line`. Mark skipped or unavailable checks Unverified and explain failures.
 - A hook block is final for that invocation. Do not change tools, encode a command or disable a guard to bypass it.
+
+## Subagents
+
+- Give every subagent a self-contained brief. Include a 1-sentence goal and reason, known facts (`file:line`, error text, branch or SHA, and build or test commands), the exact files or question it owns with explicit exclusions, forbidden actions (no commit, push, merge, branch change, PR, deployment, external message send or data deletion unless requested), the done check and evidence required, a report cap (under 300 words, result first), and the writing style to use.
+- When 2 or more subagents run in parallel, tell any writer agent that other agents are active and it must touch only the files it owns, or isolate each writer in its own worktree or workspace.
+- Verify every subagent return against its brief and cited `file:line` before reporting it to the user or starting dependent work. When a research-tier agent returns thin or wrong work, escalate to the review tier rather than retrying the same prompt on the research tier.
+

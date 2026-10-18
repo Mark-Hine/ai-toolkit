@@ -1,10 +1,10 @@
 {
   "name": "toolkit",
-  "version": "1.4.4",
-  "description": "Maintenance of the ai-toolkit repo itself. The audit skill re-checks every rule and reference against its cited source and proposes diffs without applying them. The check skill runs the pre-PR checks for the files a branch changes.",
+  "version": "1.5.0",
+  "description": "Multi-agent orchestration and maintenance of the ai-toolkit repo. The orchestrate skill coordinates parallel subagents with a compaction-safe ledger. The audit skill re-checks every rule and reference against its cited source, and the check skill runs the pre-PR checks for a branch.",
   "author": { "name": "Mark Hine", "url": "https://github.com/Mark-Hine" },
   "homepage": "https://github.com/Mark-Hine/ai-toolkit/tree/main/claude/plugins/toolkit",
   "repository": "https://github.com/Mark-Hine/ai-toolkit",
   "license": "MIT",
-  "keywords": ["audit", "maintenance", "freshness", "standards"]
+  "keywords": ["orchestrate", "audit", "maintenance", "freshness", "standards"]
 }
