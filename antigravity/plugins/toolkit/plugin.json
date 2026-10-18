@@ -1,5 +1,5 @@
 {
   "name": "toolkit",
   "description": "Multi-agent orchestration and maintenance of the ai-toolkit repo. The toolkit-orchestrate skill coordinates parallel subagents with a compaction-safe ledger. The toolkit-audit skill re-checks every rule and reference against its cited source, and the toolkit-check skill runs the pre-PR checks for a branch. Invoke explicitly.",
-  "version": "1.4.0"
+  "version": "1.4.1"
 }
