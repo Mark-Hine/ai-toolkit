@@ -1,6 +1,9 @@
 ---
 name: toolkit-orchestrate
-description: "Turns the main session into a multi-agent coordinator that decomposes complex work into bounded subagent briefs, tracks progress in a compaction-safe ledger, isolates parallel file writes, and verifies evidence before reporting. Use when the user invokes orchestrate, says 'orchestrate', 'fan this out', or 'run this in parallel'."
+description: "Turns the main session into a multi-agent coordinator that decomposes complex work into bounded subagent briefs, tracks progress in a compaction-safe ledger, isolates parallel file writes, and verifies evidence before reporting. Invoke it explicitly. Never runs on its own."
+metadata:
+  verified: 2026-10-18
+  sources: references/sources.md
 ---
 
 Read the project AGENTS.md (or GEMINI.md) and applicable guidance first. Fall back to CLAUDE.md if AGENTS.md is absent. Follow global rules for optional tools, specialist subagents and Git actions.
@@ -18,15 +21,15 @@ Coordinate multi-part work by splitting it into independent tasks, dispatching b
 
 ## How to dispatch and collect on this platform
 
-- **Subagents:** Call `invoke_subagent` with one entry per parallel task in the `Subagents` array. Set `Model: "inherit"` unless the user requests another tier, or invoke a toolkit specialist (`android-researcher`, `android-reviewer`, `android-verifier`, `ios-*`, `web-*`, `ui-reviewer`), which already pins its own model. Use `TypeName: "research"` for read-only exploration and `TypeName: "self"` when a delegated task must edit files.
-- **Long shell commands:** Call `run_command` with a bounded `WaitMsBeforeAsync` (such as `5000` to `10000` ms) so slow builds and test suites move to the background. Manage running tasks with `manage_task` (`status`, `send_input`, `kill`).
-- **Turn boundary:** After launching background subagents or tasks and doing any immediate local preparation, end your turn. Never poll `manage_subagents` or `manage_task` in a loop. Antigravity wakes the session automatically when a subagent messages back or a background task completes.
-- **Follow-up and stop:** Use `send_message` with `Recipient` set to the subagent's `conversationId` to send follow-up instructions (which wakes an idle subagent with its context intact). Use `manage_subagents` (`list`, `kill`, `kill_all`) to inspect or stop active subagents.
-- **Write isolation:** When 2 `self` subagents write files in parallel, set `Workspace: "share"` (git worktree sharing the repo history) or `Workspace: "branch"` (isolated clone) on `invoke_subagent`. Use `Workspace: "inherit"` only when at most 1 writer touches the working tree.
+- **Subagents:** Call `invoke_subagent` once for each independent task, with a role and the brief as its initial prompt. Invoke a toolkit specialist (`android-researcher`, `android-reviewer`, `android-verifier`, `ios-*`, `web-*`, `ui-reviewer`) where one matches, because it pins its own model. For any other subagent, choose `flash` or `pro` from the tier rules below instead of inheriting the main model.
+- **Long shell commands:** Call `run_command` with a bounded `WaitMsBeforeAsync`, such as `5000` to `10000` ms, so slow builds and test suites continue in the background instead of blocking the turn.
+- **Results:** A subagent sends its result to the parent as a message when it finishes, then pauses. Read those result messages before reporting or starting dependent work. Never poll in a loop.
+- **Follow-up and stop:** Message an existing subagent by its conversation ID to continue its topic. An idle subagent wakes on the message with its context intact. A stopped subagent cannot be woken, so start a new one instead.
+- **Write isolation:** When 2 subagents write files in parallel, give each one `Workspace: "branch"`, which creates an isolated Git worktree. `Workspace: "share"` gives subagents shared directory storage and does not isolate their writes. Keep `Workspace: "inherit"`, the parent's workspace, for a single writer.
 
 ## Write a self-contained brief
 
-A subagent sees nothing of this chat. Every brief must include these 7 items:
+Write each brief as if the subagent sees nothing of this chat. Every brief must include these 7 items:
 
 1. **Goal:** 1 sentence stating what to achieve and why.
 2. **Known facts:** Exact file paths, line numbers, error messages, branch or SHA, and build or test commands from `AGENTS.md` (or `GEMINI.md`).
@@ -42,11 +45,14 @@ A subagent sees nothing of this chat. Every brief must include these 7 items:
 - **Research tier (`flash`):** Use for bounded tasks where the done check fits in 1 sentence and a wrong answer is cheap to catch, such as a targeted lookup, a single-file fix with a known test, or a checklist verification.
 - **Review tier (`pro`):** Use for ambiguous or multi-file work, architecture, debugging without a known root cause, and code or UI review.
 - **Escalation rule:** When a research-tier agent returns thin, incomplete or wrong work, re-dispatch the task on `pro` (or verify and finish it yourself). Never retry the same failing prompt on `flash`.
-- **No recursive sub-orchestrators:** Keep orchestration flat in this session. Do not ask a subagent to spawn its own subagents.
+- **No recursive sub-orchestrators:** Keep orchestration flat in this session, even though each platform allows nested subagents. Do not ask a subagent to spawn its own subagents.
 
 ## The ledger and cleanup
 
-Keep a compact ledger under a `## Orchestrator ledger` heading in `.local/agent-notes.md` in the current project when coordinating 2 or more subagents or multi-turn background work. `.local/agent-notes.md` stays untracked and survives context compaction. Preserve any other notes already in `.local/agent-notes.md`.
+Keep a compact ledger under a `## Orchestrator ledger` heading in `.local/agent-notes.md` at the root of the current project when coordinating 2 or more subagents or multi-turn background work. The file lives on disk, so it outlasts context compaction. Nothing loads it automatically, so read it at the start of every turn. Preserve any other notes already in the file.
+
+Keep the ledger out of version control without touching tracked files. Before the first write, run `git check-ignore -q .local/agent-notes.md`. When that fails, append `.local/` to `.git/info/exclude`.
+Never put the ledger in `AGENTS.md` or `GEMINI.md`, because they load into every session.
 
 Write 1 line per task using colons and commas (never em dashes or en dashes):
 
@@ -64,7 +70,7 @@ Write 1 line per task using colons and commas (never em dashes or en dashes):
 ## Each turn
 
 1. If the argument or message is `status`, read and report `## Orchestrator ledger` from `.local/agent-notes.md`. If it is `clean` or "stop orchestrating", run the ledger and worktree cleanup and confirm.
-2. Otherwise, split the request into independent tasks and check the ledger for running or reusable agents.
+2. Otherwise, read the ledger for running or reusable agents, then split the request into independent tasks.
 3. Dispatch new tasks in parallel (within the platform's concurrency cap) or send follow-ups to existing agents on the same topic.
 4. Update the ledger in `.local/agent-notes.md`.
 5. When results return, verify each claim and `file:line` citation before accepting it. Reject or follow up on weak work.

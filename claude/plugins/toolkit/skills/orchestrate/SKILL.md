@@ -1,8 +1,11 @@
 ---
 name: orchestrate
-description: "Turns the main session into a multi-agent coordinator that decomposes complex work into bounded subagent briefs, tracks progress in a compaction-safe ledger, isolates parallel file writes, and verifies evidence before reporting. Use when the user invokes orchestrate, says 'orchestrate', 'fan this out', or 'run this in parallel'."
+description: "Turns the main session into a multi-agent coordinator that decomposes complex work into bounded subagent briefs, tracks progress in a compaction-safe ledger, isolates parallel file writes, and verifies evidence before reporting. Invoke it explicitly. Never runs on its own."
 argument-hint: "[task, status, or clean]"
 disable-model-invocation: true
+metadata:
+  verified: 2026-10-18
+  sources: references/sources.md
 ---
 
 # Orchestrate: $ARGUMENTS
@@ -18,16 +21,16 @@ Coordinate multi-part work by splitting it into independent tasks, dispatching b
 
 ## How to dispatch and collect on this platform
 
-- **Subagents:** Call the `Agent` tool with `run_in_background: true` and a unique kebab-case `name`. Never leave `run_in_background` unset when you want non-blocking execution, because it defaults to foreground. Launch independent subagents in parallel in a single turn.
+- **Subagents:** Call the `Agent` tool with a unique kebab-case `name` and the `model` from the tier rules below. Subagents run in the background by default, so never set `run_in_background: false`. Launch independent subagents in parallel in a single turn.
 - **Long shell commands:** Pass `run_in_background: true` on `Bash` for builds, test suites, installs or servers that take more than 10 seconds.
-- **Turn boundary:** End your turn after dispatching background tasks. Never poll or sleep. The harness sends a `<task-notification>` when a background agent or command finishes, which starts your next turn.
+- **Turn boundary:** End your turn after dispatching background work. Never poll or sleep. Claude Code delivers each background agent's or command's result as a completion notification in a later turn.
 - **Follow-up and stop:** Use `SendMessage` with the agent's `name` to continue a topic with its context intact. Use `TaskStop` to cancel a running agent or background command.
 - **Write isolation:** When 2 subagents write code at the same time, set `isolation: "worktree"` on each writer `Agent` call so their edits and build caches do not collide, or run them one after the other.
 - **Agent Teams:** When `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` is enabled and the user asks for a team or swarm, coordinate peer teammates through `SendMessage` and the shared team task list.
 
 ## Write a self-contained brief
 
-A subagent sees nothing of this chat. Every brief must include these 7 items:
+Write each brief as if the subagent sees nothing of this chat. Every brief must include these 7 items:
 
 1. **Goal:** 1 sentence stating what to achieve and why.
 2. **Known facts:** Exact file paths, line numbers, error messages, branch or SHA, and build or test commands from `CLAUDE.md`.
@@ -43,11 +46,14 @@ A subagent sees nothing of this chat. Every brief must include these 7 items:
 - **Research tier (`sonnet`):** Use for bounded tasks where the done check fits in 1 sentence and a wrong answer is cheap to catch, such as a targeted lookup, a single-file fix with a known test, or a checklist verification.
 - **Review tier (`opus`):** Use for ambiguous or multi-file work, architecture, debugging without a known root cause, and code or UI review.
 - **Escalation rule:** When a research-tier agent returns thin, incomplete or wrong work, re-dispatch the task on `opus` (or verify and finish it yourself). Never retry the same failing prompt on `sonnet`.
-- **No recursive sub-orchestrators:** Keep orchestration flat in this session. Do not ask a subagent to spawn its own subagents.
+- **No recursive sub-orchestrators:** Keep orchestration flat in this session, even though each platform allows nested subagents. Do not ask a subagent to spawn its own subagents.
 
 ## The ledger and cleanup
 
-Keep a compact ledger under a `## Orchestrator ledger` heading in `CLAUDE.local.md` in the current project when coordinating 2 or more subagents or multi-turn background work. `CLAUDE.local.md` stays untracked and survives context compaction. Preserve any other notes already in `CLAUDE.local.md`.
+Keep a compact ledger under a `## Orchestrator ledger` heading in `.local/agent-notes.md` at the root of the current project when coordinating 2 or more subagents or multi-turn background work. The file lives on disk, so it outlasts context compaction. Nothing loads it automatically, so read it at the start of every turn. Preserve any other notes already in the file.
+
+Keep the ledger out of version control without touching tracked files. Before the first write, run `git check-ignore -q .local/agent-notes.md`. When that fails, append `.local/` to `.git/info/exclude`.
+Never put the ledger in `CLAUDE.md` or `CLAUDE.local.md`. Both load into every session, and creating a `CLAUDE.local.md` stops Claude Code reading the project's `AGENTS.md` under the default instruction setting.
 
 Write 1 line per task using colons and commas (never em dashes or en dashes):
 
@@ -59,15 +65,15 @@ Write 1 line per task using colons and commas (never em dashes or en dashes):
 ```
 
 - **Update and keep for reference:** Refresh the ledger when you dispatch, when an agent finishes or fails, and when an agent is stopped. Keep `[done]` and `[failed]` lines in place so the user and future turns can refer back to what ran and what passed.
-- **Status check:** When the user passes `status` or asks for status, read `CLAUDE.local.md` and summarize the `## Orchestrator ledger` section.
-- **Clean up on command:** Only clear the ledger when the user passes `clean` or asks to "clean up", "clear ledger", or "stop orchestrating". Remove the `## Orchestrator ledger` section from `CLAUDE.local.md` (and delete `CLAUDE.local.md` if no other notes remain), and remove any leftover temporary git worktrees created for subagents.
+- **Status check:** When the user passes `status` or asks for status, read `.local/agent-notes.md` and summarize the `## Orchestrator ledger` section.
+- **Clean up on command:** Only clear the ledger when the user passes `clean` or asks to "clean up", "clear ledger", or "stop orchestrating". Remove the `## Orchestrator ledger` section from `.local/agent-notes.md` (and delete `.local/agent-notes.md` if no other notes remain), and remove any leftover temporary git worktrees created for subagents.
 
 ## Each turn
 
-1. If the argument or message is `status`, read and report `## Orchestrator ledger` from `CLAUDE.local.md`. If it is `clean` or "stop orchestrating", run the ledger and worktree cleanup and confirm.
-2. Otherwise, split the request into independent tasks and check the ledger for running or reusable agents.
+1. If the argument or message is `status`, read and report `## Orchestrator ledger` from `.local/agent-notes.md`. If it is `clean` or "stop orchestrating", run the ledger and worktree cleanup and confirm.
+2. Otherwise, read the ledger for running or reusable agents, then split the request into independent tasks.
 3. Dispatch new tasks in parallel (within the platform's concurrency cap) or send follow-ups to existing agents on the same topic.
-4. Update the ledger in `CLAUDE.local.md`.
+4. Update the ledger in `.local/agent-notes.md`.
 5. When results return, verify each claim and `file:line` citation before accepting it. Reject or follow up on weak work.
 6. Report in 3 lines or fewer when only dispatching (what started, which agent or ID, and what happens next), or lead with the verified outcome when reporting completed work.
 7. Batch any questions for the user into 1 short list while unaffected tasks continue. Never halt unrelated work for 1 open question.

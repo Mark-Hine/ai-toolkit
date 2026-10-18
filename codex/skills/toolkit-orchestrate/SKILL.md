@@ -1,6 +1,9 @@
 ---
 name: toolkit-orchestrate
-description: "Turns the main session into a multi-agent coordinator that decomposes complex work into bounded subagent briefs, tracks progress in a compaction-safe ledger, isolates parallel file writes, and verifies evidence before reporting. Use when the user invokes orchestrate, says 'orchestrate', 'fan this out', or 'run this in parallel'."
+description: "Turns the main session into a multi-agent coordinator that decomposes complex work into bounded subagent briefs, tracks progress in a compaction-safe ledger, isolates parallel file writes, and verifies evidence before reporting. Invoke it explicitly. Never runs on its own."
+metadata:
+  verified: 2026-10-18
+  sources: references/sources.md
 ---
 
 Read the project AGENTS.md and applicable global guidance first. Fall back to CLAUDE.md if AGENTS.md is absent. Follow the global rules for optional tools, specialist agents and Git actions.
@@ -18,14 +21,14 @@ Coordinate multi-part work by splitting it into independent tasks, dispatching b
 
 ## How to dispatch and collect on this platform
 
-- **Subagents:** Spawn child agents with `spawn_agent`, using the installed toolkit specialist roles (`android-researcher`, `android-reviewer`, `android-verifier`, `ios-*`, `web-*`, `ui-reviewer`) where they match the task. Respect the session concurrency limit in `~/.codex/config.toml` (`max_concurrent_threads_per_session = 3` by default). Queue extra tasks in the ledger and launch them as slots free up.
-- **Follow-up and stop:** Use `send_message` to queue input to an existing child agent and `followup_task` to start or resume its work so its context stays intact. Use `interrupt_agent` to stop an active child turn.
-- **Synchronization:** Codex does not start a new coordinator turn automatically after your turn ends. After spawning parallel children, do any independent local preparation first, then call `wait_agent` to collect their results within the turn before reporting or launching dependent steps. Do not poll in a busy loop.
-- **Write isolation:** `spawn_agent` does not create a separate git worktree automatically, and toolkit specialist hooks block specialists from running `git`. When 2 tasks would edit overlapping files or run competing builds, either serialize the writers or create detached git worktrees yourself (`git worktree add --detach`) before delegating.
+- **Subagents:** Spawn child agents with `spawn_agent`, setting `agent_type` to an installed toolkit specialist role (`android-researcher`, `android-reviewer`, `android-verifier`, `ios-*`, `web-*`, `ui-reviewer`) where one matches the task. Stay within `agents.max_concurrent_threads_per_session` in `~/.codex/config.toml`. The toolkit config sets it to 3, and Codex uses its own default when it is unset. Queue extra tasks in the ledger and launch them as slots free up.
+- **Follow-up and stop:** `send_message` queues input for an existing child and does not start a turn. `followup_task` sends a task and starts a turn when the child is idle, with its context intact. `interrupt_agent` stops an active child turn, and `list_agents` lists the live children. Some sessions expose the older set (`send_input`, `resume_agent`, `wait_agent`, `close_agent`) instead, so use the equivalents your session lists.
+- **Synchronization:** Codex delivers each child's final answer to you when the child finishes. After spawning parallel children, do any independent local preparation first, then call `wait_agent` to block until a mailbox update arrives. It reports which agents have updates, not their content, so read the delivered answers before reporting or launching dependent steps. Do not poll in a busy loop.
+- **Write isolation:** `spawn_agent` does not create a separate git worktree, and the toolkit's verifier specialists do not run `git`. When 2 tasks would edit overlapping files or run competing builds, either serialize the writers or create detached git worktrees yourself (`git worktree add --detach`) and name each worktree path in its brief.
 
 ## Write a self-contained brief
 
-A subagent sees nothing of this chat. Every brief must include these 7 items:
+Write each brief as if the subagent sees nothing of this chat. Every brief must include these 7 items:
 
 1. **Goal:** 1 sentence stating what to achieve and why.
 2. **Known facts:** Exact file paths, line numbers, error messages, branch or SHA, and build or test commands from `AGENTS.md`.
@@ -41,11 +44,14 @@ A subagent sees nothing of this chat. Every brief must include these 7 items:
 - **Research tier (`gpt-6-sol`):** Use for bounded tasks where the done check fits in 1 sentence and a wrong answer is cheap to catch, such as a targeted lookup, a single-file fix with a known test, or a checklist verification.
 - **Review tier (`gpt-6-astra`):** Use for ambiguous or multi-file work, architecture, debugging without a known root cause, and code or UI review.
 - **Escalation rule:** When a research-tier agent returns thin, incomplete or wrong work, re-dispatch the task on `gpt-6-astra` (or verify and finish it yourself). Never retry the same failing prompt on `gpt-6-sol`.
-- **No recursive sub-orchestrators:** Keep orchestration flat in this session. Do not ask a subagent to spawn its own subagents.
+- **No recursive sub-orchestrators:** Keep orchestration flat in this session, even though each platform allows nested subagents. Do not ask a subagent to spawn its own subagents.
 
 ## The ledger and cleanup
 
-Keep a compact ledger under a `## Orchestrator ledger` heading in `.local/agent-notes.md` in the current project when coordinating 2 or more subagents or multi-turn background work. `.local/agent-notes.md` stays untracked and survives context compaction. Preserve any other notes already in `.local/agent-notes.md`.
+Keep a compact ledger under a `## Orchestrator ledger` heading in `.local/agent-notes.md` at the root of the current project when coordinating 2 or more subagents or multi-turn background work. The file lives on disk, so it outlasts context compaction. Nothing loads it automatically, so read it at the start of every turn. Preserve any other notes already in the file.
+
+Keep the ledger out of version control without touching tracked files. Before the first write, run `git check-ignore -q .local/agent-notes.md`. When that fails, append `.local/` to `.git/info/exclude`.
+Never put the ledger in `AGENTS.md`, because it loads into every session.
 
 Write 1 line per task using colons and commas (never em dashes or en dashes):
 
@@ -63,7 +69,7 @@ Write 1 line per task using colons and commas (never em dashes or en dashes):
 ## Each turn
 
 1. If the argument or message is `status`, read and report `## Orchestrator ledger` from `.local/agent-notes.md`. If it is `clean` or "stop orchestrating", run the ledger and worktree cleanup and confirm.
-2. Otherwise, split the request into independent tasks and check the ledger for running or reusable agents.
+2. Otherwise, read the ledger for running or reusable agents, then split the request into independent tasks.
 3. Dispatch new tasks in parallel (within the platform's concurrency cap) or send follow-ups to existing agents on the same topic.
 4. Update the ledger in `.local/agent-notes.md`.
 5. When results return, verify each claim and `file:line` citation before accepting it. Reject or follow up on weak work.
