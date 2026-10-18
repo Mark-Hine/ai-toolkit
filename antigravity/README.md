@@ -64,10 +64,16 @@ Each plugin follows the documented shape: `plugin.json` (name, description, vers
 | `/ios-uplift-deps` | Xcode, Swift and dependency uplift. Invoke it explicitly |
 | `/ios-run-app` | Simulator build, install, launch and screenshots. Invoke it explicitly |
 | `/ios-standards` | Apple, Swift and Xcode docs, house patterns and the project instructions template |
+| `/web-feature` | Intake, pattern discovery, scoped plan, implementation, tests and browser checks for React, Next.js and TypeScript |
+| `/web-bugfix` | Reproduction, root cause, minimal fix and regression evidence |
+| `/web-run-app` | Start the dev server and capture routes with Playwright |
+| `/web-standards` | React, Next.js, TypeScript and testing docs, companions and the project instructions template |
 | `/pr-review` | Formal JSON and Markdown review, release-promotion verification and re-review tracking |
 | `/design-iterate` | Design playbook: the `DESIGN.md` contract, before and after captures, rendered options on a blind board, the user's pick, then tokens and review |
 | `/design-standards` | Sources, rationale and platform APIs for the tiered design rules (HIG, Material 3, WCAG 2.2, house) |
 | `/toolkit-orchestrate` | Multi-agent coordinator with bounded briefs, write isolation and a compaction-safe ledger. Invoke it explicitly |
+| `/toolkit-audit` | Re-checks the standards against their cited sources and writes a findings register. Invoke it explicitly |
+| `/toolkit-check` | Runs the pre-PR checks for the files a branch changes and edits nothing. Invoke it explicitly |
 
 Antigravity has no switch for implicit skill invocation, so the "invoke it explicitly" skills say so in their descriptions and nothing enforces it.
 

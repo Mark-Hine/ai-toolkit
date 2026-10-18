@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Repo-wide structural checks that the plugin validators do not cover. Standard library only."""
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -92,16 +93,56 @@ def check_agents(errors):
                 errors.append(f'{rel}: preloaded skill {skill!r} does not exist')
 
 
+def skill_names(skills_dir):
+    return sorted(p.parent.name for p in skills_dir.glob('*/SKILL.md'))
+
+
+def readme_names(readme, skill, forms):
+    """True when the README shows the skill in one of its invocation forms, as a code span or as a command
+    that starts a line of a code block."""
+    text = readme.read_text()
+    for form in forms:
+        name = re.escape(form.format(skill=skill))
+        if re.search('`' + name + r'[`\s]', text) or (form[0] in '/$' and re.search('^' + name + r'(\s|$)', text, re.M)):
+            return True
+    return False
+
+
+def check_readmes(errors):
+    # The READMEs are hand-written, so a new skill is easy to miss. Each one must at least name every skill
+    # it documents. Prose such as skill counts is not checked.
+    claude_plugins = sorted(p for p in (ROOT / 'claude/plugins').iterdir() if (p / 'skills').is_dir())
+    antigravity_plugins = sorted(p for p in (ROOT / 'antigravity/plugins').iterdir() if (p / 'skills').is_dir())
+    checks = []
+    for plugin in claude_plugins:
+        forms = ('{skill}', '/' + plugin.name + ':{skill}')
+        for skill in skill_names(plugin / 'skills'):
+            checks.append((plugin / 'README.md', skill, ('{skill}', '/{skill}') + forms[1:]))
+            checks.append((ROOT / 'claude/README.md', skill, forms))
+    for plugin in antigravity_plugins:
+        for skill in skill_names(plugin / 'skills'):
+            checks.append((plugin / 'README.md', skill, ('{skill}', '/{skill}')))
+            checks.append((ROOT / 'antigravity/README.md', skill, ('/{skill}',)))
+    for skill in skill_names(ROOT / 'codex/skills'):
+        checks.append((ROOT / 'codex/README.md', skill, ('${skill}',)))
+    for readme, skill, forms in checks:
+        if not readme.exists():
+            errors.append(f'{readme.relative_to(ROOT)}: missing, expected it to list {skill}')
+        elif not readme_names(readme, skill, forms):
+            errors.append(f'{readme.relative_to(ROOT)}: does not list skill {skill} as `{forms[-1].format(skill=skill)}`')
+
+
 def main():
     errors = []
     check_shell_modes(errors)
     check_manifests(errors)
     check_agents(errors)
+    check_readmes(errors)
     for error in errors:
         print(f'::error::{error}')
     if errors:
         return 1
-    print('check_repo: shell modes, plugin manifests and agent frontmatter OK')
+    print('check_repo: shell modes, plugin manifests, agent frontmatter and README skill lists OK')
     return 0
 
 
