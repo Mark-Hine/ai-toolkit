@@ -264,6 +264,21 @@ Quotes are verbatim and short, and each names its page. Copyright stays with the
 - Quote: "SwiftUI Pro was originally created by Paul Hudson, who writes free Swift tutorials over at Hacking with Swift."
 - Confirmed: 2026-10-07 (html)
 
+### AXE
+- URL: https://github.com/cameroncooke/AXe
+- Quote: "AXe is a comprehensive CLI tool for interacting with iOS Simulators using Apple's HID (Human Interface Device) functionality."
+- Confirmed: 2026-10-19 (html)
+
+### AXE-COMMANDS
+- URL: https://axe-cli.com/docs/command-reference
+- Quote: "Every AXe command with source-derived flags, defaults, UDID requirements, and batch support."
+- Confirmed: 2026-10-19 (html)
+
+### XCODE-27-RELEASE-NOTES
+- URL: https://developer.apple.com/documentation/xcode-release-notes/xcode-27-release-notes
+- Quote: "Agents can now boot simulators, install and launch apps, synthesize touch events, and capture screenshots to verify UI behavior."
+- Confirmed: 2026-10-19 (apple-json)
+
 ### MOBILEBUILDMCP
 - URL: https://github.com/getsentry/MobileBuildMCP
 - Quote: "MobileBuildMCP ships as a single package with two modes: a CLI for direct terminal use and an MCP server for AI coding agents."

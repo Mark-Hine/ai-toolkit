@@ -42,7 +42,7 @@ Require only inputs relevant to the requested check. If a required input is miss
    about a missing driver. List its install command under Findings and continue, because the caller asks once per session.
    1. A simulator control tool in your own tool list, such as Xcode's device tools through `xcrun mcpbridge`. Use them only
       as tools, and never start `mcpbridge` from the shell, where it waits for input.
-   2. AXe, when `which axe` finds it. Read the screen with `axe describe-ui --udid <udid>` and act with
+   2. AXe, when `axe --help` succeeds. Read the screen with `axe describe-ui --udid <udid>` and act with
       `axe tap --label "<label>" --wait-timeout 5 --udid <udid>`, `axe tap --id <identifier> --wait-timeout 5 --udid <udid>`,
       `axe type '<text>' --udid <udid>`, `axe gesture scroll-down --udid <udid>` or `axe button home --udid <udid>`.
       Prefer the accessibility label a person hears, then the identifier, and tap by coordinate (`axe tap -x <x> -y <y>`)
