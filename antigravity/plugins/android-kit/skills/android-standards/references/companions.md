@@ -13,7 +13,7 @@ Google publishes these through the Android CLI. Install one with `android skills
 
 | Skill | Named in | What it adds |
 | --- | --- | --- |
-| `android-cli` | run-app, android-verifier | Commands for devices, emulators, screenshots, layout dumps and the SDK |
+| `android-cli` | run-app, android-verifier | Commands for devices, emulators, screenshots, layout dumps, selector-based input and the SDK. `android input` needs CLI 1.0.16625370 or later, so ask the user to run `android update` when `android input --help` fails |
 | `edge-to-edge` | feature step 7 | Insets for system bars, the IME and display cutouts |
 | `adaptive` | feature step 7 | Layouts for window size classes, foldables and large screens |
 | `agp-9-upgrade` | uplift-deps step 3 | The AGP 9 migration procedure |

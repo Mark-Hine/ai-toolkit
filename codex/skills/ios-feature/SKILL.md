@@ -32,8 +32,9 @@ come from the project's `AGENTS.md`. Never guess them.
 7. **Simulator verification.** `$ios-run-app` on the default simulator, navigate to the feature, screenshot. Repeat at
    `content_size accessibility-extra-large` and in dark appearance for any new or changed screen, and on an iPad simulator if
    `TARGETED_DEVICE_FAMILY` includes 2. Then hand off to the `ios-verifier` agent with the test command, the simulator, bundle
-   id and the screens to check. It returns test totals, screenshot paths and findings. A failure is a finding, not something to
-   fix inside this step.
+   id, the screens to check and the journey file(s) for the touched screen. It returns test totals, the JSON journey result,
+   screenshot paths and findings. A failure is a finding, not something to fix inside this step. A new screen gets a new
+   journey.
 8. **Review.** `ios-reviewer` against the acceptance criteria, and delegate UI/view changes to `ui-reviewer` with the labelled step 7 screenshot paths. Confirm each Blocker and Major against the code first, and decline a refuted one with the counter-evidence. Fix the rest, then re-run the compile check and the affected tests. Send the same reviewer the finding IDs and their "Verified fixed when" criteria to re-review the fix delta. Stop after two re-review rounds and report anything still open. List declined Nits.
 9. **Commit, only if asked.** Follow the shared Git conventions. Do not push unless asked.
 10. **Report**: files changed, commands run with results, screenshot paths, what is left for QA.

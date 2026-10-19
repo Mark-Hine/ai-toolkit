@@ -24,7 +24,8 @@ paths:
   Quote the summary line as evidence.
 - Screenshot tests only where the repo already has the tool (Roborazzi, Compose Preview Screenshot Testing, Paparazzi). Adding
   a test framework is its own ticket, done through the `testing-setup` skill, never inside a feature.
-- End-to-end: journeys. Repos keep `journeys/<feature>.xml` in the Android CLI format (`android-cli` skill,
-  `references/journeys.md`). After the emulator build, run the journey for the touched screen by driving `android layout` /
-  `android screen` and paste the JSON per-action result. A FAILED action is a finding to report, not something to nudge into
-  passing. A ticket that adds a screen adds a journey. Template and example: `android-kit:standards` → `references/testing.md`.
+- End-to-end: journeys. Repos keep `journeys/<feature>-<flow>.xml` in the Android CLI format (`android-cli` skill,
+  `references/journeys.md`). After the emulator build, run the journey for the touched screen by reading `android layout` and
+  acting with `android input` selectors, and paste the JSON per-action result. A FAILED action is a finding to report, not
+  something to nudge into passing. A ticket that adds a screen adds a journey. Contract, drivers and fallbacks:
+  `android-kit:standards` → `references/journeys.md`.

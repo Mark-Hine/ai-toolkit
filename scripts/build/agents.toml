@@ -307,3 +307,14 @@ src = "shared/guidance/references/kotlin-rationale.md"
 claude = ["claude/plugins/pr-review/skills/pr-review/references/languages/kotlin.md"]
 codex = ["codex/skills/pr-review/references/languages/kotlin.md"]
 antigravity = ["antigravity/plugins/pr-review/skills/pr-review/references/languages/kotlin.md"]
+
+[[copies]]
+src = "shared/guidance/references/journeys.md"
+claude = ["claude/plugins/android-kit/skills/standards/references/journeys.md",
+          "claude/plugins/ios-kit/skills/standards/references/journeys.md",
+          "claude/plugins/web-kit/skills/standards/references/journeys.md"]
+codex = ["codex/skills/android-standards/references/journeys.md", "codex/skills/ios-standards/references/journeys.md",
+         "codex/skills/web-standards/references/journeys.md"]
+antigravity = ["antigravity/plugins/android-kit/skills/android-standards/references/journeys.md",
+               "antigravity/plugins/ios-kit/skills/ios-standards/references/journeys.md",
+               "antigravity/plugins/web-kit/skills/web-standards/references/journeys.md"]
