@@ -116,7 +116,12 @@ class GuardTests(unittest.TestCase):
                         'xcrun simctl ui device appearance dark',
                         'xcrun simctl spawn device log show --last 3m --predicate '
                         '\'processImagePath CONTAINS "App"\' --style compact',
-                        'xcrun simctl listapps device', 'xcrun simctl bootstatus device -b'):
+                        'xcrun simctl listapps device', 'xcrun simctl bootstatus device -b',
+                        'axe --version', 'axe describe-ui --udid device',
+                        'axe tap --label "Continue" --wait-timeout 5 --udid device', 'axe tap --id Search --udid device',
+                        'axe tap -x 120 -y 240 --udid device', "axe type 'hello' --udid device",
+                        'axe gesture scroll-down --udid device', 'axe button home --udid device',
+                        'axe screenshot --output /tmp/journey-1.png --udid device'):
             with self.subTest(command=command):
                 self.assertIsNone(self.shell(command, 'ios-verifier'))
         for command in ('xcodebuild test clean', 'xcodebuild test archive',
@@ -126,6 +131,8 @@ class GuardTests(unittest.TestCase):
                         'xcrun simctl spawn device sh -c "touch App.swift"',
                         'xcrun simctl io device screenshot App.swift',
                         'xcrun xcresulttool export object --output-path App.swift',
+                        'axe screenshot --output App.swift --udid device', 'axe screenshot --udid device',
+                        'axe type --file App.swift --udid device', 'axe record-video --udid device',
                         'swift package update', 'git status'):
             with self.subTest(command=command):
                 self.assertIsNotNone(self.shell(command, 'ios-verifier'))
@@ -137,7 +144,14 @@ class GuardTests(unittest.TestCase):
                         'npx eslint src', 'npx playwright test e2e/checkout.spec.ts',
                         'pnpm exec playwright test', 'npm exec -- vitest run',
                         'npx playwright screenshot --channel chrome --viewport-size "390, 844" '
-                        'http://localhost:3000 /tmp/home.png', 'node --version', 'sleep 2'):
+                        'http://localhost:3000 /tmp/home.png', 'node --version', 'sleep 2',
+                        'npx --no-install playwright --version',
+                        'npx --no-install playwright cli open http://localhost:3000 --browser=chrome',
+                        'PLAYWRIGHT_MCP_OUTPUT_DIR=/tmp/run npx --no-install playwright cli snapshot',
+                        'PLAYWRIGHT_MCP_OUTPUT_DIR=/tmp/run npx --no-install playwright cli click e4',
+                        'npx --no-install playwright cli fill e7 "Ada"',
+                        'npx --no-install playwright cli screenshot --filename=/tmp/run/cart-1.png',
+                        'npx --no-install playwright cli close'):
             with self.subTest(command=command):
                 self.assertIsNone(self.shell(command, 'web-verifier'))
         for command in ('npm install', 'npm ci', 'pnpm add left-pad', 'npm run build', 'npm run deploy',
@@ -145,7 +159,13 @@ class GuardTests(unittest.TestCase):
                         'npx vitest -u', 'npx jest --updateSnapshot', 'npx playwright test --update-snapshots',
                         'npx playwright install', 'npx playwright screenshot http://localhost:3000 src/app.tsx',
                         'npx tsc', 'npx prettier --write .', 'npx create-next-app', 'npm view react',
-                        'npm test; rm -rf src', 'git status', 'curl http://localhost:3000'):
+                        'npm test; rm -rf src', 'git status', 'curl http://localhost:3000',
+                        'npx --no-install playwright cli eval "document.title"',
+                        'npx --no-install playwright cli state-save auth.json',
+                        'npx --no-install playwright cli screenshot --filename=src/app.tsx',
+                        'npx --no-install playwright cli snapshot --filename=src/app.tsx',
+                        'PLAYWRIGHT_MCP_OUTPUT_DIR=/tmp/run npm install',
+                        'PLAYWRIGHT_MCP_OUTPUT_DIR=/tmp/run npx --no-install playwright cli upload a.txt'):
             with self.subTest(command=command):
                 self.assertIsNotNone(self.shell(command, 'web-verifier'))
 
@@ -285,9 +305,21 @@ class GuardTests(unittest.TestCase):
         for command in ('adb logcat -d -s AndroidRuntime:E',
                         'adb -s emulator-5554 logcat -d -s AndroidRuntime:E',
                         'adb shell input tap 10 20', 'android layout --diff',
-                        'android screen capture -o /tmp/journey.png', 'adb devices'):
+                        'android screen capture -o /tmp/journey.png', 'adb devices',
+                        'android input --device=emulator-5554 tap text=Offers --match=single --wait=3000',
+                        'android input --device=emulator-5554 key back', 'android input --help',
+                        'adb -s emulator-5554 shell uiautomator dump /dev/tty',
+                        'adb shell am force-stop com.android.cli.interact.instrumentation'):
             with self.subTest(command=command):
                 self.assertIsNone(self.shell(command, 'android-verifier'))
+
+    def test_verifier_rejects_other_device_changes(self):
+        for command in ('adb shell am force-stop com.example.app', 'adb shell uiautomator dump /sdcard/ui.xml',
+                        'adb shell pm clear com.example.app', 'android emulator remove Pixel_9_Pro'):
+            with self.subTest(command=command):
+                self.assertIsNotNone(self.shell(command, 'android-verifier'))
+        self.assertIsNotNone(self.shell('android input key back', 'android-researcher'))
+        self.assertIsNotNone(self.shell('axe tap --label Done --udid device', 'ios-researcher'))
 
     def test_verifier_configuration_capture_settings(self):
         for command in ('adb shell settings get system font_scale',

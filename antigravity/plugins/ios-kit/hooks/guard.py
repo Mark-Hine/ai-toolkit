@@ -313,6 +313,23 @@ def xcodebuild_allowed(args, research=False):
     return len(found) == 1
 
 
+# AXe subcommands a journey uses to read the simulator screen and send input. Screenshots write only the PNG they name.
+AXE_INPUT = {'describe-ui', 'tap', 'type', 'swipe', 'gesture', 'button'}
+
+
+def axe_allowed(args):
+    if args in (['--version'], ['--help']):
+        return True
+    if not args or any(arg in {'--file', '--stdin'} for arg in args):
+        return False
+    if args[0] in AXE_INPUT:
+        return True
+    if args[0] == 'screenshot':
+        outputs = [args[i + 1] for i, arg in enumerate(args[:-1]) if arg == '--output']
+        return len(outputs) == 1 and outputs[0].endswith('.png')
+    return False
+
+
 def ios_command_allowed(tokens, research=False):
     if not tokens:
         return False
@@ -327,6 +344,8 @@ def ios_command_allowed(tokens, research=False):
             return args in [['--version'], ['outdated']]
     if executable == 'sleep' and not research:
         return len(args) == 1 and re.fullmatch(r'\d+(?:\.\d+)?', args[0]) is not None
+    if executable == 'axe' and not research:
+        return axe_allowed(args)
     if executable != 'xcrun' or not args:
         return False
     if research and args in [[flag] for flag in ('--show-sdk-version', '--show-sdk-path', '--show-sdk-platform-version')]:
@@ -380,13 +399,33 @@ def web_tool_allowed(tool, args):
     if tool == 'playwright':
         # A screenshot writes only the PNG it names.
         return bool(args) and (args[0] in {'test', '--version'}
-                               or (args[0] == 'screenshot' and args[-1].endswith('.png')))
+                               or (args[0] == 'screenshot' and args[-1].endswith('.png'))
+                               or (args[0] == 'cli' and playwright_cli_allowed(args[1:])))
     return False
+
+
+# Playwright CLI commands a journey uses to read a page and act on it. Storage, eval, upload and PDF stay out.
+PLAYWRIGHT_CLI = {'open', 'goto', 'snapshot', 'find', 'click', 'fill', 'type', 'press', 'select', 'check', 'uncheck',
+                  'hover', 'resize', 'go-back', 'reload', 'screenshot', 'close'}
+
+
+def playwright_cli_allowed(args):
+    if not args or args[0] not in PLAYWRIGHT_CLI:
+        return False
+    files = [arg.split('=', 1)[1] for arg in args if arg.startswith('--filename=')]
+    if args[0] == 'screenshot':
+        return all(name.endswith('.png') for name in files)
+    return not files
 
 
 def web_command_allowed(tokens, research=False):
     if not tokens:
         return False
+    # The Playwright CLI writes its snapshots and logs to this directory, so a journey points it at the scratchpad.
+    if tokens[0].startswith('PLAYWRIGHT_MCP_OUTPUT_DIR='):
+        rest = [arg for arg in tokens[1:] if arg != '--no-install']
+        return (not research and rest[:3] == ['npx', 'playwright', 'cli']
+                and playwright_cli_allowed(rest[3:]))
     executable, args = tokens[0].rsplit('/', 1)[-1], tokens[1:]
     if executable == 'node':
         return args == ['--version']
@@ -436,8 +475,11 @@ def role_reason(role, command):
     if role == 'android-researcher':
         allowed = r'android\s+(docs\s+(search|fetch)|sdk\s+list)(\s|$)'
     else:
-        allowed = (r'(android\s+(layout|screen|emulator\s+list|info|docs)(\s|$)'
+        allowed = (r'(android\s+(layout|screen|input|emulator\s+list|info|docs)(\s|$)'
                    r'|adb(?:\s+-s\s+\S+)?\s+(devices|logcat|shell\s+(input|dumpsys|am\s+start|monkey|pm\s+list))(\s|$)'
+                   # The SDK fallback reads the hierarchy to the response, after stopping the CLI helper that holds it.
+                   r'|adb(?:\s+-s\s+\S+)?\s+shell\s+uiautomator\s+dump\s+/dev/tty$'
+                   r'|adb(?:\s+-s\s+\S+)?\s+shell\s+am\s+force-stop\s+com\.android\.cli\.interact\.instrumentation$'
                    # Configuration captures read, set and restore only these two display settings.
                    r'|adb(?:\s+-s\s+\S+)?\s+shell\s+settings\s+(get\s+system\s+font_scale|put\s+system\s+font_scale\s+\d+(\.\d+)?)$'
                    r'|adb(?:\s+-s\s+\S+)?\s+shell\s+cmd\s+uimode\s+night(\s+(yes|no))?$'

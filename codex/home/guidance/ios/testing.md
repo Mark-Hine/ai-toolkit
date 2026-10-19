@@ -9,6 +9,7 @@ paths:
   - "**/*Tests.swift"
   - "**/*Test.swift"
   - "**/*Spec.swift"
+  - "**/journeys/**"
 ---
 
 # Tests
@@ -28,3 +29,6 @@ paths:
 - Add a test for whatever you change in a view model, service or repository, even if the surrounding type has none.
 - Only add UI tests when the ticket asks or the project already has that target. Where a UI test exists for the screen,
   add `performAccessibilityAudit()` to it.
+- End-to-end: journeys in `journeys/<feature>-<flow>.xml`, which the `ios-verifier` agent runs on the simulator. A ticket that
+  adds a screen adds a journey. A FAILED action is a finding to report, not something to nudge into passing. Contract,
+  drivers and fallbacks: `ios-standards` → `references/journeys.md`.

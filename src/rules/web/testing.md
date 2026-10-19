@@ -13,6 +13,7 @@ paths:
   - "**/*.spec.tsx"
   - "**/__tests__/**"
   - "**/e2e/**"
+  - "**/journeys/**"
 ---
 
 # Tests (web repos)
@@ -31,3 +32,6 @@ paths:
 - Run targeted: `npx vitest run <file>`, `npx jest <file>`, `npx playwright test <file>`, or the project's script
   with a file filter. Updating snapshots needs the user's approval and a reason in the report.
 - Add a test for whatever you change in a hook, a data function or a component's behaviour, even if the file has none.
+- A flow with no Playwright test keeps a journey in `journeys/<feature>-<flow>.xml`, which the `web-verifier` agent runs in the
+  browser. A Playwright test that covers the flow is the journey's first driver. A FAILED action is a finding to report. Contract, drivers and fallbacks: `{@skill web-kit/standards}` →
+  `references/journeys.md`.

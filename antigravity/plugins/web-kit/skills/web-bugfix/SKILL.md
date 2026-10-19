@@ -22,7 +22,7 @@ Repo facts (package manager, framework and router, scripts, test runners, dev UR
 5. **Fix** with the minimal diff. Note refactor candidates as follow-ups instead of doing them. If the test stays red, go back to step 4 rather
    than stacking changes. After three failed fixes, stop and report what each attempt showed.
 6. **Verify.** Failing test now green plus the file's other tests, the type check and the lint script. For UI bugs, hand
-   the captures and any Playwright run to the `web-verifier` agent and quote its results. A unit-only rerun stays in this
+   the captures, any Playwright run and the flow's journey (if one exists) to the `web-verifier` agent and quote its results. A unit-only rerun stays in this
    session, because `web-reviewer` runs the tests again.
 7. **Review.** `web-reviewer` with the symptom and root cause as the task statement. Confirm each Blocker and Major against the code first, and decline a refuted one with the counter-evidence. Fix the rest, then re-run the type check and the affected tests. Send the same reviewer the finding IDs and their "Verified fixed when" criteria to re-review the fix delta. Stop after two re-review rounds and report anything still open.
 8. **Commit, only if asked.** Follow the shared Git conventions. Do not push unless asked.

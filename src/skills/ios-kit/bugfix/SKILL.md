@@ -23,11 +23,11 @@ Repo facts (workspace, schemes, build/test commands, test framework, bundle id) 
    than stacking changes. After three failed fixes, stop and report what each attempt showed.
 6. **Verify.** Failing test now green plus the suite's other tests (`xcodebuild test … -only-testing:`), and the project's build
 <!-- if: reviewer_runs_builds -->
-   command for every scheme it lists. For UI bugs, hand the simulator smoke check to the `ios-verifier` agent and quote its
-   results. A test-only rerun stays in this session, because `ios-reviewer` runs the tests again.
+   command for every scheme it lists. For UI bugs, hand the simulator smoke check and the screen's journey (if one exists)
+   to the `ios-verifier` agent and quote its results. A test-only rerun stays in this session, because `ios-reviewer` runs the tests again.
 <!-- else -->
-   command for every scheme it lists. Hand the test rerun and, for UI bugs, the simulator smoke check to the `ios-verifier`
-   agent and quote its results.
+   command for every scheme it lists. Hand the test rerun and, for UI bugs, the simulator smoke check and the screen's
+   journey (if one exists) to the `ios-verifier` agent and quote its results.
 <!-- end -->
 7. **Review.** `ios-reviewer` with the symptom and root cause as the task statement. Confirm each Blocker and Major against the code first, and decline a refuted one with the counter-evidence. Fix the rest, then re-run the compile check and the affected tests. Send the same reviewer the finding IDs and their "Verified fixed when" criteria to re-review the fix delta. Stop after two re-review rounds and report anything still open.
 8. **Commit, only if asked.** Follow the shared Git conventions. Do not push unless asked.

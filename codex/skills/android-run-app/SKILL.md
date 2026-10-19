@@ -1,6 +1,6 @@
 ---
 name: android-run-app
-description: "Build, install, launch and screenshot a house Android debug variant on an emulator via the Android CLI."
+description: "Build, install, launch and screenshot a house Android debug variant on an emulator via the Android CLI, and run a journey on it when one is named."
 ---
 
 Read the project AGENTS.md and applicable global guidance first. Fall back to CLAUDE.md if AGENTS.md is absent. Follow the global rules for optional tools, specialist agents and Git actions.
@@ -20,7 +20,10 @@ Skills named below are optional companions. When one is missing, follow `referen
    `adb shell monkey -p <applicationId> -c android.intent.category.LAUNCHER 1`. Flavoured apps suffix the id (e.g. `.sit`).
 5. On the first screen, `android screen`, then save the PNG to the session scratchpad as `<avd>-<flavour>-<screen>.png`.
    `android layout` when the caller needs the view tree.
-6. Report: device serial and AVD, variant, APK path, launch result, screenshot path(s), and the last 30 lines of
-   `adb logcat -d -s AndroidRuntime` if anything crashed.
+6. When the caller names a journey file, hand it to the `android-verifier` agent with the device serial, the application
+   id, the scratchpad directory and confirmation that the app is launched. It returns the JSON result described in
+   `references/journeys.md` in the `android-standards` skill.
+7. Report: device serial and AVD, variant, APK path, launch result, screenshot path(s), the journey result if one ran,
+   and the last 30 lines of `adb logcat -d -s AndroidRuntime` if anything crashed.
 
 Use the configured approval policy for device commands. A request to run the app authorizes its normal build, install and launch steps.
