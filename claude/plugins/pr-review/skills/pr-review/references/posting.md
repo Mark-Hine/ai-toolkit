@@ -66,6 +66,28 @@ anchor into the summary under "Outside the diff", and route E should do the same
 approval or a change request on the author's own pull request, and the poster then leaves a comment
 review instead.
 
+## Publishing the document to Confluence
+
+Publish only when `scope.destinations` includes Confluence and the user has named the space,
+parent page or page to update. The page is a rendering of the Markdown document, so it never
+carries a finding the document lacks.
+
+1. Render the page: `render_confluence.py render <review>.md --out <review>.xhtml`. The script
+   is stdlib only. It maps the severity and status markers (template.md, Markers) to status
+   lozenges, the verdict blockquote to an info panel, each **PR comment** block to a code block
+   titled "PR comment" and each **Evidence** paragraph to a collapsed expand section. Heading
+   anchors keep the At a glance links working.
+2. Set `CONFLUENCE_BASE_URL` (for example `https://<site>.atlassian.net/wiki`), `CONFLUENCE_EMAIL`
+   and `CONFLUENCE_TOKEN` in the same command, or pass `--token-file`, as for the PR tokens below.
+3. Create the page with `render_confluence.py publish <review>.xhtml --title "<title>"
+   --space-id <id> --parent-id <page or folder id>`. The script sets the page to full width.
+4. Update an existing page with `render_confluence.py publish <review>.xhtml --page-id <id>
+   --expect-version <n>`, where `<n>` is the version this session last published. If the live
+   version is newer, someone edited the page by hand. The script refuses and prints the versions,
+   so compare the live page with yours, carry the edits into the Markdown and publish again.
+5. Report the page URL and version. Publishing the document never posts to the PR, and posting to
+   the PR never publishes the document.
+
 ## Tokens
 
 Never put a token in a prompt, a command the session echoes, the findings JSON or the review

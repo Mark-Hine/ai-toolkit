@@ -11,7 +11,7 @@ My portable setup for AI coding agents. It gives Claude Code, OpenAI Codex and G
 | `ios-kit` | The same for iOS and SwiftUI, plus SwiftFormat and SwiftLint on edit where a repo opts in | 1.6.0 |
 | `web-kit` | Feature, bug-fix and run-app playbooks for React, Next.js and TypeScript, with researcher, reviewer and verifier agents | 1.2.0 |
 | `design-kit` | Tiered UI design rules (HIG, Material 3, WCAG 2.2, house), a design playbook and a UI reviewer agent | 1.11.0 |
-| `pr-review` | A formal written PR review with a standards-cited findings register, posted to Azure DevOps or GitHub when asked | 1.5.1 |
+| `pr-review` | A formal written PR review with a standards-cited findings register, posted to Azure DevOps or GitHub when asked | 1.6.0 |
 | `guard-kit` | A hook that blocks protected-branch and force pushes, destructive git and edits to secrets | 1.4.0 |
 | `toolkit` | Multi-agent orchestration (`orchestrate`), plus audit and pre-PR check skills for maintaining this repo | 1.5.1 |
 <!-- plugin-versions:end -->

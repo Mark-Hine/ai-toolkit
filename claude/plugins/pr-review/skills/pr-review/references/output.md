@@ -32,6 +32,7 @@ the artifact staging directory.
     "files": 271,
     "churn_note": "~78% formatter sweep, verified with git diff -w",
     "host": "azure",
+    "destinations": ["azure", "confluence"],
     "inferences": ["platform=android (settings.gradle.kts)", "ticket_key=ABC (211 hits)", "host=azure (origin URL)"]
   },
   "standards_basis": "<the pack's standards-basis paragraph, verbatim>",
@@ -83,6 +84,7 @@ Top level:
 | `verdict` | `approve` \| `approve_with_comments` \| `request_changes`, by the same rule as the document: any open blocker or unanswered question ⇒ `request_changes` |
 | `scope` | the pinned range and counts. `inferences` lists every Phase-0 inference (mandatory in CI mode, protocol.md §24) |
 | `scope.host` | optional, `azure` or `github`: where the PR lives. The poster uses it when `--host` is not given |
+| `scope.destinations` | optional list of where the review goes: the PR host plus `file` or `confluence` for the document. Phase 0 records it and Phase 7 reads it. The poster ignores it |
 | `standards_basis` | the loaded pack's block, so the JSON is self-describing when the doc isn't at hand |
 | `manifest` | promotion mode only. Omit in feature mode |
 | `register_crossref` | only when a register exists. Omit otherwise |
