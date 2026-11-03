@@ -20,18 +20,25 @@ Two artifacts, side by side: **`findings.json`**, the canonical, machine-readabl
 the artifact staging directory (CI mode). The document contains:
 
 - a verdict (any Blocker or unanswered Question ⇒ **Request changes**),
-- a **Standards basis** section citing published guidance per finding,
+- an **At a glance** table with one row per finding, its severity and status markers and a link
+  to the finding, so a reader sees the state of the PR without reading on,
 - a **Scope of this approval** statement, the boundary that stops a review of one delta from
   reading as sign-off of everything beneath it,
+- one section per finding graded **B**locker / **Q**uestion / **M**ajor (nits stay table rows).
+  Each section carries the PR comment in a fenced block that can be copied and pasted into the
+  PR as it is, written concisely for a senior developer (protocol.md §5), then the evidence
+  anchored at its root cause (§17) and the observable check that proves it fixed (§18),
 - *(promotion mode)* **manifest verification**: merge-base, release list, dependencies, tickets,
-- a findings table `ID | Finding | PR Comment | Verified fixed when` graded **B**locker /
-  **Q**uestion / **M**ajor / **N**it, with PR comments written concisely for a senior developer
-  (protocol.md §5), each finding anchored at its root cause (§17) and carrying the observable
-  check that proves it fixed (§18),
 - *(conditional)* a cross-reference to the project's standing quality register, and a cross-repo
   twins table when a paired repo was reviewed for the same change,
-- a mandatory **Good in this delta** section, and
-- an appendix ranking the `file:line` clusters a human reviewer should read first.
+- a mandatory **Good in this delta** section,
+- an appendix ranking the `file:line` clusters a human reviewer should read first, and
+- an appendix giving the **Standards basis**, the published guidance each finding cites.
+
+The layout is the same for every destination. The document reads as plain Markdown on GitHub,
+Azure DevOps or disk, and `scripts/render_confluence.py` turns the same file into a Confluence
+page with status lozenges and collapsed evidence. A destination changes where the review goes,
+never what it says.
 
 In local mode nothing is posted, committed, or sent unless the user asks. When they ask, Phase 7
 posts through one of the routes in [`references/posting.md`](references/posting.md). In CI mode the
@@ -88,6 +95,7 @@ ambiguous, and echo the profile back before proceeding** so a wrong inference is
 | Reviewing team / org | the git remote's organisation | ask, or omit attribution |
 | PR host | `SYSTEM_COLLECTIONURI` or `TF_BUILD` ⇒ Azure DevOps · `GITHUB_ACTIONS` ⇒ GitHub · otherwise the `origin` URL: `dev.azure.com` or `visualstudio.com` ⇒ Azure DevOps, `github.com` ⇒ GitHub. Record it as `scope.host` | ask before posting |
 | Paired repo | only when the user names one, or an obvious sibling checkout exists next to this one | skip the twins section silently |
+| Destinations | the PR host above is always one. A document destination comes from the user's ask: a Confluence URL, space or page named ⇒ Confluence. Otherwise the file at the repo root is the only document. Record them as `scope.destinations` | local mode: ask once whether the document should also go to Confluence. CI mode: never ask, file only |
 
 Then:
 
@@ -220,8 +228,10 @@ Check before delivering:
 
 - Verdict matches the register (any B or open Q ⇒ Request changes).
 - Scope statement present and correct for the mode, and commit range and counts accurate.
-- **JSON↔document parity**: every finding ID in the JSON appears in the document and vice versa.
-- Every PR-comment cell is self-contained (survives being pasted alone into the PR).
+- **JSON↔document parity**: every finding ID in the JSON appears in the document and vice versa,
+  and in the At a glance table exactly once.
+- Every PR-comment block equals the finding's `pr_comment` exactly and is self-contained (survives
+  being pasted alone into the PR).
 - Every B/Q/M has a `verify_fixed_when` criterion, and every finding names its causal site.
 - Any commit cited passes the ancestry check (protocol.md §19).
 - **Good in this delta** section present. Credit is what keeps the harsh register credible.
@@ -239,6 +249,11 @@ confirm the PR head still equals `scope.source_head`, run a dry run and show the
 Cast no vote unless the user asks for one, because the vote lands under their name. Blockers,
 Questions and Majors get anchored threads. Nits go only in the summary comment, so they add no
 thread the author must resolve.
+
+When `scope.destinations` includes Confluence, publish the document with
+`scripts/render_confluence.py` as [`references/posting.md`](references/posting.md) describes. A
+republish first compares the live page with the version last published, because reviewers edit
+these pages by hand.
 
 ## Phase R: Re-review (prior review exists, head moved)
 

@@ -14,12 +14,45 @@ Sections appear **in this order**. Sections marked
 when they'd be empty. Text in `<angle brackets>` is filled per run.
 
 Headings below name the template's sections, and the fenced blocks show what the **emitted document**
-actually contains, including its own heading numbering.
+actually contains.
 
 The wording in the fenced blocks is a safe default, not scripture. Scope and attribution wording in
 particular is where an organisation's own approved language belongs. If your team or legal
 function has agreed a form of words for review scope, paste it in place of the default and keep it
 stable across reviews, because its value comes from being recognisable.
+
+## Reading order and destinations
+
+The document is written for 2 readers. A lead or manager reads the verdict and the At a glance
+table and stops. A developer jumps from a table row to that finding, copies its PR comment and
+checks the evidence. So the summary comes first, each finding is a short section rather than a
+wide table cell, and reference material such as the standards basis goes to an appendix.
+
+The Markdown is plain GitHub-flavoured Markdown, so it reads the same on GitHub, Azure DevOps and
+disk. `scripts/render_confluence.py` renders the same file for Confluence. It turns the markers
+below into status lozenges, the verdict into a panel, each PR comment into a code block with a copy
+button, and each **Evidence** paragraph into a collapsed section. Write nothing that only one
+destination can show.
+
+## Markers
+
+Severity and status are written as an emoji and a word, so they read in any Markdown viewer and
+the Confluence renderer can turn them into lozenges. Use exactly these:
+
+| Meaning | Marker | Confluence lozenge |
+|---|---|---|
+| Blocker | `🔴 Blocker` | red BLOCKER |
+| Question | `🟣 Question` | purple QUESTION |
+| Major | `🟠 Major` | yellow MAJOR |
+| Nit | `⚪ Nit` | grey NIT |
+| First raised at this head | `🆕 New` | blue NEW |
+| Raised earlier, still open | `☐ Open` | grey OPEN |
+| Partly fixed | `⚠️ Partial` | yellow PARTIAL |
+| Fixed at this head | `✅ Fixed` | green FIXED |
+| Was fixed, broken again | `❌ Regressed` | red REGRESSED |
+
+On a first review every finding is `🆕 New`. Statuses map from the JSON `status` field, with
+`open` on a finding raised at this head shown as `🆕 New`.
 
 ## Title and verdict
 
@@ -27,10 +60,13 @@ stable across reviews, because its value comes from being recognisable.
 # Technical review of <Platform/Repo> <SOURCE> → <TARGET> promotion     (promotion mode)
 # Technical review of <Repo> PR <number/branch>: <one-line topic>       (feature mode)
 
-**Verdict: <Request changes | Approve with comments | Approve>.** <One paragraph: count the
-blockers and name each in half a sentence, count the questions, then the release clause, e.g.
-"All other findings are comment-level and should not hold up the merge once the blockers clear.">
+> **Verdict: <Request changes | Approve with comments | Approve>.** <One paragraph: count the
+> blockers and name each in half a sentence, count the questions, then the release clause, e.g.
+> "All other findings are comment-level and should not hold up the merge once the blockers clear.">
 ```
+
+The verdict is a blockquote before the first `##` heading, so Confluence shows it as the page
+panel and other hosts show it as a quote.
 
 Verdict rule: any B → **Request changes**. No B but unanswered Q → **Request changes** (the
 questions gate approval). M/N only → **Approve with comments**.
@@ -39,23 +75,28 @@ If a paired repo was reviewed for the same change and its blockers do **not** re
 so in a **Credit where due** paragraph directly under the verdict. It tells the author the reviews
 are independent rather than copy-pasted.
 
-## Standards basis
+## At a glance
 
-One paragraph naming every standard the findings cite, with URLs. **Paste the standards-basis block
-from the platform pack you loaded** (`platforms/android.md`, `platforms/ios.md`,
-`platforms/spring-boot.md`, `platforms/react-nextjs.md`) or, for the generic
-pack, the basis you established from the repo's own configs, docs and the stack's official
-guidance.
-
-Then append the verification sentence:
+A count line, then one row per finding, ordered blockers, questions, majors, nits, and by ID inside
+each group. Fixed findings come last. Issue is the finding's `title`, and Where is its causal
+`file:line` with the path shortened to the file name.
 
 ```markdown
-Every claim below was verified against the <source> tree. Line numbers are <source>-side
-(`origin/<source>` = `<HEAD_SHA>`).
+## At a glance
+
+<n> blockers, <n> questions and <n> majors are open. <n> earlier findings are fixed at this head.
+
+| ID | Severity | Status | Issue | Where |
+|---|---|---|---|---|
+| [B1](#b1) | 🔴 Blocker | 🆕 New | <title> | `<File.kt:96>` |
+| [Q1](#q1) | 🟣 Question | ☐ Open | <title> | `<File.kt:40>` |
+| [M1](#m1) | 🟠 Major | ⚠️ Partial | <title> | `<File.kt:12>` |
+| N1 | ⚪ Nit | 🆕 New | <title> | `<File.kt:7>` |
+| [M2](#m2) | 🟠 Major | ✅ Fixed | <title> | `<File.kt:88>` |
 ```
 
-If a ref had to be resolved by raw SHA (protocol.md §8), record that here too, so the reader can
-reproduce the exact range.
+Every finding appears in this table exactly once. Link the ID only when the finding has a section
+of its own.
 
 ## Scope of this approval
 
@@ -69,8 +110,8 @@ net-new lines of behaviour. All 'delta-added' claims below were re-verified with
 whitespace-insensitive diffs, not inferred from raw churn">). It does **not** constitute technical
 sign-off of the pre-existing <TARGET> baseline, acceptance of the release for production, or
 closure of any finding in <the standing quality register, named>, whose findings remain open except
-where noted in §<register section>. Pre-existing defects are flagged only where this delta extends
-or entrenches them.
+where noted in the register cross-reference. Pre-existing defects are flagged only where this delta
+extends or entrenches them.
 ```
 
 **Feature mode, the simple scope line:**
@@ -81,9 +122,104 @@ This review covers the PR delta only, commits `<MERGE_BASE>..<HEAD>` against `<t
 exists>
 ```
 
+Close the section with the verification sentence:
+
+```markdown
+Every claim below was verified against the <source> tree. Line numbers are <source>-side
+(`origin/<source>` = `<HEAD_SHA>`).
+```
+
+If a ref had to be resolved by raw SHA (protocol.md §8), record that here too, so the reader can
+reproduce the exact range.
+
+## Findings
+
+One `##` group per severity that has open findings: **Blockers** (fix before merge), **Questions**
+(answer before merge) and **Majors** (please ticket). Every B, Q and M that is not fixed gets a
+section of its own:
+
+````markdown
+## Blockers
+
+### <a id="b1"></a>B1: <title>
+
+| Severity | Status | Where | Standard |
+|---|---|---|---|
+| 🔴 Blocker | 🆕 New | `<path/File.kt:96>` | <STANDARD-TAG> |
+
+**PR comment**
+
+```text
+<pr_comment, verbatim>
+```
+
+**Evidence.** <finding, verbatim>
+
+**Verified fixed when.** <verify_fixed_when, verbatim>
+````
+
+Section contract:
+
+- **Heading**: the ID, a colon and the `title`, with an `<a id="<lowercase ID>"></a>` anchor so the
+  At a glance link resolves on every host. IDs are `B1…`, `Q1…`, `M1…`, `N1…`, numbered by
+  severity then discovery order. IDs are stable across re-reviews of the same PR. Never renumber
+  an existing finding, and new findings take the next free number.
+- **Meta table**: one row. Where is the causal `file:line` with enough path to find the file.
+  Standard is the tag the finding cites. When a paired repo has the same defect, add
+  **"<other repo> twin"** after the tag.
+- **PR comment**: the author-facing ask, in a `text` fence so the reader can copy it with its
+  Markdown intact and paste it into the PR. It gives the concrete fix first as a polite, specific
+  ask ("Restore… / Move…"), always the root-cause fix and never a symptom patch. It adds the
+  consequence only when it is not obvious from the evidence, in product terms ("as shipped, a
+  failed delete shows success while the debit keeps running"). One to three sentences, with no
+  step-by-step walkthroughs, no platform-concept explanations and no restating the evidence. Keep
+  each paragraph on one line, because GitHub turns a line break in a comment into a visible break.
+  The block is self-contained. It must survive being pasted alone into the PR.
+- **Evidence**: the engineer-facing paragraph, which carries `file:line` evidence first,
+  **anchored at the causal site** with symptom sites listed after it (protocol.md §17), what
+  changed relative to the merge-base ("the target branch had X, but this PR does Y"), the
+  mechanism, and the standard tag in brackets. Written for the reviewer who will verify it.
+- **Verified fixed when**: the fix-verification contract (protocol.md §18). It is the observable
+  that proves the defect gone: a command to run, a `file:line` expectation, or a named test that
+  must pass. For a Q, it is the answer or evidence that closes it. One or two sentences, mechanical
+  enough that the re-review (and the CI poster) can check it without re-deriving the finding.
+
+Related defects share a section only when they share a fix. A retracted finding keeps its
+section: the Evidence paragraph gains a leading **RETRACTED: <what was wrong and why>** correction
+note and the other parts are left as published. A surviving sub-claim moves to its own new
+finding (protocol.md §22).
+
+**Nits** get no section. They go in one table after the majors, because they need no thread and
+nothing to copy beyond one line:
+
+```markdown
+## Nits
+
+| ID | Nit | Where |
+|---|---|---|
+| N1 | <title, then the ask in one sentence> | `<File.kt:7>` |
+```
+
+## Fixed or re-graded *(conditional)*
+
+Only on a re-review, for earlier findings that need nothing more from the author: findings now
+fixed, and findings whose remaining defect was re-graded into another finding, such as a blocker
+whose residue is now a major. They get one row each and no section, and a re-graded row names
+the finding that carries the rest. A re-graded blocker does not count as an open blocker for the
+verdict, because its successor does.
+
+```markdown
+## Fixed or re-graded
+
+| ID | Status | Was | Evidence at <HEAD_SHA> |
+|---|---|---|---|
+| M2 | ✅ Fixed | <title> | <file:line or test that shows the fix> |
+| B1 | ⚠️ Partial | <title> | <what is fixed>. The rest is tracked as M9. |
+```
+
 ## Promotion manifest verification *(promotion mode)*
 
-Heading: `## 1. Promotion manifest verification: <PASS | PASS, one query | FAIL>`. Bullets, each
+Heading: `## Promotion manifest verification: <PASS | PASS, one query | FAIL>`. Bullets, each
 ending ✔ when clean. Queries are called out in **bold** with the ask stated as a question:
 
 - Merge-base check: target HEAD is the merge-base, source strictly contains target, and the PR diff
@@ -94,53 +230,13 @@ ending ✔ when clean. Queries are called out in **bold** with the ask stated as
 - Ticket reconciliation: unique ticket references vs the count the description claims, with example
   unticketed or mislabeled commits by SHA. Omit if the project doesn't use ticket keys in commits.
 
-## Findings
-
-```markdown
-## 2. Findings
-
-ID prefix = severity: **B** = blocker (fix before merge) · **Q** = question (answer before merge)
-· **M** = major (please ticket) · **N** = minor/nit. Line numbers are `origin/<source>`-side.
-
-| ID | Finding | PR Comment | Verified fixed when |
-|---|---|---|---|
-```
-
-Column contract:
-
-- **ID**: `B1…`, `Q1…`, `M1…`, `N1…`, numbered by severity then discovery order. IDs are stable
-  across re-reviews of the same PR. Never renumber an existing finding, and new findings take the
-  next free number. When a paired repo has the same defect, append **"<other repo> twin"** in bold at
-  the end of the Finding cell.
-- **Finding**: the engineer-facing cell, which carries `file:line` evidence first, **anchored at
-  the causal site** with symptom sites listed after it (protocol.md §17), what changed relative to
-  the merge-base ("the target branch had X, but this PR does Y"), the mechanism, and the standard tag
-  in brackets. Written for the reviewer who will verify it.
-- **PR Comment**: the author-facing cell, written concisely for a senior developer. It gives the
-  concrete fix first as a polite, specific ask ("Restore… / Move…"), always the root-cause fix and
-  never a symptom patch. It adds the consequence only when it is not obvious from the Finding cell,
-  in product terms ("as shipped, a failed delete shows success while the debit keeps running"). One
-  to three sentences, with no step-by-step walkthroughs, no platform-concept explanations and no
-  restating the Finding's evidence. The cell is self-contained. It must survive being pasted alone
-  into the PR with no surrounding context.
-- **Verified fixed when**: the fix-verification contract (protocol.md §18). It is the observable
-  that proves the defect gone: a command to run, a `file:line` expectation, or a named test that
-  must pass. For a Q, it is the answer or evidence that closes it. One or two sentences, mechanical enough
-  that the re-review (and the CI poster) can check it without re-deriving the finding. Optional
-  for N rows.
-
-One row per finding. Related defects share a row only when they share a fix. Escape `|` inside
-cells as `\|`. A retracted finding keeps its row: the Finding cell gains a leading
-**RETRACTED: <what was wrong and why>** correction note and the other cells are left as
-published. A surviving sub-claim moves to its own new row (protocol.md §22).
-
 ## Cross-repo twins *(conditional)*
 
 Only when the same change was reviewed in a paired repo (a mobile platform pair, a client and its
 service, a fork). Each row is one defect needing a single coordinated fix:
 
 ```markdown
-## 3. Cross-repo twins (for one coordinated fix)
+## Cross-repo twins (for one coordinated fix)
 
 | Topic | <Repo A> | <Repo B> |
 |---|---|---|
@@ -152,7 +248,7 @@ service, a fork). Each row is one defect needing a single coordinated fix:
 Only when the project keeps a standing register of known findings:
 
 ```markdown
-## <n>. Cross-reference to <register name>
+## Cross-reference to <register name>
 
 Verdicts describe what **this delta** does to each finding. All other register findings remain
 open and unaffected.
@@ -176,18 +272,26 @@ code to match a good pattern the same PR introduced, say so here.
 Numbered, ranked by risk: `file:line` clusters and the finding IDs they carry, so a human reviewer
 can spend one hour on the highest-value locations.
 
+## Appendix B: standards basis
+
+One paragraph naming every standard the findings cite, with URLs. **Paste the standards-basis block
+from the platform pack you loaded** (`platforms/android.md`, `platforms/ios.md`,
+`platforms/spring-boot.md`, `platforms/react-nextjs.md`) or, for the generic
+pack, the basis you established from the repo's own configs, docs and the stack's official
+guidance.
+
 ## Footer
 
 ```markdown
 ---
 *Review conducted by <reviewing team> against merge-base `<MERGE_BASE>` (<target>) →
-`<SOURCE_HEAD>` (<source>). Standards references: §Standards basis above.<" Companion review:
+`<SOURCE_HEAD>` (<source>). Standards references: Appendix B.<" Companion review:
 <paired repo>." if one exists><" Register references are to <register name>." if one exists>*
 ```
 
 ## Re-review addendum shape (Phase R, addendum framing)
 
-Insert after the manifest section as `## 1a. Re-review: PR head moved to <NEW_SHA> (+<n> commits)`:
+Insert after the scope section as `## Re-review: PR head moved to <NEW_SHA> (+<n> commits)`:
 
 1. A status table for **every open prior finding**, Blockers first, with each status verified against
    the finding's `Verified fixed when` criterion, never asserted:
@@ -195,12 +299,13 @@ Insert after the manifest section as `## 1a. Re-review: PR head moved to <NEW_SH
 ```markdown
 | ID | Status | Evidence (file:line @ <NEW_SHA>) |
 |---|---|---|
-| B1 | **open** \| **fixed** \| **regressed** \| **partial** | <what you checked at the new head> |
+| B1 | ☐ Open \| ✅ Fixed \| ❌ Regressed \| ⚠️ Partial | <what you checked at the new head> |
 ```
 
-2. New findings from the added range, using the next free IDs.
+2. New findings from the added range, using the next free IDs, as sections in the findings groups.
 3. Verified-good fixes from the added range.
 
 The fresh-rewrite framing instead regenerates the whole document at the new head with no
-re-review language. Ask which is wanted (protocol.md §10). CI mode defaults to the addendum.
-Either way, `findings.json` statuses are updated first and the document rendered from it.
+re-review language: no addendum section, and statuses appear only in the At a glance and meta
+tables. Ask which is wanted (protocol.md §10). CI mode defaults to the addendum. Either way,
+`findings.json` statuses are updated first and the document rendered from it.
