@@ -4,12 +4,13 @@
 Stdlib-only. `render` converts the Markdown subset that references/template.md emits into
 Confluence storage format:
 
-- the blockquote before the first `##` heading becomes an info panel (the verdict),
+- the blockquote before the first `##` heading becomes an info panel (the verdict), and a later
+  blockquote keeps its lists, code blocks and line breaks,
 - severity and status markers such as `🔴 Blocker` or `✅ Fixed` become status lozenges,
 - a fenced block after a `**PR comment**` label becomes a code block titled "PR comment", whose
   copy button gives the exact Markdown to paste into the PR,
 - a paragraph that starts `**Evidence.**` becomes a collapsed expand section,
-- `<a id="...">` anchors and heading slugs become anchor macros, so `[B1](#b1)` links resolve.
+- `<a id="...">` anchors and heading slugs become anchor macros, so `[B1](#b1)` links resolve,
 - tables span the full page width, to match the full-width page `publish` sets.
 
 `publish` creates a page or updates one through the Confluence REST v2 API and sets it to full
@@ -150,14 +151,9 @@ def render(md):
             while i < len(lines) and lines[i].startswith(">"):
                 block.append(re.sub(r"^>\s?", "", lines[i]))
                 i += 1
-            paras, cur = [], []
-            for b in block + [""]:
-                if b.strip():
-                    cur.append(b)
-                elif cur:
-                    paras.append(paragraph(cur))
-                    cur = []
-            body = "".join(paras)
+            # A quoted PR comment or message holds lists, code and hard breaks, so its contents
+            # go through the full block renderer rather than being joined into paragraphs.
+            body = render("\n".join(block))
             if not seen_heading:
                 out.append('<ac:structured-macro ac:name="info"><ac:rich-text-body>'
                            f"{body}</ac:rich-text-body></ac:structured-macro>")
