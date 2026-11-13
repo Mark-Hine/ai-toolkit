@@ -11,6 +11,8 @@ Repo facts (package manager, framework and router, scripts, test runners, design
 
 Skills named below are optional companions. When one is missing, follow `references/companions.md` in {@skill_named web-kit/standards} and continue.
 
+When the task names a spec folder with `requirements.md`, `design.md` and `tasks.md`, follow `references/spec-driven.md` in {@skill_named web-kit/standards}. It replaces steps 1, 2 and 4 and adds to steps 6, 8, 9 and 10.
+
 1. **Intake.** If an Atlassian MCP tool is available, fetch the Jira ticket and quote its acceptance criteria. Otherwise
    restate the goal in three bullets plus an out-of-scope list. Branch `feat/<ticket>-<slug>` (or the project's documented branch convention) off the default branch.
 2. **Discover the pattern.** Use {@explore} to find the closest existing route or flow: its page or route

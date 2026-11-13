@@ -25,6 +25,7 @@ anchor checks. Do not answer those from memory.
 | Play policy, target API, integrity | `references/official-docs.md` §Play |
 | Compose performance and API shape | `references/official-docs.md` §Compose |
 | A skill a playbook names is missing, or how to install it | `references/companions.md` |
+| A task names a spec folder (`requirements.md`, `design.md`, `tasks.md`) | `references/spec-driven.md` |
 
 Guardrails when applying any reference to this repo:
 - target repos are often hybrid legacy apps (XML + Compose). Recommend the blueprint pattern for new code. Do not propose rewriting working

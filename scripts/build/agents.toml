@@ -318,3 +318,15 @@ codex = ["codex/skills/android-standards/references/journeys.md", "codex/skills/
 antigravity = ["antigravity/plugins/android-kit/skills/android-standards/references/journeys.md",
                "antigravity/plugins/ios-kit/skills/ios-standards/references/journeys.md",
                "antigravity/plugins/web-kit/skills/web-standards/references/journeys.md"]
+
+[[copies]]
+src = "shared/guidance/references/spec-driven.md"
+claude = ["claude/plugins/android-kit/skills/standards/references/spec-driven.md",
+          "claude/plugins/ios-kit/skills/standards/references/spec-driven.md",
+          "claude/plugins/web-kit/skills/standards/references/spec-driven.md"]
+codex = ["codex/skills/android-standards/references/spec-driven.md",
+         "codex/skills/ios-standards/references/spec-driven.md",
+         "codex/skills/web-standards/references/spec-driven.md"]
+antigravity = ["antigravity/plugins/android-kit/skills/android-standards/references/spec-driven.md",
+               "antigravity/plugins/ios-kit/skills/ios-standards/references/spec-driven.md",
+               "antigravity/plugins/web-kit/skills/web-standards/references/spec-driven.md"]

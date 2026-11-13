@@ -21,6 +21,7 @@ checks. Do not answer those from memory.
 | Semantics and ARIA | `references/official-docs.md` §Accessibility, then `/design-standards` |
 | A skill a playbook names is missing, or how to install it | `references/companions.md` |
 | Starting a per-repo `AGENTS.md` (or `GEMINI.md`) | `references/project-agents-md-template.md` |
+| A task names a spec folder (`requirements.md`, `design.md`, `tasks.md`) | `references/spec-driven.md` |
 
 Guardrails when applying any reference to this repo:
 - Target repos vary: App Router, Pages Router, a Vite single-page app, a monorepo. Follow the repo's choice. Do not
