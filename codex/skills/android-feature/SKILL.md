@@ -23,10 +23,12 @@ Skills named below are optional companions. When one is missing, follow `referen
    DI wiring, test list, device checks. For UI changes, consult `$design-standards` (tiered design rules, screen states, accessibility). Follow the project's architecture rules. Proceed within the user-authorized scope. Ask only about unresolved scope or consequential choices.
 5. **Implement** in small steps, running the project's compile check after each. New UI is Compose, Material3, following the design rules (AND-1 colour roles, AND-2 insets, A11Y-3 targets), inside the project's theme and components, split into stateless `XContent` and stateful `XScreen`. No orientation locks.
 6. **Tests.** Follow the change-to-test mapping in the Android testing guidance (`~/.codex/guidance/android/testing.md`, or `references/testing.md` in the `android-standards` skill when the guidance is not installed). ViewModel, use-case and repository changes get unit tests with fakes for owned code and MockK only at true boundaries. A new or changed screen gets a Compose UI test where the module has the infra, otherwise a preview per `UiState`, plus the journey in step 7. Run them with `--tests` and quote the summary.
-7. **Device verification.** `$android-run-app` on the default phone AVD, and on the tablet AVD for any new or changed screen.
-   Then hand off to the `android-verifier` agent with the test command, the journey file(s) for the touched screen,
-   each device serial and the application id. For a new or changed screen, also ask for a configuration capture of
-   that screen on the phone (default, dark, font scale 2.0) and on the tablet, which A11Y-7 and AND-1 need. It returns
+7. **Device verification.** This session builds, installs and launches the app with `$android-run-app`
+   on the default phone AVD, and on the tablet AVD for any new or changed screen. The verifier never installs or
+   launches a build, and the guard blocks it from trying. Then hand off to the `android-verifier` agent with the test
+   command, the journey file(s) for the touched screen, each device serial, the application id and confirmation that
+   the app is installed and launched. For a new or changed screen, also ask for a configuration capture of that screen
+   on the phone (default, dark, font scale 2.0) and on the tablet, which A11Y-7 and AND-1 need. It returns
    the JSON journey result and labelled screenshot paths, so the images stay out of this session. Check insets
    (`edge-to-edge`) and large-screen layout (`adaptive`) against its findings. A FAILED action is a finding, not
    something to fix inside this step. A new screen gets a new journey.

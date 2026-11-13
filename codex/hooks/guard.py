@@ -27,6 +27,10 @@ SHELL_LIMITED_ROLES = {'android-researcher', 'android-verifier', 'ios-researcher
 SETUP_COMMANDS = {'git', 'pod', 'swift', 'carthage', 'bundle', 'npm', 'pnpm', 'yarn', 'bun'}
 SETUP_REASON = ('Verifier agents do not run git or dependency installers. '
                 'Ask the calling session to prepare the checkout and pass its path.')
+# The calling session owns the build on the device, so the android verifier names the playbook that does it.
+INSTALL_REASON = ('Verifier agents do not install, uninstall or launch builds. The calling session builds, installs and '
+                  'launches the app with the android-kit run-app playbook, then passes the device serial and application id.')
+ANDROID_BINARIES = {'android', 'adb'}
 SHELL_TOOLS = {'Bash', 'shell', 'shell_command', 'exec_command', 'run_command'}
 EDIT_TOOLS = {'apply_patch', 'Edit', 'Write', 'NotebookEdit',
               'write_to_file', 'replace_file_content', 'multi_replace_file_content'}
@@ -470,8 +474,23 @@ def role_reason(role, command):
     if role.startswith('ios-'):
         return None if ios_command_allowed(tokens, role == 'ios-researcher') else (
             'This iOS specialist only runs its documented read-only queries or test/simulator evidence commands.')
-    if role == 'android-verifier' and tokens and tokens[0] == './gradlew':
+    command = command.strip()
+    if (tokens and command.split(None, 1)[0] == tokens[0] and re.match(r'(/|~/)', tokens[0])
+            and tokens[0].rsplit('/', 1)[-1] in ANDROID_BINARIES):
+        # An absolute or home path to the CLI is the same binary. A relative path could be a workspace script.
+        name = tokens[0].rsplit('/', 1)[-1]
+        tokens = [name] + tokens[1:]
+        command = name + command[len(command.split(None, 1)[0]):]
+    if role == 'android-verifier' and tokens[:1] == ['./gradlew']:
         return gradle_reason(tokens[1:])
+    # Worktrees have no local.properties, so the SDK location arrives as this one prefix.
+    if (role == 'android-verifier' and len(tokens) > 1 and tokens[1] == './gradlew'
+            and re.fullmatch(r'ANDROID_HOME=\S+', tokens[0])):
+        return gradle_reason(tokens[2:])
+    if role == 'android-verifier' and re.match(
+            r'(adb(?:\s+-s\s+\S+)?\s+(install|install-multiple|install-multi-package|uninstall)|android\s+run)(\s|$)',
+            command):
+        return INSTALL_REASON
     if role == 'android-researcher':
         allowed = r'android\s+(docs\s+(search|fetch)|sdk\s+list)(\s|$)'
     else:
@@ -483,10 +502,12 @@ def role_reason(role, command):
                    # Configuration captures read, set and restore only these two display settings.
                    r'|adb(?:\s+-s\s+\S+)?\s+shell\s+settings\s+(get\s+system\s+font_scale|put\s+system\s+font_scale\s+\d+(\.\d+)?)$'
                    r'|adb(?:\s+-s\s+\S+)?\s+shell\s+cmd\s+uimode\s+night(\s+(yes|no))?$'
+                   # Logcat filters by process, so the verifier reads the app's pid.
+                   r'|adb(?:\s+-s\s+\S+)?\s+shell\s+pidof\s+[A-Za-z][\w.]*$'
                    r'|sleep\s+[\d.]+$)')
-    if not re.match(allowed, command.strip()):
+    if not re.match(allowed, command):
         return 'This specialist only runs its documented research or verification commands.'
-    if role == 'android-verifier' and tokens and tokens[0] == 'adb':
+    if role == 'android-verifier' and tokens[:1] == ['adb']:
         adb_args = tokens[3:] if tokens[1:2] == ['-s'] else tokens[1:]
         if adb_args[:1] == ['logcat'] and any(
                 arg.startswith(('-f', '--file', '--output')) for arg in adb_args[1:]):
