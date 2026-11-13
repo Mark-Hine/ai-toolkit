@@ -23,6 +23,7 @@ answer those from memory.
 | Xcode, SwiftPM, CocoaPods, App Store submission gates | `references/official-docs.md` §Build |
 | Security controls, Keychain, ATS, privacy manifests | `references/official-docs.md` §Security |
 | Starting a per-repo {@project_file_full} | `references/{@project_template}` |
+| A task names a spec folder (`requirements.md`, `design.md`, `tasks.md`) | `references/spec-driven.md` |
 | MCP servers, community skills, lint hooks, xcresulttool | `references/official-docs.md` §Community tooling |
 
 Guardrails when applying any reference to this repo:
