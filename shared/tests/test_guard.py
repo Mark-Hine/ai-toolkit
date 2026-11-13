@@ -338,6 +338,58 @@ class GuardTests(unittest.TestCase):
                 self.assertIsNotNone(self.shell(command, 'android-verifier'))
         self.assertIsNotNone(self.shell('adb shell settings put system font_scale 2.0', 'android-researcher'))
 
+    def test_android_binaries_by_absolute_or_home_path(self):
+        for command in ('~/.local/bin/android layout', '/Users/example/.local/bin/android screen capture -o /tmp/a.png',
+                        '/opt/sdk/platform-tools/adb -s emulator-5554 logcat -d',
+                        '~/Library/Android/sdk/platform-tools/adb devices'):
+            with self.subTest(command=command):
+                self.assertIsNone(self.shell(command, 'android-verifier'))
+        self.assertIsNone(self.shell('~/.local/bin/android docs search Compose', 'android-researcher'))
+        # The path changes only the binary's name, so every subcommand restriction still applies.
+        for command in ('~/.local/bin/android emulator remove Pixel_9_Pro',
+                        '/opt/sdk/platform-tools/adb shell pm clear com.example.app',
+                        '/opt/sdk/platform-tools/adb logcat -f source.xml',
+                        './android layout', 'tools/adb devices', '/opt/bin/notadb devices',
+                        '~/.local/bin/android layout; touch source.kt'):
+            with self.subTest(command=command):
+                self.assertIsNotNone(self.shell(command, 'android-verifier'))
+        self.assertIsNotNone(self.shell('~/.local/bin/android layout', 'android-researcher'))
+
+    def test_verifier_gradle_with_android_home(self):
+        self.assertIsNone(self.shell('ANDROID_HOME=/x ./gradlew :app:assembleSitDebug', 'android-verifier'))
+        self.assertIsNone(self.shell('ANDROID_HOME=~/Library/Android/sdk ./gradlew test --console=plain',
+                                     'android-verifier'))
+        for command in ('ANDROID_HOME=/x ./gradlew installDebug', 'ANDROID_HOME=/x ./gradlew test -I edit.gradle',
+                        'JAVA_HOME=/x ./gradlew test', 'ANDROID_HOME=/x OTHER=1 ./gradlew test',
+                        'ANDROID_HOME= ./gradlew test', 'ANDROID_HOME=/x ./gradlew test && rm -rf app',
+                        'ANDROID_HOME=$(touch x) ./gradlew test'):
+            with self.subTest(command=command):
+                self.assertIsNotNone(self.shell(command, 'android-verifier'))
+        self.assertIsNotNone(self.shell('ANDROID_HOME=/x ./gradlew test', 'android-researcher'))
+
+    def test_verifier_reads_app_pid(self):
+        for command in ('adb shell pidof com.example.app', 'adb -s emulator-5554 shell pidof com.example.app.sit',
+                        '~/Library/Android/sdk/platform-tools/adb -s emulator-5554 shell pidof com.x'):
+            with self.subTest(command=command):
+                self.assertIsNone(self.shell(command, 'android-verifier'))
+        for command in ('adb shell pidof com.x extra', 'adb shell pidof -s com.x', 'adb shell pidof',
+                        'adb shell pidof com.x; adb shell pm clear com.x'):
+            with self.subTest(command=command):
+                self.assertIsNotNone(self.shell(command, 'android-verifier'))
+        self.assertIsNotNone(self.shell('adb shell pidof com.x', 'android-researcher'))
+
+    def test_verifier_install_and_launch_name_the_caller(self):
+        for command in ('adb install -r app/build/outputs/apk/debug/app-debug.apk',
+                        'adb -s emulator-5554 install app.apk', 'adb install-multiple a.apk b.apk',
+                        'adb uninstall com.example.app', '~/.local/bin/android run --apks=app.apk',
+                        'android run', '/opt/sdk/platform-tools/adb install app.apk'):
+            with self.subTest(command=command):
+                self.assertEqual(guard.INSTALL_REASON, self.shell(command, 'android-verifier'))
+        self.assertIn('run-app', guard.INSTALL_REASON)
+        chained = self.shell('adb install app.apk && adb shell am start com.x/.Main', 'android-verifier')
+        self.assertIsNotNone(chained)
+        self.assertNotEqual(guard.INSTALL_REASON, chained)
+
     def test_verifier_logcat_cannot_write_workspace_files(self):
         for prefix in ('adb logcat ', 'adb -s emulator-5554 logcat '):
             for flag in ('-f source.xml', '-fsource.xml', '--file source.xml', '--file=source.xml',
