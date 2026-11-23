@@ -59,6 +59,7 @@ Start a new Codex session, then open `/hooks` to review and trust the command gu
 | `$toolkit-orchestrate` | Explicitly invoked multi-agent coordinator with bounded briefs, write isolation and a compaction-safe ledger |
 | `$toolkit-audit` | Explicitly invoked audit that re-checks the standards against their cited sources and writes a findings register |
 | `$toolkit-check` | Explicitly invoked pre-PR checks for the files a branch changes, which edit nothing |
+| `$toolkit-doctor` | Explicitly invoked scorecard of recent Claude Code sessions and the global setup. It reads Claude Code transcripts only |
 | `android-reviewer`, `ios-reviewer`, `web-reviewer`, `ui-reviewer` | `gpt-6-astra`, high reasoning, read-only code and UI review |
 | `android-researcher`, `ios-researcher`, `web-researcher` | `gpt-6-sol`, medium reasoning, read-only official-source research |
 | `android-verifier`, `ios-verifier`, `web-verifier` | `gpt-6-sol`, medium reasoning, workspace writes for build/test outputs and device evidence |

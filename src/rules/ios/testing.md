@@ -25,6 +25,7 @@ paths:
 - Bug fixes start with a failing test that reproduces the report, then the fix, then the same test green. Quote both runs.
 - Run targeted: `xcodebuild test -workspace <ws> -scheme "<test scheme>" -destination '<sim>' -only-testing:<Target>/<Suite>`
   using the command form from the project's {@project_file_full}. Summarise with `xcrun xcresulttool get test-results summary`.
+  Run the full scheme once, before the review step, and never while iterating. A subagent that writes code runs filtered tests only.
   If the project lists pre-existing failing or non-compiling tests, report them as pre-existing. Do not fix them inside another ticket.
 - Add a test for whatever you change in a view model, service or repository, even if the surrounding type has none.
 - Only add UI tests when the ticket asks or the project already has that target. Where a UI test exists for the screen,

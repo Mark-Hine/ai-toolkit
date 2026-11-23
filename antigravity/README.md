@@ -74,6 +74,7 @@ Each plugin follows the documented shape: `plugin.json` (name, description, vers
 | `/toolkit-orchestrate` | Multi-agent coordinator with bounded briefs, write isolation and a compaction-safe ledger. Invoke it explicitly |
 | `/toolkit-audit` | Re-checks the standards against their cited sources and writes a findings register. Invoke it explicitly |
 | `/toolkit-check` | Runs the pre-PR checks for the files a branch changes and edits nothing. Invoke it explicitly |
+| `/toolkit-doctor` | Scores recent Claude Code sessions and the global setup and writes a dated scorecard. It reads Claude Code transcripts only. Invoke it explicitly |
 
 Antigravity has no switch for implicit skill invocation, so the "invoke it explicitly" skills say so in their descriptions and nothing enforces it.
 

@@ -64,7 +64,7 @@ Scope: `**/*.tsx`, `**/*.jsx`.
 - Playwright locators use the roles, labels and text the user sees, not CSS or XPath tied to the markup.
 - Bug fixes start with a failing test that reproduces the report, then the fix, then the same test green. Quote both runs.
 - Run targeted: `npx vitest run <file>`, `npx jest <file>`, `npx playwright test <file>`, or the project's script
-  with a file filter. Updating snapshots needs the user's approval and a reason in the report.
+  with a file filter. Run the full suite once, before the review step, and never while iterating. A subagent that writes code runs filtered tests only. Updating snapshots needs the user's approval and a reason in the report.
 - Add a test for whatever you change in a hook, a data function or a component's behaviour, even if the file has none.
 - A flow with no Playwright test keeps a journey in `journeys/<feature>-<flow>.xml`, which the `web-verifier` agent runs in the
   browser. A Playwright test that covers the flow is the journey's first driver. A FAILED action is a finding to report. Contract, drivers and fallbacks: `web-standards` →

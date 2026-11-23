@@ -6,6 +6,17 @@ sources:
   - https://www.w3.org/TR/WCAG22/
   - https://developer.android.com/develop/ui
   - https://developer.mozilla.org/en-US/docs/Web
+paths:
+  - "**/DESIGN.md"
+  - "**/*.{css,scss,sass,less}"
+  - "**/*.{tsx,jsx,vue,svelte,html}"
+  - "**/tailwind.config.{js,cjs,mjs,ts}"
+  - "**/ui/**/*.kt"
+  - "**/*{Screen,Composable,Component,Theme}*.kt"
+  - "**/res/{layout,values,drawable}*/**"
+  - "**/*{View,Screen,Theme,Color,Typography}*.swift"
+  - "**/*.{xcassets,storyboard,xib}/**"
+  - "**/*.svg"
 ---
 
 # Design standards

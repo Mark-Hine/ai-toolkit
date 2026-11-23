@@ -20,7 +20,7 @@ paths:
   No new Mockito/Hamcrest, no `Thread.sleep` and no `runBlocking`. Tests share no static mutable state, because Gradle may run test classes in parallel forks.
 - Never `@Ignore`, delete, or loosen an assertion to go green. A failing pre-existing test is reported as pre-existing, with the
   project CLAUDE.md's known-broken list as the reference. It is not fixed inside another ticket.
-- Run the narrowest test first (`./gradlew :<module>:test<Variant>UnitTest --tests '<FQCN>'`), then the module's unit tests.
+- Run the narrowest test while iterating (`./gradlew :<module>:test<Variant>UnitTest --tests '<FQCN>'`). Run the module's unit tests once, before the review step. Never run a whole-project test task without a filter unless the playbook's final step asks for it. A subagent that writes code runs filtered tests only.
   Quote the summary line as evidence.
 - Screenshot tests only where the repo already has the tool (Roborazzi, Compose Preview Screenshot Testing, Paparazzi). Adding
   a test framework is its own ticket, done through the `testing-setup` skill, never inside a feature.

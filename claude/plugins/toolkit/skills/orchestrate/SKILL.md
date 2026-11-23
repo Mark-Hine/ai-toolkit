@@ -36,7 +36,7 @@ Write each brief as if the subagent sees nothing of this chat. Every brief must 
 2. **Known facts:** Exact file paths, line numbers, error messages, branch or SHA, and build or test commands from `CLAUDE.md`.
 3. **Owned scope:** The exact files, module or question this agent owns, plus explicit exclusions so it knows what to leave alone. For any writer agent in a shared workspace, add: "Other agents are active in this repository. Preserve all edits outside your scope and touch only the files you own."
 4. **Forbidden actions:** No `git commit`, `git push`, `git merge`, branch change, PR creation, deployment, external message send or data deletion unless the user asked for that action by name.
-5. **Done check and budget:** The exact verification command or check it must run, the evidence it must quote, and a tool-call budget (about 15 to 25 calls) so it reports partial progress instead of hitting its turn limit silently.
+5. **Done check and budget:** The exact verification command or check it must run, the evidence it must quote, and a tool-call budget (about 15 to 25 calls) so it reports partial progress instead of hitting its turn limit silently. A writer agent runs filtered tests only. You run the module or full suite once, after collecting the writers' results.
 6. **Report shape:** Under 300 words. Lead with the result, then the evidence (`file:line` and command output), then open questions or exclusions.
 7. **Writing style:** Plain, short sentences with no filler, no em dashes and no en dashes.
 

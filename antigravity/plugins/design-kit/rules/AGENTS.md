@@ -110,3 +110,5 @@ Rules for building and reviewing UI on Android, iOS and the web. Every rule has 
 - WEB-4 [T2 House] Use container queries for component layout. Media queries still own page layout.
 - WEB-5 [T1 MDN-APP-ICONS] Mark a manifest icon `maskable` only when its content sits inside the safe zone, a centred circle whose diameter is 80% of the icon's shorter side.
 - WEB-6 [T2 EM-FAVICON, House] Ship a 32 px `favicon.ico`, an SVG icon that adapts to dark mode and a 180 px Apple touch icon. A site with a web app manifest adds 192 and 512 px icons and a 512 px maskable icon. Generate every size from one master SVG.
+
+Scope: `**/DESIGN.md`, `**/*.{css,scss,sass,less}`, `**/*.{tsx,jsx,vue,svelte,html}`, `**/tailwind.config.{js,cjs,mjs,ts}`, `**/ui/**/*.kt`, `**/*{Screen,Composable,Component,Theme}*.kt`, `**/res/{layout,values,drawable}*/**`, `**/*{View,Screen,Theme,Color,Typography}*.swift`, `**/*.{xcassets,storyboard,xib}/**`, `**/*.svg`.

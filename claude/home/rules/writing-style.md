@@ -43,7 +43,7 @@ Applies to responses, documents, PR text, commit bodies and code comments. These
   - a statement of what depends on it for load-bearing [Claude tic]
   - "main point" for crux [Personal]
   - deletion for honestly and genuinely [Anthropic]
-- Use bold only for UI labels, for run-in labels at the start of bullets in a long list, and for a warning that changes what the reader does. [Google] [Microsoft] [Claude tic]
+- Use bold for UI labels, for run-in labels at the start of bullets, for the row or term a skimming reader needs to find, and for a warning that changes what the reader does. Keep it to one phrase per paragraph and never bold a whole sentence. [Google] [Microsoft] [Claude tic]
 
 ## Shape and length
 - Match the length to the task. Answer a simple question in a few sentences. [Anthropic] [Claude Code]
