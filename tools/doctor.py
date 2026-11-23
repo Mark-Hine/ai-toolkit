@@ -2,8 +2,9 @@
 """Measure Claude Code session health from local transcripts and the global setup.
 
 Reads `~/.claude/projects/**/*.jsonl` and prints one JSON document of counts. It never prints
-transcript text, so the output is safe to keep beside the dated scorecards in `docs/health/`.
-`--alias` replaces project folder names with stable hashes for a report that will be committed.
+transcript text. The output still names real project folders, so the doctor skill keeps it under
+`~/.claude/health/` and out of the repository. `--alias` replaces the folder names with short
+hashes for a number that has to be quoted elsewhere. A hash of a guessable name is not a secret.
 Standard library only, Python 3.11 or later.
 """
 import argparse
