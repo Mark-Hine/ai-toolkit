@@ -8,7 +8,7 @@ sources: house
 ## Git
 
 - Follow the repository's documented Git contribution, branch naming and commit message conventions. When these are absent, use the defaults below.
-- Use Conventional Commits with the ticket as scope when available, such as `fix(PROJ-123): handle expired sessions`. Use a lowercase imperative subject of at most 72 characters. Add a short body only when needed to explain what changed and why.
+- Use Conventional Commits with the ticket as scope when available, such as `fix(PROJ-123): handle expired sessions`. Use a lowercase imperative subject of at most 72 characters. Add a short body only when needed to explain what changed and why. Keep the body to at most 3 short lines, with no file list and no restating of the diff.
 - Keep each commit to one logical change. Stage only the intended files or hunks, inspect the staged diff and exclude unrelated changes, secrets and unintended generated files. Run checks appropriate to the change before committing and report any failed or unavailable checks.
 - Name branches `<type>/<TICKET>-<slug>`, where `<type>` is the Conventional Commits type of the main change (`feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `build`, `ci`), for example `feat/MBS-123-barcode-validation`. Without a ticket use `<type>/<slug>`. Branch from the default branch.
 - Before committing, check the current branch. If it is `develop`, `main`, `master`, `release/*` or another branch protected by the project, create and switch to a suitably named feature or task branch before committing. Never commit directly to `main` or `master`.
