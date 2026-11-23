@@ -97,7 +97,7 @@ def reply_facts(text):
     body = prose(text)
     return {
         'words': len(body.split()),
-        'dashes': len(re.findall(r'[–—]', body)),
+        'dashes': len(re.findall(r'[\u2013\u2014]', body)),
         'semicolons': body.count(';'),
         'bold': 1 if re.search(r'\*\*[^*\n]+\*\*', body) else 0,
         'offer': 1 if OFFER.search(text.strip()) else 0,

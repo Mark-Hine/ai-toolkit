@@ -55,7 +55,7 @@ class ReplyFactsTest(unittest.TestCase):
         self.assertEqual(facts['semicolons'], 0)
 
     def test_detects_dash_bold_and_closing_offer(self):
-        facts = doctor.reply_facts('It works — **mostly**. Want me to fix the rest?')
+        facts = doctor.reply_facts('It works \u2014 **mostly**. Want me to fix the rest?')
         self.assertEqual((facts['dashes'], facts['bold'], facts['offer']), (1, 1, 1))
 
 
