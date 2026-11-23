@@ -8,7 +8,7 @@ Minor issues and open decisions from the doctor runs. Strike a line through when
 - ~~Lower `cleanupPeriodDays` from 36500 to 180. This deletes older transcripts (2026-11-23).~~ Set to 120 on 2026-11-23.
 - Make the trigger-eval harness run with its own config directory, or remove its project folder on exit, so new leftovers stop appearing (2026-11-23).
 - ~~Bold rule: 65% of replies contain bold. Relax `writing-style.md` or add the rule to the hook (2026-11-23).~~ Relaxed in `writing-style.md` on 2026-11-23.
-- Hook experiment: turn the `UserPromptSubmit` style hook off for one fortnight and compare the style rates in the next run (2026-11-23).
+- Hook experiment, running since 2026-11-23: the `UserPromptSubmit` style hook is off in the local settings. The rule file still loads. Compare `dashes_per_1000_words`, `semicolons_per_1000_words`, `share_ending_in_offer` and `median_words` in the 2026-12-15 run, the first whose 14 days fall wholly inside the experiment, against the 2026-11-23 baseline. If they hold within the noise bands, remove the hook from `claude/home/settings.snippet.json`. If not, restore it from `~/.claude/health/style-hook.removed-2026-11-23.json`.
 - ~~Firebase plugin: 0 calls in 14 days, 3 failed calls in all (2 Crashlytics timeouts and one before login) and a 993 MB cache. An earlier count of 79 login failures was a keyword overcount. Log in or disable it (2026-11-23).~~ Disabled on 2026-11-23. The 993 MB cache is still on disk.
 
 ## Minor issues
