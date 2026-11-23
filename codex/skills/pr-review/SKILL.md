@@ -58,7 +58,7 @@ scope block so the pipeline log is auditable.
 Read **[`references/protocol.md`](references/protocol.md)**, which holds the rules of engagement (§1 to §12),
 the grading rules every platform shares (§13 to §16), and their extensions (§17 to §24: root cause,
 verification criteria, SHA ancestry, debug variants, the adversarial pass, retractions, severity
-negotiation, CI conduct). Also read **[`references/template.md`](references/template.md)**, the section
+negotiation, CI conduct, and §25 for optional evidence). Also read **[`references/template.md`](references/template.md)**, the section
 contract, plus **[`references/output.md`](references/output.md)** for the JSON schema. Load
 exactly one platform pack in Phase 2, chosen by what Phase 0 detects:
 [`references/platforms/android.md`](references/platforms/android.md),
@@ -196,6 +196,16 @@ gone: a command, a `file:line` expectation, or a named test. For a Q, state the 
 closes it. Deduplicate across lenses, merge findings that share a fix, then assign IDs by severity
 and discovery order. IDs stay stable forever after (protocol.md §10).
 
+## Phase 3a: Evidence *(optional)*
+
+For each B, Q and M, note in the draft whether a screenshot would help the author see the defect,
+and why not when nothing is visible. Where it helps, follow
+[`references/evidence.md`](references/evidence.md) and the Evidence section of the loaded platform
+pack: climb the ladder from a failing unit test to a device harness, stop at the first rung that
+shows the defect, keep to the per-finding budget, and caption every image with its method
+(protocol.md §25). In local mode, ask before the first device run. CI mode collects only unit-test
+or transcript evidence and records every skipped step in the scope block.
+
 ## Phase 3.5: Emit `findings.json`
 
 Write the canonical output per [`references/output.md`](references/output.md): scope block
@@ -231,6 +241,8 @@ Check before delivering:
 - Every B/Q/M has a `verify_fixed_when` criterion, and every finding names its causal site.
 - Any commit cited passes the ancestry check (protocol.md §19).
 - **Good in this delta** section present. Credit is what keeps the harsh register credible.
+- Every `evidence` item's file exists at its `path`, its caption names its method, and the scratch
+  evidence worktree and any installed test build are gone (references/evidence.md).
 - Appendix A ranked by risk.
 - Local mode: both files at the repo root with the mode-correct name, untracked. CI mode: both in
   the artifact staging directory, and the pipeline runs the poster (`references/ci.md`).
@@ -244,7 +256,8 @@ Post through a route in [`references/posting.md`](references/posting.md). Before
 confirm the PR head still equals `scope.source_head`, run a dry run and show the user the bodies.
 Cast no vote unless the user asks for one, because the vote lands under their name. Blockers,
 Questions and Majors get anchored threads. Nits go only in the summary comment, so they add no
-thread the author must resolve.
+thread the author must resolve. On Azure DevOps the poster uploads each evidence file and embeds it
+in its thread. On GitHub it names the file instead, because GitHub has no attachment API.
 
 When `scope.destinations` includes Confluence, publish the document with
 `scripts/render_confluence.py` as [`references/posting.md`](references/posting.md) describes. A

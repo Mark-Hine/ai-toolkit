@@ -240,6 +240,38 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
   in UI tests. Anything needing a device pass goes under "Unverified (needs a trace)" with the
   VoiceOver / Accessibility-Inspector run that would confirm it.
 
+## Evidence (optional, protocol.md §25)
+
+How to show a visible defect on iOS. The ladder, budget, honesty and hygiene rules are in
+[`../evidence.md`](../evidence.md). Every method runs in a scratch worktree of the pinned SHA, and
+none of its code is committed.
+
+- **Unit test (rung 1).** Drive the real view model or store with a stubbed service and assert
+  the wrong state. Run it with `xcodebuild test -only-testing:<Target>/<Class>/<method>` and keep
+  the assertion failure as the `excerpt`.
+- **Render (rung 2).** In a unit test on the simulator, build the real SwiftUI view from the real
+  view model with the service stubbed, and render it with `ImageRenderer` (iOS 16 and later,
+  main actor), saving `uiImage?.pngData()` to the test's temporary directory. Views backed by
+  UIKit can render differently or not at all under `ImageRenderer`, so check the image against the
+  code and move to rung 3 when it looks wrong. A UIKit screen can draw its view hierarchy with
+  `UIGraphicsImageRenderer` and `drawHierarchy(in:afterScreenUpdates:)` instead.
+- **Device harness (rung 3).** An XCUITest launches the app with a launch argument or environment
+  value that swaps in the stubbed service, drives the screen with `XCUIApplication`, and takes
+  `XCUIApplication().screenshot()`. Keep it with `XCTAttachment(screenshot:)` and
+  `lifetime = .keepAlways`, then export it with
+  `xcrun xcresulttool export attachments --path <result>.xcresult --output-path <dir> --filter "*.png"`.
+  A stub switch must already exist in the app or be added in the scratch worktree only.
+- **Defect and control pair.** Draw the 2 images side by side with `UIGraphicsImageRenderer` inside
+  the test before saving, so the host needs no image tools.
+- **Live journey (rung 4) and recording (rung 5).** Run the PR's build on the simulator, launch it
+  with `xcrun simctl launch booted <bundle id>`, and capture with
+  `xcrun simctl io booted screenshot <file>.png`. Pass environment values to the app by setting
+  them with a `SIMCTL_CHILD_` prefix in the calling shell. Record with
+  `xcrun simctl io booted recordVideo <file>.mp4` and stop it with SIGINT, which finalises the file.
+- **Secure content.** Never disable a screen's own capture protection, such as a secure text
+  field or a view hidden while the screen is captured, to take an image. Show the state through
+  the harness instead and say so in the caption.
+
 ## Source registry (canonical URLs for Refs lines)
 
 The sentence each key rests on, and the date it was last confirmed on the live page, are in

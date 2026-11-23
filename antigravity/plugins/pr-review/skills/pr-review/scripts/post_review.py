@@ -18,6 +18,10 @@ statuses onto `active`, `bot_resolved` and `human_resolved`, and the neutral vot
 --host auto picks the host from findings.json `scope.host`, then the CI environment, then the
 `origin` remote URL. --dry-run prints every write unsent, and --emit-threads writes the intended
 threads as JSON so another client, such as an MCP server, can post identical content.
+
+A finding's optional `evidence` items (references/evidence.md) are attached when its thread is
+created. Azure DevOps takes each file as a pull-request attachment and the thread embeds it. GitHub
+has no attachment API, so the thread names the file or embeds the item's own `url`.
 """
 
 import argparse
@@ -52,6 +56,15 @@ STATUSES = GATING | {"fixed", "retracted"}
 # Neutral thread statuses every adapter maps onto.
 ACTIVE, BOT_RESOLVED, HUMAN_RESOLVED = "active", "bot_resolved", "human_resolved"
 NEUTRAL_VOTES = ("approve", "approve_with_suggestions", "waiting_for_author", "reject")
+
+# Evidence items (references/output.md). Unit tests and transcripts may carry only an excerpt.
+EVIDENCE_KINDS = {"unit_test", "render", "device_harness", "device_live", "recording", "transcript"}
+FILELESS_KINDS = {"unit_test", "transcript"}
+IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".gif", ".webp"}
+EVIDENCE_EXTS = IMAGE_EXTS | {".mp4", ".mov", ".txt", ".log"}
+# Microsoft documents no attachment size limit, so the poster keeps comments light with its own cap.
+MAX_EVIDENCE_BYTES = 5 * 1024 * 1024
+DRY_RUN_ATTACHMENT = "DRY-RUN-ATTACHMENT/{name}"
 
 
 # ---------------------------------------------------------------------------------------------
@@ -101,7 +114,36 @@ def plural(n, word):
     return f"{n} {word}" if n == 1 else f"{n} {word}s"
 
 
-def finding_body(f):
+def is_image(path):
+    return os.path.splitext(path or "")[1].lower() in IMAGE_EXTS
+
+
+def evidence_block(item, url=None):
+    """One evidence item as thread Markdown: the caption and method, then the image, link or excerpt."""
+    caption = str(item.get("caption", "")).strip().rstrip(".")
+    line = f"**Evidence:** {caption}. Method: {str(item.get('method', '')).strip().rstrip('.')}"
+    if item.get("sha"):
+        line += f", at `{str(item['sha'])[:12]}`"
+    if item.get("device"):
+        line += f" on {item['device']}"
+    parts = [line + "."]
+    path = item.get("path")
+    url = item.get("url") or url
+    name = os.path.basename(path or url or "")
+    if url and is_image(name):
+        parts.append(f"![{caption}]({url})")
+    elif url:
+        parts.append(f"[{name}]({url})")
+    elif path:
+        parts.append(f"{'Image' if is_image(path) else 'File'} `{name}` is in the review document.")
+    if item.get("excerpt"):
+        parts.append("```text\n" + str(item["excerpt"]).rstrip("\n") + "\n```")
+    return "\n\n".join(parts)
+
+
+def finding_body(f, urls=None):
+    """The thread body. `urls` maps an evidence path to the URL the host gave its uploaded copy."""
+    urls = urls or {}
     label, action = SEVERITY[f["severity"]]
     parts = [f"**{label}** ({action}) · **{f['id']}**: {f.get('title', '')}".rstrip(": "), "",
              f["pr_comment"]]
@@ -112,6 +154,7 @@ def finding_body(f):
         extra.append("**Also at:** " + ", ".join(f"`{s}`" for s in f["symptom_sites"]))
     if f.get("verify_fixed_when"):
         extra.append(f"**Verified fixed when:** {f['verify_fixed_when']}")
+    extra += [evidence_block(e, urls.get(e.get("path"))) for e in f.get("evidence") or []]
     if extra:
         parts += [""] + ["\n\n".join(extra)]
     parts += ["", FOOTER.format(id=f["id"])]
@@ -186,7 +229,50 @@ def summary_body(doc, threads_by_id=None, outside=()):
     return "\n".join(lines)
 
 
-def validate(doc):
+def evidence_problems(f, base_dir=None):
+    """Problems with one finding's evidence. `base_dir` (the findings.json folder) enables file checks."""
+    fid, items = f.get("id", "?"), f.get("evidence")
+    if items in (None, []):
+        return []
+    if not isinstance(items, list):
+        return [f"{fid}: evidence must be a list"]
+    if f.get("severity") == "nit":
+        return [f"{fid}: evidence is for blockers, questions and majors only"]
+    problems = []
+    for n, item in enumerate(items, 1):
+        where = f"{fid} evidence {n}"
+        if not isinstance(item, dict):
+            problems.append(f"{where}: must be an object")
+            continue
+        kind = item.get("kind")
+        if kind not in EVIDENCE_KINDS:
+            problems.append(f"{where}: unknown kind {kind!r}")
+        for field in ("caption", "method"):
+            if not str(item.get(field) or "").strip():
+                problems.append(f"{where}: {field} is required")
+        path = item.get("path")
+        if not path:
+            if kind not in FILELESS_KINDS or not item.get("excerpt"):
+                problems.append(f"{where}: path is required unless a unit_test or transcript has an excerpt")
+            continue
+        parts = str(path).replace("\\", "/").split("/")
+        if os.path.isabs(path) or re.match(r"^[A-Za-z]:", path) or ".." in parts:
+            problems.append(f"{where}: path {path!r} must be relative to findings.json, without '..'")
+            continue
+        if os.path.splitext(path)[1].lower() not in EVIDENCE_EXTS:
+            problems.append(f"{where}: {path!r} is not an image, video or text file")
+            continue
+        if base_dir is None:
+            continue
+        full = os.path.join(base_dir, path)
+        if not os.path.isfile(full):
+            problems.append(f"{where}: {path} not found beside findings.json")
+        elif os.path.getsize(full) > MAX_EVIDENCE_BYTES:
+            problems.append(f"{where}: {path} is larger than {MAX_EVIDENCE_BYTES // (1024 * 1024)} MB")
+    return problems
+
+
+def validate(doc, base_dir=None):
     """Reject a document the poster cannot act on safely. Returns a list of problems."""
     problems = []
     for f in doc.get("findings", []):
@@ -194,6 +280,7 @@ def validate(doc):
             problems.append(f"{f.get('id', '?')}: unknown severity {f.get('severity')!r}")
         if f.get("status", "open") not in STATUSES:
             problems.append(f"{f.get('id', '?')}: unknown status {f.get('status')!r}")
+        problems += evidence_problems(f, base_dir)
     gating_blockers = [f["id"] for f in doc.get("findings", [])
                        if f.get("severity") == "blocker" and f.get("status", "open") in GATING]
     if gating_blockers and doc.get("verdict") != "request_changes":
@@ -222,11 +309,27 @@ def compute_vote(doc, by_marker, reject):
     return "approve_with_suggestions" if suggestions else "approve"
 
 
-def reconcile(host, doc, by_marker):
+def attach_evidence(host, f, base_dir):
+    """Upload a finding's evidence files where the host can. Returns {path: url} for the thread body."""
+    attach = getattr(host, "attach", None)
+    if attach is None or base_dir is None:
+        return {}
+    urls = {}
+    for item in f.get("evidence") or []:
+        path = item.get("path")
+        if path and not item.get("url") and path not in urls:
+            url = attach(base_dir, path)
+            if url:
+                urls[path] = url
+    return urls
+
+
+def reconcile(host, doc, by_marker, base_dir=None):
     """Create, reply to, resolve or reactivate one thread per threaded finding. Idempotent.
 
     Returns (threads_by_id, outside): every finding's thread, existing or new, and the findings the
-    host could not anchor at their line.
+    host could not anchor at their line. Evidence is uploaded only for a thread being created, so a
+    re-run never uploads a file twice.
     """
     head = (doc.get("scope") or {}).get("source_head", "")[:12]
     threads_by_id, outside = {}, []
@@ -237,7 +340,8 @@ def reconcile(host, doc, by_marker):
         if t is None:
             # Nits live in the summary only. Fixed or retracted findings that never had a thread need none.
             if status in GATING and f["severity"] != "nit":
-                t = host.create_thread(finding_body(f), f.get("file"), f.get("line"))
+                body = finding_body(f, attach_evidence(host, f, base_dir))
+                t = host.create_thread(body, f.get("file"), f.get("line"))
                 if t is None:
                     outside.append(f)
                 else:
@@ -301,6 +405,23 @@ class Http:
         except urllib.error.HTTPError as e:
             raise HostError(e.code, f"{method} {url}: {e.read().decode(errors='replace')[:500]}")
 
+    def upload(self, url, data, content_type="application/octet-stream"):
+        """POST raw bytes, such as an attachment. Dry-run prints the size instead of sending."""
+        if self.dry_run:
+            print(f"DRY-RUN POST {url}")
+            print(f"  <{len(data)} bytes, {content_type}>")
+            return None
+        headers = {"Content-Type": content_type, **self.extra_headers}
+        if self.auth_header:
+            headers["Authorization"] = self.auth_header
+        req = urllib.request.Request(url, method="POST", headers=headers, data=data)
+        try:
+            with urllib.request.urlopen(req) as resp:
+                payload = resp.read()
+                return json.loads(payload) if payload else {}
+        except urllib.error.HTTPError as e:
+            raise HostError(e.code, f"POST {url}: {e.read().decode(errors='replace')[:500]}")
+
 
 def is_jwt(token):
     return token.startswith("eyJ") and token.count(".") == 2
@@ -342,6 +463,24 @@ class AzureDevOps:
         else:
             auth = "Basic " + base64.b64encode(f":{token}".encode()).decode()
         self.http = Http(auth, dry_run)
+        self._attachments = None
+
+    def attach(self, base_dir, path):
+        """Upload one evidence file as a PR attachment and return its URL for `![...](url)`."""
+        name = os.path.basename(path)
+        if self._attachments is None:
+            # Microsoft documents no behaviour for a duplicate name, so reuse an existing upload.
+            data = self.http.call("GET", f"{self.base}/attachments?api-version={self.API}") or {}
+            self._attachments = {a.get("displayName"): a.get("url") for a in data.get("value", [])}
+        if self._attachments.get(name):
+            return self._attachments[name]
+        with open(os.path.join(base_dir, path), "rb") as fh:
+            data = fh.read()
+        raw = self.http.upload(f"{self.base}/attachments/{urllib.parse.quote(name)}?api-version={self.API}", data)
+        url = (raw or {}).get("url") or (DRY_RUN_ATTACHMENT.format(name=name) if self.http.dry_run else None)
+        if url:
+            self._attachments[name] = url
+        return url
 
     def thread_url(self, thread_id):
         return (f"{self.org_url}/{urllib.parse.quote(self.project)}/_git/{urllib.parse.quote(self.repo)}"
@@ -471,6 +610,10 @@ query($o:String!,$n:String!,$pr:Int!,$after:String){
                                   check=True).stdout.strip() or None
         except (OSError, subprocess.CalledProcessError):
             return None
+
+    def attach(self, base_dir, path):
+        # GitHub has no API that attaches a file to a PR comment, so the body names the file instead.
+        return None
 
     def _graphql(self, query, variables, read_only):
         data = self.http.call("POST", f"{self.api}/graphql", {"query": query, "variables": variables},
@@ -602,6 +745,11 @@ class Recorder:
     def threads(self):
         return self.existing
 
+    def attach(self, base_dir, path):
+        # MCP servers have no PR attachment tool, so record the file and let the body name it.
+        self.actions.append({"action": "attach", "path": path})
+        return None
+
     def create_thread(self, body, path=None, line=None, status="active"):
         self.actions.append({"action": "create_thread", "path": path, "line": line, "status": status, "body": body})
         return {"id": None, "status": ACTIVE, "comments": [body], "url": None}
@@ -643,9 +791,9 @@ def build_host(name, args, doc):
 HOSTS = {"azure", "github"}
 
 
-def run(host, doc, args):
+def run(host, doc, args, base_dir=None):
     by_marker = index_threads(host.threads())
-    threads_by_id, outside = reconcile(host, doc, by_marker)
+    threads_by_id, outside = reconcile(host, doc, by_marker, base_dir)
     host.upsert_summary(summary_body(doc, threads_by_id, outside), by_marker.get(SUMMARY_ID))
     vote = compute_vote(doc, by_marker, args.vote_reject)
     if not args.no_vote:
@@ -676,14 +824,15 @@ def main(argv=None):
         doc = json.load(fh)
     if doc.get("schema") != "pr-review/v1":
         raise SystemExit(f"Unsupported schema: {doc.get('schema')!r} (want pr-review/v1)")
-    problems = validate(doc)
+    base_dir = os.path.dirname(os.path.abspath(args.findings))
+    problems = validate(doc, base_dir)
     if problems:
         raise SystemExit("findings.json rejected:\n  " + "\n  ".join(problems))
 
     name = detect_host(args.host, doc)
     if args.emit_threads:
         recorder = Recorder()
-        vote = run(recorder, doc, args)
+        vote = run(recorder, doc, args, base_dir)
         with open(args.emit_threads, "w") as fh:
             json.dump({"host": name, "actions": recorder.actions}, fh, indent=2, ensure_ascii=False)
         print(f"host={name} vote={vote} actions={len(recorder.actions)} written to {args.emit_threads}")
@@ -693,7 +842,7 @@ def main(argv=None):
     if missing and not args.dry_run:
         raise SystemExit(f"Missing for {name}: " + ", ".join(missing))
     try:
-        vote = run(host, doc, args)
+        vote = run(host, doc, args, base_dir)
     except HostError as e:
         raise SystemExit(f"{name}: {e}")
     print(f"host={name} vote={vote} verdict={doc['verdict']} findings={len(doc['findings'])}")

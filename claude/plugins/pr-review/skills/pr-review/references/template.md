@@ -155,6 +155,10 @@ section of its own:
 
 **Evidence.** <finding, verbatim>
 
+![<caption>](pr-review-evidence/<pr>-b1-<slug>.png)
+
+*<caption>. Method: <method>, at `<sha, 12 characters>` on <device>.*
+
 **Verified fixed when.** <verify_fixed_when, verbatim>
 ````
 
@@ -179,6 +183,15 @@ Section contract:
   **anchored at the causal site** with symptom sites listed after it (protocol.md §17), what
   changed relative to the merge-base ("the target branch had X, but this PR does Y"), the
   mechanism, and the standard tag in brackets. Written for the reviewer who will verify it.
+- **Evidence image** *(conditional)*: one image line and one caption line per `evidence` item,
+  directly under the Evidence paragraph and in array order (protocol.md §25). The image line is
+  `![<caption>](<path>)`, with the `path` relative to the document, so it renders on disk and on
+  every Markdown host that can reach the file. The caption line, in italics, repeats the caption
+  and adds the method, the 12-character SHA and the device, so a reader never mistakes a harness
+  for a live reproduction. A `url` replaces the `path` in the image line. An item without a file,
+  such as a unit test or a transcript, gets its caption line and its `excerpt` in a `text` fence.
+  A recording that is not a GIF is a link, `[<caption>](<path>)`, because Markdown cannot play it.
+  Findings without evidence get none of this.
 - **Verified fixed when**: the fix-verification contract (protocol.md §18). It is the observable
   that proves the defect gone: a command to run, a `file:line` expectation, or a named test that
   must pass. For a Q, it is the answer or evidence that closes it. One or two sentences, mechanical

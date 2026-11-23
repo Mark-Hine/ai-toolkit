@@ -42,6 +42,18 @@ class ValidateTest(unittest.TestCase):
     def test_clean_tree_passes(self):
         self.assertEqual([], self.errors())
 
+    def test_links_inside_code_are_examples(self):
+        skill = self.tmp / 'antigravity/plugins/pr-review/skills/pr-review/SKILL.md'
+        with skill.open('a') as handle:
+            handle.write('\nRender `![shot](<path>)`.\n\n```markdown\n![shot](missing.png)\n```\n')
+        errors = []
+        validate.check_links(errors)
+        self.assertEqual([], errors)
+        with skill.open('a') as handle:
+            handle.write('\nSee [this](missing.md).\n')
+        validate.check_links(errors)
+        self.assertTrue(any('broken link missing.md' in e for e in errors))
+
     def test_write_tool_on_a_specialist(self):
         self.rewrite(self.agent(), 'grep_search, run_command]', 'grep_search, run_command, write_to_file]')
         self.assertTrue(any('never get write tools' in e for e in self.errors()))

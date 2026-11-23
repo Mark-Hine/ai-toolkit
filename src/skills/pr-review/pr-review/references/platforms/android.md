@@ -259,6 +259,44 @@ M8 Misconfiguration→PLATFORM-1/STORAGE-2 · M9 Data Storage→STORAGE-1/2 · M
   gesture-only interactions. Anything needing a device pass goes under "Unverified (needs a trace)" with
   the TalkBack / Accessibility-Scanner run that would confirm it.
 
+## Evidence (optional, protocol.md §25)
+
+How to show a visible defect on Android. The ladder, budget, honesty and hygiene rules are in
+[`../evidence.md`](../evidence.md). Every method runs in a scratch worktree of the pinned SHA, and
+none of its code is committed.
+
+- **Unit test (rung 1).** Drive the real view model with a fake or mocked repository and assert
+  the wrong state, such as `isFormValid` true for an address the manual rule rejects. Run it with
+  `./gradlew :<module>:test<Variant>UnitTest --tests '<fqcn>'` and keep the assertion failure as
+  the `excerpt`.
+- **JVM render (rung 2).** Build the real screen from the real view model state in a Robolectric
+  test annotated `@GraphicsMode(GraphicsMode.Mode.NATIVE)` (package `org.robolectric.annotation`),
+  host the composable in an activity, then draw the activity's decor view into a `Canvas` backed by
+  a `Bitmap` and save it as a PNG. In native mode this draws what the device would. Compose's
+  `captureToImage` has timed out under Robolectric, so prefer the decor-view draw.
+- **Device harness (rung 3).** Add an instrumented test that hosts the real screen composable and
+  the real view model, with only the repository mocked (`io.mockk:mockk-android`). Drive it with
+  the Compose test APIs (`androidx.compose.ui:ui-test-junit4`, plus `ui-test-manifest` in the
+  module that hosts the activity). Capture with
+  `InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot()`, which returns a
+  `Bitmap`, and compress it to a PNG in `targetContext.filesDir`. Then:
+  1. Build and install both APKs with `./gradlew :<module>:installDebug :<module>:installDebugAndroidTest`.
+  2. Run the test with `adb shell am instrument -w -e class '<fqcn>#<method>' <test package>/androidx.test.runner.AndroidJUnitRunner`.
+     Do not use `connectedAndroidTest`, which uninstalls the APKs when it ends and loses the files.
+  3. Pull each file with `adb exec-out run-as <target package> cat files/<name>.png > <local path>`.
+     The target package owns `targetContext`. In a library module's test APK it is the test
+     package itself. `run-as` works only on a debuggable build.
+  4. Uninstall both packages with `adb uninstall`.
+- **Defect and control pair.** Capture both states in one test run, then draw the 2 bitmaps side
+  by side onto one `Canvas` inside the test before saving. The host needs no image tools.
+- **Live journey (rung 4) and recording (rung 5).** Install the PR's debug build and drive it with
+  the Android CLI or `adb`. Record with `adb shell screenrecord --time-limit 30 /sdcard/<name>.mp4`,
+  pull it with `adb pull`, and delete it from the device.
+- **Secure windows.** A window with `FLAG_SECURE` is kept out of screenshots, so a capture of it
+  comes back blank or black. Never remove the flag from the app. The harness rungs host the
+  composable without the activity that sets the flag, and the caption then says "secure window
+  flag not applied in the harness".
+
 ## Source registry (canonical URLs for Refs lines)
 
 The sentence each key rests on, and the date it was last confirmed on the live page, are in

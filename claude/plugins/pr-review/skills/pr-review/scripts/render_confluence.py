@@ -10,11 +10,15 @@ Confluence storage format:
 - a fenced block after a `**PR comment**` label becomes a code block titled "PR comment", whose
   copy button gives the exact Markdown to paste into the PR,
 - a paragraph that starts `**Evidence.**` becomes a collapsed expand section,
+- an evidence image `![caption](pr-review-evidence/<file>)` becomes an image of a page attachment,
+  outside the expand so it shows without a click, and a link to a file in that folder becomes an
+  attachment link,
 - `<a id="...">` anchors and heading slugs become anchor macros, so `[B1](#b1)` links resolve,
 - tables span the full page width, to match the full-width page `publish` sets.
 
 `publish` creates a page or updates one through the Confluence REST v2 API and sets it to full
-width. An update names the version it expects to replace (`--expect-version`). If the live page
+width. It then uploads every attachment the page references from `pr-review-evidence/` beside the
+XHTML file, or from --evidence-dir, through the v1 attachment endpoint, because v2 has no upload. An update names the version it expects to replace (`--expect-version`). If the live page
 is newer, someone edited it by hand, so the script refuses rather than overwrite the edit.
 
 Credentials come from CONFLUENCE_BASE_URL, CONFLUENCE_EMAIL and CONFLUENCE_TOKEN, or
@@ -25,11 +29,14 @@ import argparse
 import base64
 import html
 import json
+import mimetypes
 import os
 import re
 import sys
 import urllib.error
+import urllib.parse
 import urllib.request
+import uuid
 
 # Marker -> (lozenge colour, lozenge text). The markers are the template's vocabulary.
 MARKERS = [
@@ -44,6 +51,10 @@ MARKER_COLOUR = {(e, w): c for e, w, c in MARKERS}
 
 ANCHOR_RE = re.compile(r'<a id="([^"]+)"></a>\s*')
 
+# Evidence files live in this folder beside the review document (references/evidence.md).
+EVIDENCE_DIR = "pr-review-evidence"
+ATTACHMENT_RE = re.compile(r'ri:attachment ri:filename="([^"]+)"')
+
 # Pages are published full width, and the editor otherwise draws tables at its narrow default.
 TABLE_WIDTH = 1800
 
@@ -52,6 +63,16 @@ def lozenge(colour, title):
     return ('<ac:structured-macro ac:name="status"><ac:parameter ac:name="colour">'
             f'{colour}</ac:parameter><ac:parameter ac:name="title">{html.escape(title)}'
             '</ac:parameter></ac:structured-macro>')
+
+
+def image(alt, target):
+    """An image macro: a page attachment for a relative path, or an external URL."""
+    alt = html.escape(alt)
+    if re.match(r"https?://", target):
+        source = f'<ri:url ri:value="{html.escape(target)}" />'
+    else:
+        source = f'<ri:attachment ri:filename="{html.escape(os.path.basename(target))}" />'
+    return f'<ac:image ac:alt="{alt}" ac:title="{alt}">{source}</ac:image>'
 
 
 def anchor(name):
@@ -75,12 +96,17 @@ def inline(text):
 
     text = ANCHOR_RE.sub(lambda m: park(anchor(m.group(1))), text)
     text = re.sub(r"`([^`]+)`", lambda m: park(f"<code>{html.escape(m.group(1))}</code>"), text)
+    text = re.sub(r"!\[([^\]]*)\]\(([^)\s]+)\)", lambda m: park(image(m.group(1), m.group(2))), text)
 
     def link(m):
         label, target = m.group(1), m.group(2)
         body = inline(label)
         if target.startswith("#"):
             return park(f'<ac:link ac:anchor="{html.escape(target[1:])}"><ac:link-body>{body}'
+                        "</ac:link-body></ac:link>")
+        if target.startswith(EVIDENCE_DIR + "/"):
+            name = html.escape(os.path.basename(target))
+            return park(f'<ac:link><ri:attachment ri:filename="{name}" /><ac:link-body>{body}'
                         "</ac:link-body></ac:link>")
         return park(f'<a href="{html.escape(target)}">{body}</a>')
 
@@ -251,6 +277,21 @@ class Confluence:
             detail = err.read().decode(errors="replace")[:500]
             raise SystemExit(f"{method} {path} failed: HTTP {err.code} {detail}")
 
+    def attach(self, page_id, path):
+        """Create the attachment, or add a version when the name exists (v1, since v2 has no upload)."""
+        body, content_type = multipart(path)
+        req = urllib.request.Request(
+            f"{self.base}/rest/api/content/{urllib.parse.quote(str(page_id))}/child/attachment",
+            method="PUT", data=body,
+            headers={"Authorization": self.auth, "Accept": "application/json",
+                     "Content-Type": content_type, "X-Atlassian-Token": "nocheck"})
+        try:
+            with urllib.request.urlopen(req) as resp:
+                resp.read()
+        except urllib.error.HTTPError as err:
+            detail = err.read().decode(errors="replace")[:500]
+            raise SystemExit(f"attach {os.path.basename(path)} failed: HTTP {err.code} {detail}")
+
     def set_full_width(self, page_id):
         existing = {p["key"]: p for p in self.call("GET", f"/pages/{page_id}/properties")["results"]}
         for key in ("content-appearance-published", "content-appearance-draft"):
@@ -261,6 +302,29 @@ class Confluence:
                 self.call("PUT", f"/pages/{page_id}/properties/{prop['id']}",
                           {"key": key, "value": "full-width",
                            "version": {"number": prop["version"]["number"] + 1}})
+
+
+def multipart(path):
+    """A multipart/form-data body with the file and `minorEdit`, as the attachment endpoint needs."""
+    boundary = uuid.uuid4().hex
+    name = os.path.basename(path)
+    ctype = mimetypes.guess_type(name)[0] or "application/octet-stream"
+    with open(path, "rb") as fh:
+        data = fh.read()
+    head = (f'--{boundary}\r\nContent-Disposition: form-data; name="minorEdit"\r\n\r\ntrue\r\n'
+            f'--{boundary}\r\nContent-Disposition: form-data; name="file"; filename="{name}"\r\n'
+            f"Content-Type: {ctype}\r\n\r\n").encode()
+    return head + data + f"\r\n--{boundary}--\r\n".encode(), f"multipart/form-data; boundary={boundary}"
+
+
+def referenced_attachments(storage, evidence_dir):
+    """Map each attachment the page references to its local file. Exits when one is missing."""
+    names = sorted(set(html.unescape(n) for n in ATTACHMENT_RE.findall(storage)))
+    files = {n: os.path.join(evidence_dir, n) for n in names}
+    missing = [n for n, f in files.items() if not os.path.isfile(f)]
+    if missing:
+        raise SystemExit(f"attachments not found in {evidence_dir}: {', '.join(missing)}")
+    return files
 
 
 def publish(args):
@@ -276,6 +340,9 @@ def publish(args):
     api = Confluence(base, email, token)
     with open(args.xhtml) as fh:
         storage = fh.read()
+    # Check every attachment before touching the page, so a missing file leaves it as it was.
+    evidence_dir = args.evidence_dir or os.path.join(os.path.dirname(os.path.abspath(args.xhtml)), EVIDENCE_DIR)
+    attachments = referenced_attachments(storage, evidence_dir)
     body = {"representation": "storage", "value": storage}
     if args.page_id:
         live = api.call("GET", f"/pages/{args.page_id}")
@@ -301,9 +368,12 @@ def publish(args):
             request["parentId"] = args.parent_id
         page = api.call("POST", "/pages", request)
     api.set_full_width(page["id"])
+    for path in attachments.values():
+        api.attach(page["id"], path)
     link = page.get("_links", {})
     url = (link.get("base") or base) + link.get("webui", "")
-    print(json.dumps({"id": page["id"], "version": page["version"]["number"], "url": url}))
+    print(json.dumps({"id": page["id"], "version": page["version"]["number"], "url": url,
+                      "attachments": sorted(attachments)}))
 
 
 def main():
@@ -323,6 +393,8 @@ def main():
     p.add_argument("--base-url")
     p.add_argument("--email")
     p.add_argument("--token-file")
+    p.add_argument("--evidence-dir", help=f"folder holding the page's images (default: {EVIDENCE_DIR}/ "
+                   "beside the XHTML file)")
     args = parser.parse_args()
     if args.command == "render":
         with open(args.markdown) as fh:

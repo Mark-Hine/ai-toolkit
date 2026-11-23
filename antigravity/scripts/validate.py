@@ -166,9 +166,18 @@ def check_leaks(errors):
                 errors.append(f'{path}: contains {leak!r}, which belongs to another layer or an old layout')
 
 
+FENCE = re.compile(r'^(```|~~~).*?^\1', re.M | re.S)
+CODE_SPAN = re.compile(r'`[^`\n]*`')
+
+
+def markdown_links(text):
+    """Link targets in Markdown, leaving out fenced blocks and code spans, where `](` is example text."""
+    return re.findall(r'\]\(([^)]+)\)', CODE_SPAN.sub('', FENCE.sub('', text)))
+
+
 def check_links(errors):
     for path in ROOT.rglob('*.md'):
-        for target in re.findall(r'\]\(([^)]+)\)', path.read_text()):
+        for target in markdown_links(path.read_text()):
             if '://' in target or target.startswith(('#', 'mailto:')):
                 continue
             link = target.split('#')[0]

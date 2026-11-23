@@ -11,7 +11,7 @@ is recorded so the rule survives contact with a case it doesn't obviously fit.
 §1 to §12 govern how a review is conducted. §13 to §16 are the grading rules that apply to every
 platform pack. §17 to §20 extend the grading rules (root cause, verification criteria, citation
 hygiene, debug variants). §21 to §24 govern the verification passes, retractions, severity
-negotiation, and CI conduct. Never renumber §1 to §16, because they are cross-referenced by number
+negotiation, and CI conduct. §25 governs optional evidence such as screenshots. Never renumber §1 to §16, because they are cross-referenced by number
 from SKILL.md and every platform pack. New rules append.
 
 ## 1. Delta-only discipline
@@ -337,3 +337,31 @@ ask, so every ask in the phases resolves to its safe default:
 Posting: CI mode is the one context where output leaves the machine. `findings.json` is posted
 to the PR by the shipped adapter under the pipeline's own credentials and configuration
 (`references/ci.md`). The skill itself still never posts. The pipeline does.
+
+## 25. Evidence is optional and states its method
+
+A Blocker, Question or Major whose defect shows on screen may ship with a screenshot, a render or a
+short recording that the author can check in seconds. A backend defect may ship with a failing test
+or a redacted request and response transcript. Evidence shows a defect that §6 already verified.
+It never stands in for that verification, and a finding without evidence loses nothing. The
+method, ladder, budget and storage rules are in [`evidence.md`](evidence.md).
+
+Four rules keep it honest:
+
+- **Visible defects only.** Each B, Q and M draft says whether a screenshot helps, and says why
+  not when the defect has nothing visible. Nits never get evidence.
+- **The caption names the method.** A harness or a render is never presented as a live
+  reproduction. The caption says what was real and what was stubbed, such as "real screen and view
+  model on an API 36 emulator, repository mocked".
+- **A budget, then `Unverified`.** When the per-finding budget runs out, the finding ships without
+  evidence. Any part of its claim that only a render could settle is graded Unverified with the run
+  that would confirm it (§14).
+- **Test data and a scratch worktree.** No customer data, card numbers or tokens appear in any
+  image or transcript, and a secure-window flag is never removed to capture a screen. Harness code
+  lives in a scratch worktree, is never committed to the reviewed repo, and is removed with any
+  installed test build when the evidence is captured.
+
+Why it earned its place: a screenshot of the defect beside its control settled a disputed "done"
+ticket in one exchange, after `file:line` references had not. Device journeys through the live app
+needed a new test account, a one-time code and backend data that triggered the defect, so the
+harness rungs exist to show the real screen without them.
