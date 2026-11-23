@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Stand-in for the Gradle wrapper, so an eval run needs no Android toolchain. It records each
+# call in .gradle-calls.log for the graders and derives a test result from the sources.
+echo "$*" >> .gradle-calls.log
+main=app/src/main/kotlin/com/example/rewards/PointsFormatter.kt
+tests=app/src/test/kotlin/com/example/rewards
+case "$*" in
+    *[tT]est* | *check*) ;;
+    *) echo "BUILD SUCCESSFUL in 1s"; exit 0 ;;
+esac
+failed=""
+if grep -rq '0 points' "$tests" && grep -q 'points > 1' "$main"; then failed="zero balance"; fi
+if grep -rq '9,999+' "$tests" && ! grep -q '9,999+' "$main"; then failed="points cap"; fi
+if [ -n "$failed" ]; then
+    echo "PointsFormatterTest > $failed FAILED"
+    echo "    org.opentest4j.AssertionFailedError at PointsFormatterTest.kt"
+    echo "BUILD FAILED in 2s"
+    exit 1
+fi
+echo "BUILD SUCCESSFUL in 2s"
