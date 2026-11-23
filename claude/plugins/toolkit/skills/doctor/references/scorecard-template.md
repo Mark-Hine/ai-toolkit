@@ -35,6 +35,11 @@ Window: <days> days. Sessions: <n>. Subagent transcripts: <n>. Tool calls: <n>. 
 
 One unified diff per source file. Nothing here is applied.
 
+## Rules for the next audit
+
+| Rule (`file:line`) | Evidence | Routinely broken or no measured effect |
+|---|---|---|
+
 ## Unverified
 
 Anything the collector or a quoted command did not measure.
