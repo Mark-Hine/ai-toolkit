@@ -5,11 +5,11 @@ Minor issues and open decisions from the doctor runs. Strike a line through when
 ## Open decisions
 
 - ~~Delete the 1,427 eval leftover folders under `~/.claude/projects` (2026-11-23).~~ Moved to the Trash on 2026-11-23.
-- Lower `cleanupPeriodDays` from 36500 to 180. This deletes older transcripts (2026-11-23).
+- ~~Lower `cleanupPeriodDays` from 36500 to 180. This deletes older transcripts (2026-11-23).~~ Set to 120 on 2026-11-23.
 - Make the trigger-eval harness run with its own config directory, or remove its project folder on exit, so new leftovers stop appearing (2026-11-23).
 - ~~Bold rule: 65% of replies contain bold. Relax `writing-style.md` or add the rule to the hook (2026-11-23).~~ Relaxed in `writing-style.md` on 2026-11-23.
 - Hook experiment: turn the `UserPromptSubmit` style hook off for one fortnight and compare the style rates in the next run (2026-11-23).
-- ~~Firebase plugin: 0 calls in 14 days, 79 login failures over 60 days and a 993 MB cache. Log in or disable it (2026-11-23).~~ Disabled on 2026-11-23. The 993 MB cache is still on disk.
+- ~~Firebase plugin: 0 calls in 14 days, 3 failed calls in all (2 Crashlytics timeouts and one before login) and a 993 MB cache. An earlier count of 79 login failures was a keyword overcount. Log in or disable it (2026-11-23).~~ Disabled on 2026-11-23. The 993 MB cache is still on disk.
 
 ## Minor issues
 
