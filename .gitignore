@@ -4,3 +4,5 @@ __pycache__/
 .DS_Store
 claude/plugins/*/evals/results/
 .cache/
+# Doctor reports describe real sessions. They live in ~/.claude/health/.
+docs/health/
