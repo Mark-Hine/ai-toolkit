@@ -27,7 +27,7 @@ Coordinate multi-part work by splitting it into independent tasks, dispatching b
 - **Long shell commands:** Pass `run_in_background: true` on `Bash` for builds, test suites, installs or servers that take more than 10 seconds.
 - **Turn boundary:** End your turn after dispatching background work. Never poll or sleep. Claude Code delivers each background agent's or command's result as a completion notification in a later turn.
 - **Follow-up and stop:** Use `SendMessage` with the agent's `name` to continue a topic with its context intact. Use `TaskStop` to cancel a running agent or background command.
-- **Write isolation:** When 2 subagents write code at the same time, set `isolation: "worktree"` on each writer `Agent` call so their edits and build caches do not collide, or run them one after the other.
+- **Write isolation:** When 2 subagents write code at the same time, set `isolation: "worktree"` on each writer `Agent` call so their edits and build caches do not collide, or run them one after the other. Tell each isolated writer to run one plain command per call from its worktree root, with no `cd`, shell variables, heredocs or chained `git`, because the harness refuses a command it cannot verify stays inside the worktree.
 - **Agent Teams:** When `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` is enabled and the user asks for a team or swarm, coordinate peer teammates through `SendMessage` and the shared team task list.
 <!-- end -->
 <!-- if: target=antigravity -->
