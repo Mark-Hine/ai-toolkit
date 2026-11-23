@@ -142,6 +142,13 @@ git diff MERGE_BASE SOURCE_HEAD | grep -c '^-.*Copyright'
 ./gradlew licenseMain   # when the repo applies the licence plugin
 ```
 
+## Evidence (optional, protocol.md §25)
+
+A Spring Boot defect has nothing to screenshot. Evidence is a failing test or a transcript, under the rules in [`../evidence.md`](../evidence.md), built in a scratch worktree of the pinned SHA and never committed.
+
+- **Failing test (`unit_test`).** A `@WebMvcTest` or `@SpringBootTest` that asserts the wrong status, body or header. Run it with `./gradlew test --tests '<fqcn>'` or `mvn -Dtest=<Class>#<method> test` and keep the assertion failure as the `excerpt`.
+- **Transcript (`transcript`).** A request and response against the app started locally from the scratch worktree with test data, such as `curl -sS -i` output. Keep at most 20 lines, and redact `Authorization`, `Cookie`, `Set-Cookie`, tokens and any personal data. Never run it against a shared environment the user has not named.
+
 ## Source registry (canonical URLs for Refs lines)
 
 The sentence each key rests on, and the date it was last confirmed on the live page, are in

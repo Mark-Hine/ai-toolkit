@@ -63,7 +63,7 @@ def check_skills(root, repo_root, errors):
         if path.parent.name not in manual and has_manual_policy:
             errors.append(f'{path.parent}: openai.yaml disables implicit invocation but the Claude skill does not')
     for path in (root / 'skills').rglob('*.md'):
-        for target in re.findall(r'\]\(([^)]+)\)', path.read_text()):
+        for target in markdown_links(path.read_text()):
             if '://' in target or target.startswith('#'):
                 continue
             if not (path.parent / target.split('#')[0]).exists():
@@ -126,6 +126,15 @@ def check_home_references(root, repo_root, errors):
         for ref in set(re.findall(r'~/\.agents/skills/([a-z0-9/_.-]+)', text)):
             if not (root / 'skills' / ref.rstrip('/')).exists():
                 errors.append(f'{source}: references ~/.agents/skills/{ref} which does not exist under codex/skills')
+
+
+FENCE = re.compile(r'^(```|~~~).*?^\1', re.M | re.S)
+CODE_SPAN = re.compile(r'`[^`\n]*`')
+
+
+def markdown_links(text):
+    """Link targets in Markdown, leaving out fenced blocks and code spans, where `](` is example text."""
+    return re.findall(r'\]\(([^)]+)\)', CODE_SPAN.sub('', FENCE.sub('', text)))
 
 
 def main(root=None, repo_root=None):

@@ -55,6 +55,14 @@ class ValidateTest(unittest.TestCase):
         self.assertTrue(any('non-empty list' in e for e in problems))
         self.assertTrue(any('decision must be' in e for e in problems))
 
+    def test_links_inside_code_are_examples(self):
+        with (self.codex / 'skills/pr-review/SKILL.md').open('a') as handle:
+            handle.write('\nRender `![shot](<path>)`.\n\n```markdown\n![shot](missing.png)\n```\n')
+        self.assertEqual([], self.errors())
+        with (self.codex / 'skills/pr-review/SKILL.md').open('a') as handle:
+            handle.write('\nSee [this](missing.md).\n')
+        self.assertTrue(any('broken link missing.md' in e for e in self.errors()))
+
     def test_dangling_guidance_reference(self):
         with (self.codex / 'home/AGENTS.md').open('a') as handle:
             handle.write('\nSee guidance/android/missing.md.\n')

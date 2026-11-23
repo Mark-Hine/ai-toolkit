@@ -19,6 +19,12 @@ artifacts to the staging directory, and lets the pipeline post the findings JSON
 - **Outputs:** `pr-review-<PR#>-<YYYY-MM-DD>.json` and `pr-review-<PR#>-<YYYY-MM-DD>.md` in the
   artifact staging directory, published as build artifacts. The poster globs `pr-review-*.json`
   and expects exactly one.
+- **Evidence** (protocol.md §25, [`evidence.md`](evidence.md)): CI mode runs no emulator,
+  simulator, browser or live journey, so it never takes a screenshot. It may record `unit_test` or
+  `transcript` evidence when the pipeline already builds and runs the tests. Every skipped evidence
+  step is listed in `scope.inferences`, such as `evidence skipped for M2: device_harness needs an
+  emulator (CI mode)`. Any evidence file goes in a `pr-review-evidence/` folder in the staging
+  directory, so it is published with the other artifacts.
 - **Posting:** the pipeline runs `scripts/post_review.py` from the installed skill, with
   `--host azure` or `--host github`. It creates an anchored thread at `file:line` for each Blocker,
   Question and Major, one summary comment that also lists the nits, and a reviewer vote. Re-runs

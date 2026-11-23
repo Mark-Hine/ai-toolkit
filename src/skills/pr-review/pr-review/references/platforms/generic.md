@@ -136,6 +136,13 @@ the unsafe case, is a defect in the interface, not just in the caller.
 with no destination, feature flags with no reader. Each compiles and looks intentional, which is
 what makes it expensive later.
 
+## Evidence (optional, protocol.md §25)
+
+Use a failing test or a redacted request and response transcript, under the rules in
+[`../evidence.md`](../evidence.md). When the repo has a UI, use the nearest platform pack's method,
+such as a Playwright screenshot for a web front end. Build every piece of evidence in a scratch
+worktree of the pinned SHA and commit none of it.
+
 ## Source registry
 
 The sentence each key rests on, and the date it was last confirmed on the live page, are in

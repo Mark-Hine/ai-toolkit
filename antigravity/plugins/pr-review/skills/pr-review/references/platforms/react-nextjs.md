@@ -132,6 +132,16 @@ pnpm check-types && pnpm lint
 pnpm why <package>
 ```
 
+## Evidence (optional, protocol.md §25)
+
+How to show a visible defect in a React or Next.js app. The ladder, budget, honesty and hygiene rules are in [`../evidence.md`](../evidence.md). Every method runs in a scratch worktree of the pinned SHA, and none of its code is committed.
+
+- **Unit test (rung 1).** A Testing Library test that renders the real component with mocked data and asserts the wrong state, such as `expect(getByRole('button', { name: 'Continue' })).toBeEnabled()`. Keep the assertion failure as the `excerpt`.
+- **Render and harness (rungs 2 and 3).** Run the app locally from the scratch worktree, stub its API with `page.route(url, route => route.fulfill({ json }))`, drive the page with Playwright, and capture with `page.screenshot({ path, animations: 'disabled' })` or `locator.screenshot({ path })` for one component. Use `mask` to hide anything that is not test data. Run one spec with `npx playwright test <spec> --project=chromium`, which is headless by default.
+- **Defect and control pair.** Render both states in one page, side by side, and take one screenshot, so the host needs no image tools.
+- **Recording (rung 5).** Set `use: { video: 'on' }` for the spec, or `recordVideo: { dir }` on `browser.newContext`. Playwright writes the video when the context closes, under the test output directory. A trace (`--trace on`, opened with `npx playwright show-trace`) is a useful link for a navigation defect but stays local, because it can hold request bodies.
+- **Live journey (rung 4).** Only against a test environment the user names, with a test account. Never against production.
+
 ## Source registry (canonical URLs for Refs lines)
 
 The sentence each key rests on, and the date it was last confirmed on the live page, are in

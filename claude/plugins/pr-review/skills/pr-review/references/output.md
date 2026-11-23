@@ -62,7 +62,17 @@ the artifact staging directory.
       "status": "open",
       "verification": {"adversarial": "confirmed", "lead_verified": true},
       "debug_only": false,
-      "twin": null
+      "twin": null,
+      "evidence": [
+        {
+          "kind": "device_harness",
+          "path": "pr-review-evidence/78455-b1-delete-failure-shows-success.png",
+          "caption": "Left: a failed delete shows the success screen. Right: the same failure at the merge-base shows the error state",
+          "method": "Real screen and view model on an API 36 emulator, repository mocked to return Failure",
+          "sha": "8e3be28a41c0",
+          "device": "Pixel 9 Pro emulator, API 36"
+        }
+      ]
     }
   ],
   "genuinely_good": ["<verified improvement, one line each>"],
@@ -107,6 +117,23 @@ Per finding:
 | `verification` | `adversarial`: `confirmed`/`weakened`/`inline` (no fan-out ran). `lead_verified`: bool, which must be `true` for every published B/Q/M (protocol.md §6) |
 | `debug_only` | `true` only with the confining guard quoted in `finding` (protocol.md §20). Such items are N at most |
 | `twin` | paired-repo marker (`"<repo>: B2"`) or `null` |
+| `evidence` | optional array of proof the author can check in seconds, for B, Q and M findings only (protocol.md §25, `references/evidence.md`). Omit it, or leave it empty, when nothing was collected |
+
+Per evidence item:
+
+| Field | Values / notes |
+|---|---|
+| `kind` | `unit_test` \| `render` \| `device_harness` \| `device_live` \| `recording` \| `transcript`, the ladder rung that produced it |
+| `path` | the file, relative to the directory that holds `findings.json`, such as `pr-review-evidence/78455-m1-lookup-vs-manual.png`. Never absolute and never containing `..`. Required for every kind except `unit_test` and `transcript`, which may carry only an `excerpt`. Images are PNG, JPEG, GIF or WebP, and every file is at most 5 MB |
+| `caption` | one sentence saying what the reader sees, defect first, then the control when the image is a pair |
+| `method` | how it was made and what was stubbed, such as "Real screen and view model on an API 36 emulator, repository mocked". Never call a harness or a render a live reproduction |
+| `sha` | the commit the evidence was built from: `scope.source_head`, or the new head in a re-review |
+| `device` | the emulator, simulator, browser or JVM it ran on, or `null` for a unit test or transcript |
+| `excerpt` | optional text of at most 20 lines: the failing assertion, or a redacted request and response. Rendered as a code block |
+| `url` | optional link to a copy already hosted elsewhere, such as a Confluence attachment. The poster embeds it in place of uploading `path`, and on GitHub it is the only way an image shows inline |
+
+The field is additive, so the schema stays `pr-review/v1`. A file without `evidence` is valid, and
+an older poster ignores the field and posts the thread without the image.
 
 ## Rules
 
@@ -116,4 +143,5 @@ Per finding:
 - **Re-review**: update statuses in place (evidence at the new head), append new findings, update
   `scope` to the new range, set `run: "re-review"`. Never rewrite history. The JSON is the
   record the poster reconciles PR threads against.
-- The JSON never contains credentials, tokens, or absolute local paths.
+- The JSON never contains credentials, tokens, or absolute local paths. Evidence files and
+  excerpts carry test data only.

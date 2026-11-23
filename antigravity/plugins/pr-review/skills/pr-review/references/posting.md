@@ -14,7 +14,9 @@ CI posting is in [`ci.md`](ci.md). Every route posts the same content, because e
 - **One anchored thread per Blocker, Question and Major**, at the finding's causal `file:line`. The
   header names the severity and what it asks, such as "Major (please ticket, does not block the
   merge)". The body carries the PR comment, a **Why** line from `root_cause`, an **Also at** line
-  from `symptom_sites` and the **Verified fixed when** criterion.
+  from `symptom_sites` and the **Verified fixed when** criterion. A finding with `evidence` adds
+  an **Evidence** line per item with its caption and method, and the image itself where the host
+  allows it (see "Evidence images" below).
 - **One summary comment** with:
   - the verdict and the scope statement (protocol.md §2);
   - a severity legend;
@@ -48,6 +50,10 @@ environment, then the `origin` remote URL.
 | B. Entra token | `az` is installed and signed in | Set `AZURE_DEVOPS_EXT_PAT` from `az account get-access-token --resource 499b84ac-1321-427f-aa17-267ca6975798 --query accessToken -o tsv` in the same command. The poster sends a JWT-shaped token as a bearer token |
 | C. Azure DevOps MCP server | An MCP server with pull-request thread tools is connected | Run the poster with `--emit-threads threads.json`, then create each `create_thread` entry in order and the `summary` entry last |
 
+Route C cannot attach evidence, because the MCP server has no pull-request attachment tool.
+`--emit-threads` records an `attach` action for each file and writes the GitHub-style fallback
+line into the body. Use route A or B when the review has evidence images.
+
 For route C, create each anchored thread with only `filePath` and the right-file start and end line
 and offset. Leave out `firstComparingIteration`, `secondComparingIteration` and `changeTrackingId`.
 The service rejects iteration 0 and attaches the thread to the latest iteration by itself. Cast no
@@ -66,6 +72,28 @@ anchor into the summary under "Outside the diff", and route E should do the same
 approval or a change request on the author's own pull request, and the poster then leaves a comment
 review instead.
 
+## Evidence images
+
+The poster attaches evidence only when it creates a finding's thread. A re-run leaves existing
+threads as they are, so it never uploads the same file twice. Before uploading, it checks that
+every `evidence` path is relative, exists beside `findings.json`, has an image, video or text
+extension and is at most 5 MB, and it rejects the findings file otherwise.
+
+- **Azure DevOps** uploads each file with
+  `POST .../pullRequests/{id}/attachments/{fileName}?api-version=7.1`, sending the raw bytes as
+  `application/octet-stream`, and embeds the returned `url` as `![caption](url)` in the thread.
+  Microsoft documents neither a size limit nor what a duplicate file name does, so the poster first
+  lists the PR's attachments and reuses one whose name matches. Viewers need access to the
+  repository to see the image. A dry run prints each upload with its byte count and shows the body
+  with a `DRY-RUN-ATTACHMENT` placeholder URL.
+- **GitHub** has no API that attaches a file to a PR comment. Drag-and-drop uploads work only in
+  the browser. So the poster embeds the item's `url` when it has one, and otherwise writes
+  "Image `<file>` is in the review document." To show the image inline from a local session, open
+  the thread in the browser and drag the file from `pr-review-evidence/` into a reply. CI mode
+  never produces images (ci.md), so a pipeline loses nothing.
+- **Recordings** that are not GIFs are linked, never embedded, because neither host plays a video
+  inside a comment.
+
 ## Publishing the document to Confluence
 
 Publish only when `scope.destinations` includes Confluence and the user has named the space,
@@ -75,12 +103,17 @@ carries a finding the document lacks.
 1. Render the page: `render_confluence.py render <review>.md --out <review>.xhtml`. The script
    is stdlib only. It maps the severity and status markers (template.md, Markers) to status
    lozenges, the verdict blockquote to an info panel, each **PR comment** block to a code block
-   titled "PR comment" and each **Evidence** paragraph to a collapsed expand section. Heading
-   anchors keep the At a glance links working.
+   titled "PR comment" and each **Evidence** paragraph to a collapsed expand section. An evidence
+   image becomes an image of a page attachment, shown outside the expand so the reader sees it
+   without opening anything. Heading anchors keep the At a glance links working.
 2. Set `CONFLUENCE_BASE_URL` (for example `https://<site>.atlassian.net/wiki`), `CONFLUENCE_EMAIL`
    and `CONFLUENCE_TOKEN` in the same command, or pass `--token-file`, as for the PR tokens below.
 3. Create the page with `render_confluence.py publish <review>.xhtml --title "<title>"
    --space-id <id> --parent-id <page or folder id>`. The script sets the page to full width.
+   `publish` then uploads every image the page references from the `pr-review-evidence/` folder
+   beside the XHTML file, or from `--evidence-dir`. It uses the v1 attachment endpoint
+   `PUT /wiki/rest/api/content/{id}/child/attachment`, because REST v2 has no upload. A file whose
+   name already exists becomes a new version of that attachment.
 4. Update an existing page with `render_confluence.py publish <review>.xhtml --page-id <id>
    --expect-version <n>`, where `<n>` is the version this session last published. If the live
    version is newer, someone edited the page by hand. The script refuses and prints the versions,

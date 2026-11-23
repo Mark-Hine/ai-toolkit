@@ -1,5 +1,7 @@
 """Rules of the pr-review poster: bodies, vote, reconciliation and both host adapters, run against fakes."""
+import contextlib
 import importlib.util
+import io
 import json
 import os
 import subprocess
@@ -203,6 +205,9 @@ class FakeHttp:
             raise response
         return response
 
+    def upload(self, url, data, content_type='application/octet-stream'):
+        return self.call('UPLOAD', url, len(data), content_type)
+
 
 class AzureAdapterTest(unittest.TestCase):
     def make(self, responses=(), token='pat'):
@@ -313,6 +318,118 @@ class HostDetectionTest(unittest.TestCase):
         self.assertEqual('github', detect('auto', {}, {}, 'git@github.com:a/b.git'))
         with self.assertRaises(SystemExit):
             detect('auto', {}, {}, 'https://gitlab.com/a/b')
+
+
+PNG = b'\x89PNG\r\n\x1a\n' + b'0' * 32
+
+
+def shot(**extra):
+    return {'kind': 'device_harness', 'path': 'pr-review-evidence/7-m1-lookup.png',
+            'caption': 'Continue enabled for a lookup address.', 'method': 'Real screen on an emulator, repository mocked',
+            'sha': 'abc123def4567890', 'device': 'API 36 emulator', **extra}
+
+
+class EvidenceTest(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.base = self.tmp.name
+        (Path(self.base) / 'pr-review-evidence').mkdir()
+        (Path(self.base) / 'pr-review-evidence/7-m1-lookup.png').write_bytes(PNG)
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def test_body_embeds_an_uploaded_image_under_its_caption_and_method(self):
+        body = post_review.finding_body(finding('M1', 'major', evidence=[shot()]),
+                                        {'pr-review-evidence/7-m1-lookup.png': 'https://host/a/7-m1-lookup.png'})
+        self.assertIn('**Evidence:** Continue enabled for a lookup address. Method: Real screen on an emulator, '
+                      'repository mocked, at `abc123def456` on API 36 emulator.', body)
+        self.assertIn('![Continue enabled for a lookup address](https://host/a/7-m1-lookup.png)', body)
+        self.assertEqual('M1', post_review.marker_of(body))
+        self.assertLess(body.index('![Continue'), body.index('_pr-review M1'))
+
+    def test_body_falls_back_to_the_document_or_the_items_url(self):
+        self.assertIn('Image `7-m1-lookup.png` is in the review document.',
+                      post_review.finding_body(finding('M1', 'major', evidence=[shot()])))
+        hosted = post_review.finding_body(finding('M1', 'major', evidence=[shot(url='https://wiki/x.png')]))
+        self.assertIn('![Continue enabled for a lookup address](https://wiki/x.png)', hosted)
+
+    def test_excerpt_renders_as_a_text_fence(self):
+        item = {'kind': 'unit_test', 'caption': 'Fails', 'method': 'JVM unit test', 'excerpt': 'expected false\n'}
+        self.assertIn('```text\nexpected false\n```', post_review.finding_body(finding('M1', 'major', evidence=[item])))
+
+    def test_a_finding_without_evidence_keeps_its_body(self):
+        f = finding('M1', 'major', verify_fixed_when='a test fails')
+        self.assertEqual(post_review.finding_body(f), post_review.finding_body(dict(f, evidence=[])))
+        self.assertNotIn('Evidence', post_review.finding_body(f))
+
+    def test_validation(self):
+        def problems(*items, severity='major'):
+            return post_review.validate(doc(finding('M1', severity, evidence=list(items))), self.base)
+        self.assertEqual([], problems(shot()))
+        self.assertEqual([], problems({'kind': 'transcript', 'caption': 'c', 'method': 'm', 'excerpt': 'HTTP/1.1 500'}))
+        self.assertIn('unknown kind', problems(shot(kind='photo'))[0])
+        self.assertIn('method is required', problems(shot(method=''))[0])
+        self.assertIn('must be relative', problems(shot(path='/Users/me/x.png'))[0])
+        self.assertIn('must be relative', problems(shot(path='pr-review-evidence/../../x.png'))[0])
+        self.assertIn('not an image', problems(shot(path='pr-review-evidence/x.exe'))[0])
+        self.assertIn('not found', problems(shot(path='pr-review-evidence/missing.png'))[0])
+        self.assertIn('path is required', problems({'kind': 'render', 'caption': 'c', 'method': 'm'})[0])
+        self.assertIn('blockers, questions and majors', problems(shot(), severity='nit')[0])
+        big = Path(self.base) / 'pr-review-evidence/big.png'
+        big.write_bytes(b'0' * (post_review.MAX_EVIDENCE_BYTES + 1))
+        self.assertIn('larger than 5 MB', problems(shot(path='pr-review-evidence/big.png'))[0])
+
+    def test_reconcile_uploads_only_for_a_new_thread(self):
+        class Attaching(FakeHost):
+            def attach(self, base_dir, path):
+                self.calls.append(('attach', path))
+                return 'https://host/a/' + path.rsplit('/', 1)[-1]
+        host = Attaching()
+        post_review.reconcile(host, doc(finding('M1', 'major', evidence=[shot()])), {}, self.base)
+        self.assertEqual(['attach', 'create'], [c[0] for c in host.calls])
+        host = Attaching()
+        existing = {'M1': thread(4, ACTIVE, ['_pr-review M1 · x_'])}
+        post_review.reconcile(host, doc(finding('M1', 'major', evidence=[shot()])), existing, self.base)
+        self.assertEqual([], host.calls)
+
+    def test_azure_uploads_the_file_and_reuses_a_matching_name(self):
+        ado = post_review.AzureDevOps('https://dev.azure.com/org', 'Proj', 'repo', 5, 'pat', False)
+        ado.http = FakeHttp([{'value': [{'displayName': 'old.png', 'url': 'https://ado/old'}]},
+                             {'url': 'https://ado/new'}])
+        self.assertEqual('https://ado/new', ado.attach(self.base, 'pr-review-evidence/7-m1-lookup.png'))
+        self.assertEqual('https://ado/old', ado.attach(self.base, 'pr-review-evidence/old.png'))
+        method, url, size = ado.http.calls[1]
+        self.assertEqual('UPLOAD', method)
+        self.assertTrue(url.endswith('/pullRequests/5/attachments/7-m1-lookup.png?api-version=7.1'))
+        self.assertEqual(len(PNG), size)
+        self.assertEqual(2, len(ado.http.calls))
+
+    def test_azure_dry_run_prints_the_upload_and_a_placeholder(self):
+        ado = post_review.AzureDevOps('https://dev.azure.com/org', 'Proj', 'repo', 5, '', True)
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            url = ado.attach(self.base, 'pr-review-evidence/7-m1-lookup.png')
+        self.assertEqual('DRY-RUN-ATTACHMENT/7-m1-lookup.png', url)
+        self.assertIn(f'<{len(PNG)} bytes, application/octet-stream>', out.getvalue())
+
+    def test_github_and_emit_mode_name_the_file(self):
+        gh = post_review.GitHub('o', 'r', 1, '', 'abc', True)
+        self.assertIsNone(gh.attach(self.base, 'pr-review-evidence/7-m1-lookup.png'))
+        findings = Path(self.base) / 'f.json'
+        findings.write_text(json.dumps(doc(finding('M1', 'major', evidence=[shot()]), verdict='approve_with_comments')))
+        out = Path(self.base) / 'threads.json'
+        self.assertEqual(0, post_review.main([str(findings), '--host', 'azure', '--emit-threads', str(out)]))
+        actions = json.loads(out.read_text())['actions']
+        self.assertEqual({'action': 'attach', 'path': 'pr-review-evidence/7-m1-lookup.png'}, actions[0])
+        self.assertIn('Image `7-m1-lookup.png` is in the review document.', actions[1]['body'])
+
+    def test_entry_point_rejects_a_missing_file(self):
+        findings = Path(self.base) / 'f.json'
+        findings.write_text(json.dumps(doc(finding('M1', 'major', evidence=[shot(path='pr-review-evidence/no.png')]))))
+        with self.assertRaises(SystemExit) as raised:
+            post_review.main([str(findings), '--host', 'azure', '--dry-run'])
+        self.assertIn('not found beside findings.json', str(raised.exception))
 
 
 class EntryPointTest(unittest.TestCase):
