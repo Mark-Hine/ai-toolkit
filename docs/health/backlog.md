@@ -27,3 +27,9 @@ Minor issues and open decisions from the doctor runs. Strike a line through when
 - 63 old plan files and 35 MB of file history sit under the home config (2026-11-23).
 - Android plugin evals: add 2 or 3 `claude plugin eval` cases for the bugfix playbook, one regression test and a filtered run, and read the with-without delta (2026-11-23).
 - The source of the worktree-isolation block and the stale agent-type names in playbooks are not yet traced (2026-11-23).
+- Reviewer agents ran out of turns in 2 of 12 judged sessions and needed a second message (2026-11-23, run 2).
+- 2 of 3 judging subagents reported that the Grep tool was not available, although the brief rule tells subagents to use it (2026-11-23, run 2).
+- The doctor has no rule for a second run on the same date. Run 2 used a `-run2` suffix on the scorecard and data files (2026-11-23, run 2).
+- The collector does not split hook blocks by main session and subagent, or by agent role (2026-11-23, run 2).
+- One session wrote a bearer token inline in a `curl` upload command after a connector upload call errored. The source of the token is not traced (2026-11-23, run 2).
+- Specialist hook blocks: subagents took 23 of 27 hook blocks and 2 judged sessions lost their device check. 19 of the 21 specialist blocks predate the 13 November guard fix and the 2026-11-23 brief rule. Check in the next run that the count falls, and look at the allowlist only if it does not (2026-11-23, run 2).
