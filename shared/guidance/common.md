@@ -13,6 +13,7 @@ sources: house
 - Name branches `<type>/<TICKET>-<slug>`, where `<type>` is the Conventional Commits type of the main change (`feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `build`, `ci`), for example `feat/MBS-123-barcode-validation`. Without a ticket use `<type>/<slug>`. Branch from the default branch.
 - Before committing, check the current branch. If it is `develop`, `main`, `master`, `release/*` or another branch protected by the project, create and switch to a suitably named feature or task branch before committing. Never commit directly to `main` or `master`.
 - Find the default branch in this order. The project instructions file, then `git symbolic-ref --short refs/remotes/origin/HEAD` with `origin/` removed, then `machine.md`. Otherwise ask.
+- Push with an explicit remote and branch, as in `git push origin <branch>:<branch>`. The guard hook rejects a bare `git push`.
 - Commit and push only when asked. Never push directly to a protected branch. Do not amend commits, rewrite history or force-push without explicit authorization.
 - Do not add AI attribution, a generated-by footer or a Co-Authored-By trailer.
 
@@ -28,7 +29,7 @@ sources: house
 ## Subagents
 
 - Give every subagent a self-contained brief. Include a 1-sentence goal and reason, known facts (`file:line`, error text, branch or SHA, and build or test commands), the exact files or question it owns with explicit exclusions, forbidden actions (no commit, push, merge, branch change, PR, deployment, external message send or data deletion unless requested), the done check and evidence required, a report cap (under 300 words, result first), and the writing style to use.
-- State the tool limits in the brief so the subagent does not find them by trial and error. The guard hooks block `timeout`, any `sleep` other than a plain `sleep <seconds>`, protected-branch pushes and secret-file edits. The subagent reads and searches with Read and Grep instead of `cat`, `sed` and `grep` in the shell, runs long commands in the background, and runs filtered tests only.
+- State the tool limits in the brief so the subagent does not find them by trial and error. The guard hooks block `timeout`, any `sleep` other than a plain `sleep <seconds>`, protected-branch pushes and secret-file edits. The subagent reads and searches with Read and Grep instead of `cat`, `sed` and `grep` in the shell, runs long commands in the background, and runs filtered tests only. A researcher, reviewer or verifier specialist runs one plain command per call, with no chaining, redirection or substitution. An agent isolated in a worktree does the same and uses no `cd`, shell variables or heredocs, because the harness refuses a command it cannot verify stays inside the worktree.
 - When 2 or more subagents run in parallel, tell any writer agent that other agents are active and it must touch only the files it owns, or isolate each writer in its own worktree or workspace.
 - Verify every subagent return against its brief and cited `file:line` before reporting it to the user or starting dependent work. When a research-tier agent returns thin or wrong work, escalate to the review tier rather than retrying the same prompt on the research tier.
 
