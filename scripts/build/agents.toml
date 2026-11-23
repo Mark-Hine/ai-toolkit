@@ -260,6 +260,7 @@ allow = [
   "src/skills/toolkit/audit/references/sources.md",
   "src/skills/pr-review/pr-review/references/platforms/",
   "src/skills/toolkit/check/SKILL.md:AGENTS.md",
+  "src/skills/toolkit/doctor/SKILL.md:.claude/",
 ]
 
 # Antigravity loads one always-on rules file per plugin. Order of sources is the order of sections.
